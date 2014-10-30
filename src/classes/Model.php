@@ -87,28 +87,28 @@ class Model {
 	public function save() {
 		$conn = Model::db();
 		if ($this->id == 0) return $this->saveNew();
-		$sql = "UPDATE {$this->table} SET ";
 		$sets = array();
 		foreach ($this->data as $key=>$val) {
 			if ($key == 'id') continue;
 			$sets[] = "$key='$val'";
 		}
-		$sql .= implode(', ', $sets)." WHERE id={$this->data['id']}";
+		$sql = "UPDATE {$this->table} SET ".implode(', ', $sets)." WHERE id={$this->data['id']}";
 		$conn->query($sql);
 		return $conn->errno == 0;
 	}
 
 	public function saveNew() {
 		$conn = Model::db();
-		$sql = "INSERT INTO {$this->table} (";
-		$val = "VALUES (";
+		$cols = array();
+		$vals = array();
 		foreach ($this->data as $key=>$val) {
 			if ($key == 'id') continue;
-			$sql .= "`$key`";
-			$val .= "'$val'";
+			$cols[] = "`$key`";
+			$vals[] = "'{$this->escape($val)}'";
 		}
-		$sql .= ") ".$val.")";
+		$sql = "INSERT INTO {$this->table} (".implode(', ', $cols).") VALUES (".implode(', ', $vals).")";
 		$conn->query($sql);
+		$this->id = $conn->insert_id;
 		return $conn->errno == 0;
 	}
 

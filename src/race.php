@@ -17,16 +17,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once("auth.php");
+require_once('classes/Race.php');
+
+if (!array_key_exists('id', $_GET)) {
+	header('Location: index.php');
+	exit();
+}
+$race = new Race($_GET['id']);
 ?>
-<div id="nav">
-<a href="index.php" class="nav">Home</a>
-<?php $level = getAccessLevel();
-if ($level >= User::ADMIN_ACCESS) { ?>
-<a href="raceform.php" class="nav">New Race</a>
-<a href="roster.php" class="nav">Roster</a>
-<a href="logout.php" class="nav">Logout</a>
-<?php } else if ($level == User::NO_ACCESS) { ?>
-<a href="login.php" class="nav">Login</a>
-<?php } ?>
-</div>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Berkeley YC Results Program</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+		<h1>Berkeley Yacht Club Results - Race <?php echo $race->id; ?></h1>
+		<?php require_once('nav.inc.php'); ?>
+		<h4>Date: <?php echo strftime('%D', strtotime($race->racedate)); ?></h4>
+		<h4>Type: <?php echo $race->type; ?></h4>
+
+		<h3>Entries:</h3>
+	</body>
+</html>

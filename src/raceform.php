@@ -17,16 +17,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once("auth.php");
 ?>
-<div id="nav">
-<a href="index.php" class="nav">Home</a>
-<?php $level = getAccessLevel();
-if ($level >= User::ADMIN_ACCESS) { ?>
-<a href="raceform.php" class="nav">New Race</a>
-<a href="roster.php" class="nav">Roster</a>
-<a href="logout.php" class="nav">Logout</a>
-<?php } else if ($level == User::NO_ACCESS) { ?>
-<a href="login.php" class="nav">Login</a>
-<?php } ?>
-</div>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Berkeley YC Results Program</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+		<h1>Berkeley Yacht Club Results</h1>
+		<?php require_once('nav.inc.php'); ?>
+		<?php require_once('raceform.inc.php'); ?>
+
+		<table id="entries">
+			<tr>
+				<th>Number</th>
+				<th>Boat</th>
+				<th>Sail Number</th>
+				<th>Type</th>
+				<th>PHRF</th>
+				<th>Spinnaker?</th>
+				<th>Roller Furling?</th>
+				<th>Finish Time</th>
+				<th>Elapsed</th>
+				<th>Corrected</th>
+			</tr>
+			<?php $i = 1;
+			foreach ($race->entries as $entry) {
+				echo '<tr>
+					<td>'.$i.'</td>
+					<td>'.$
+			}
+		</table>
+	</body>
+</html>
