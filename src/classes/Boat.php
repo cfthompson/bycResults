@@ -19,14 +19,14 @@
  * MA 02110-1301  USA
  */
 
-require_once('Model.php');
+require_once('SQLiteModel.php');
 
 /**
  * Description of Boat
  *
  * @author rfgunion
  */
-class Boat extends Model {
+class Boat extends SQLiteModel {
 
 	protected $table = 'boats';
 	protected $columns = array(

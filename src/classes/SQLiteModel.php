@@ -1,0 +1,148 @@
+<?php
+
+/*
+ * Copyright (C) 2014 rfgunion.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
+require_once('Config.php');
+
+/**
+ * Base class of model classes.  Provides very basic database connectivity
+ *
+ * @author rfgunion
+ */
+class SQLiteModel {
+
+	private static $conn = false;
+
+	protected static function db() {
+		if (SQLiteModel::$conn === false) {
+			$cfg = new Config();
+			SQLiteModel::$conn = new SQLite3($cfg->dbfilename);
+			if (!SQLiteModel::$conn) {
+				die('Connect error.  Please check configuration and database connectivity');
+			}
+		}
+		return SQLiteModel::$conn;
+	}
+
+	protected $table = '';
+	protected $columns = array();
+	protected $data = array();
+
+	public function __construct($idOrRow=false) {
+		if (is_numeric($idOrRow)) {
+			$this->find($idOrRow);
+		} else if (is_array($idOrRow)) {
+			foreach ($this->columns as $col) {
+				$this->$col = $idOrRow[$col];
+			}
+		}
+	}
+
+	public function __set($name, $val) {
+		if (!in_array($name, $this->columns)) {
+			return;
+		}
+		$this->data[$name] = $this->escape($val);
+	}
+
+	public function __get($name) {
+		if (array_key_exists($name, $this->data)) {
+			return $this->data[$name];
+		}
+		return false;
+	}
+
+	public function __isset($name) {
+		return array_key_exists($name, $this->data);
+	}
+
+	protected function query($sql) {
+		$conn = SQLiteModel::db();
+		$result = $conn->query($sql);
+		return $result;
+	}
+
+	protected function escape($str) {
+		$conn = SQLiteModel::db();
+		return $conn->escapeString($str);
+	}
+
+	public function save() {
+		$conn = SQLiteModel::db();
+		if ($this->id == 0) return $this->saveNew();
+		$sets = array();
+		foreach ($this->data as $key=>$val) {
+			if ($key == 'id') continue;
+			$sets[] = "$key='$val'";
+		}
+		$sql = "UPDATE {$this->table} SET ".implode(', ', $sets)." WHERE id={$this->data['id']}";
+		$conn->exec($sql);
+		return $conn->lastErrorCode() == 0;
+	}
+
+	public function saveNew() {
+		$conn = SQLiteModel::db();
+		$cols = array();
+		$vals = array();
+		foreach ($this->data as $key=>$val) {
+			if ($key == 'id') continue;
+			$cols[] = "`$key`";
+			$vals[] = "'{$this->escape($val)}'";
+		}
+		$sql = "INSERT INTO {$this->table} (".implode(', ', $cols).") VALUES (".implode(', ', $vals).")";
+		$conn->exec($sql);
+		$this->id = $conn->last_insert_rowid;
+		return $conn->lastErrorCode() == 0;
+	}
+
+	public function find($id) {
+		if (!is_numeric($id)) {
+			return false;
+		}
+		$conn = SQLiteModel::db();
+		$sql = "SELECT * FROM {$this->table} WHERE id=$id";
+		$result = $conn->query($sql);
+		if (!$result) return false;
+		$row = $result->fetchArray(SQLITE3_ASSOC);
+		foreach ($this->columns as $col) {
+			$this->$col = $row[$col];
+		}
+		$result->finalize();
+		return true;
+	}
+
+	public function findAll($where='', $orderby='') {
+		$conn = SQLiteModel::db();
+		$sql = "SELECT * FROM {$this->table}";
+		if (!empty($where)) $sql .= " WHERE $where";
+		if (!empty($orderby)) $sql .= " ORDER BY $orderby";
+		$result = $conn->query($sql);
+		if (!$result) return false;
+		$ref = new ReflectionClass($this);
+		$objs = array();
+		$row = $result->fetchArray(SQLITE3_ASSOC);
+		while ($row !== false) {
+			$objs[] = $ref->newInstanceArgs([$row]);
+			$row = $result->fetchArray(SQLITE3_ASSOC);
+		}
+		$result->finalize();
+		return $objs;
+	}
+}

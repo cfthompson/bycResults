@@ -26,6 +26,7 @@
  * @author rfgunion
  */
 class Config {
+	public $dbfilename;
 	public $hostname;
 	public $username;
 	public $password;
@@ -34,6 +35,7 @@ class Config {
 
 	public function __construct() {
 		// Fill in your settings here
+		$this->dbfilename = dirname(__FILE__).'/bycresults.db';
 		$this->hostname = 'localhost';
 		$this->username = 'byc';
 		$this->password = 'byc@1939';

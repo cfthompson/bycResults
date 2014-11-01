@@ -1,6 +1,6 @@
 <?php
 
-/*
+/* 
  * Copyright (C) 2014 rfgunion.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,37 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once('SQLiteModel.php');
 
-/**
- * Description of User
- *
- * @author rfgunion
- */
-class User extends SQLiteModel {
-	const NO_ACCESS = 0;
-	const USER_ACCESS = 1;
-	const ADMIN_ACCESS = 100;
-
-	protected $table = 'users';
-	protected $columns = array(
-		'id',
-		'uid',
-		'fname',
-		'lname',
-		'email',
-		'phone',
-		'level',
-		'tstamp',
-		'passwd',
-	);
-
-	public function findUser($uid, $pw) {
-		$hash = crypt($pw, '$2y$12ienvhe.xhzieahdkfleyir');
-		$where = "uid='$uid' AND passwd='$hash'";
-		$users =  $this->findAll($where);
-		if (!$users || empty($users)) return false;
-		$this->data = $users[0]->data;
-		return true;
-	}
-}
+// Generate a password hash for storing in the SQLite database
+echo 'Enter a password: ';
+$f = fopen('php://stdin', 'r');
+$pw = fgets($f);
+fclose($f);
+echo 'Here is the hash: ';
+echo crypt(trim($pw), '$2y$12ienvhe.xhzieahdkfleyir')."\n";
