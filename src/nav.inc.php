@@ -23,7 +23,7 @@ require_once("auth.php");
 <a href="index.php" class="nav">Home</a>
 <?php $level = getAccessLevel();
 if ($level >= User::ADMIN_ACCESS) { ?>
-<a href="raceform.php" class="nav">New Race</a>
+<a href="race.php" class="nav">New Race</a>
 <a href="roster.php" class="nav">Roster</a>
 <a href="logout.php" class="nav">Logout</a>
 <?php } else if ($level == User::NO_ACCESS) { ?>

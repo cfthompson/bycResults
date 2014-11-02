@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once('SQLiteModel.php');
-require_once('Entry.php');
+require_once(dirname(__FILE__).'/SQLiteModel.php');
+require_once(dirname(__FILE__).'/Entry.php');
 
 /**
  * Description of Race

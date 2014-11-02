@@ -38,7 +38,7 @@ if (array_key_exists('newentry_submit', $_POST)) {
 	fixFinishTimeFormat($newentry);
 	if ($newentry->save()) {
 		// Punt complex javascript by just reloading the page
-		header('Location: raceform.php?id='.$_GET['id'].'&edit=true');
+		header('Location: race.php?id='.$_GET['id'].'&edit=true');
 		exit();
 	}
 } elseif (array_key_exists('id', $_GET)) {

@@ -19,7 +19,7 @@
  * MA 02110-1301  USA
  */
 
-require_once('SQLiteModel.php');
+require_once(dirname(__FILE__).'/SQLiteModel.php');
 
 /**
  * Description of Boat

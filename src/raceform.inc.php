@@ -52,7 +52,7 @@ function parseRaceForm() {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
 	}
-	header('Location: raceform.php?id='.$race->id.'&edit=true');
+	header('Location: race.php?id='.$race->id.'&edit=true');
 	exit();
 }
 
