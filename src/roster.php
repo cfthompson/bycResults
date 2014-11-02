@@ -17,6 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
+require_once('auth.php');
+require_once('classes/User.php');
+if (getAccessLevel() < User::ADMIN_ACCESS) {
+	header('Location: index.php');
+	exit();
+}
+
 require_once('classes/Boat.php');
 ?>
 <html>
