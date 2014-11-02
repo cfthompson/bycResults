@@ -18,14 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once('Model.php');
+require_once('SQLiteModel.php');
 
 /**
  * Description of Entry
  *
  * @author rfgunion
  */
-class Entry extends Model {
+class Entry extends SQLiteModel {
 	protected $table = 'entries';
 	protected $columns = array(
 		'id',
@@ -35,6 +35,59 @@ class Entry extends Model {
 		'finish',
 		'spinnaker',
 		'rollerFurling',
+		'corrected',
+		'tcf',
+	);
+	protected $boatcolumns = array(
+		'name',
+		'sail',
+		'model',
+	);
+	protected $racecolumns = array(
+		'racedate',
+		'type',
 	);
 
+	public function __set($name, $val) {
+		if ($name == 'race') {
+			$this->data['race'] = $val;
+			return;
+		}
+		parent::__set($name, $val);
+	}
+
+	public function __get($name) {
+		if ($name == 'boat' && $this->boatid) {
+			if (!array_key_exists('boat', $this->data))
+				$this->data['boat'] = new Boat($this->boatid);
+			return $this->data['boat'];
+		}
+		if ($name == 'race' && $this->raceid) {
+			if (!array_key_exists('race', $this->data))
+				$this->data['race'] = new Race($this->raceid);
+			return $this->data['race'];
+		}
+		if (in_array($name, $this->boatcolumns) && $this->boatid) {
+			if (!array_key_exists('boat', $this->data)) {
+				$this->data['boat'] = new Boat($this->boatid);
+			}
+			return $this->boat->$name;
+		} elseif (in_array($name, $this->racecolumns) && $this->raceid) {
+			if (!array_key_exists('race', $this->data)) {
+				$this->data['race'] = new Race($this->raceid);
+			}
+			return $this->race->$name;
+		}
+		return parent::__get($name);
+	}
+
+	public function save() {
+		if (!array_key_exists('raceid', $this->data)
+			|| !array_key_exists('boatid', $this->data)
+			|| !array_key_exists('phrf', $this->data)
+			|| !array_key_exists('finish', $this->data)) {
+			return false;
+		}
+		return parent::save();
+	}
 }

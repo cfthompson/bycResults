@@ -18,14 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once('Model.php');
+require_once('SQLiteModel.php');
 
 /**
  * Description of Race
  *
  * @author rfgunion
  */
-class Race extends Model {
+class Race extends SQLiteModel {
 	protected $table = 'races';
 	protected $columns = array(
 		'id',
@@ -36,6 +36,21 @@ class Race extends Model {
 		'Sunday Chowder',
 		'Friday Night',
 	);
+
+	public function __get($name) {
+		if ($name == 'entries') {
+			if (!array_key_exists('entries', $this->data)) {
+				if ($this->id) {
+					$entry = new Entry();
+					$this->data['entries'] = $entry->findAll('raceid='.$this->id, 'corrected');
+				} else {
+					$this->data['entries'] = array();
+				}
+			}
+			return $this->data['entries'];
+		}
+		return parent::__get($name);
+	}
 
 	public function __set($name, $val) {
 		if ($name == 'racedate') {

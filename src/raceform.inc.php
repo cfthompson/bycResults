@@ -17,15 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once('classes/Race.php');
 $msg = array(
 	'top'=>'',
 	'type'=>'',
 	'date'=>'',
 );
-
-$id = array_key_exists('id', $_GET) ? $_GET['id'] : '';
-$race = new Race($id);
 
 function parseRaceForm() {
 	global $msg, $race;
@@ -56,7 +52,7 @@ function parseRaceForm() {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
 	}
-	header('Location: race.php?id='.$race->id);
+	header('Location: raceform.php?id='.$race->id.'&edit=true');
 	exit();
 }
 
