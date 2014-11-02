@@ -19,6 +19,9 @@
  */
 require_once('auth.php');
 require_once('classes/Race.php');
+require_once('classes/User.php');
+require_once('classes/Boat.php');
+require_once('classes/Entry.php');
 
 function strtohms($secs) {
 	$hr = fmod($secs, 3600);
@@ -28,6 +31,30 @@ function strtohms($secs) {
 	$s = $mr;
 	$result = sprintf('%02d:%02d:%02d', $h, $m, $s);
 	return $result;
+}
+
+function fixFinishTimeFormat($entry) {
+	$finish = $entry->finish;
+	if (!$finish) return;
+	$hour = $minute = $second = 0;
+	if (preg_match('/\d{6}/', $finish)) {
+		$hour = substr($finish, 0, 2);
+		$minute = substr($finish, 2, 2);
+		$second = substr($finish, 4, 2);
+		// TODO: be more flexible on time format (javascript?)
+		$finish = sprintf('%02d:%02d:%02d', $hour, $minute, $second);
+	} else {
+		return;
+	}
+	$race = $entry->race;
+	$entry->finish = $race->racedate.' '.$finish;
+	$tstart = strtotime($race->racedate.' 13:00:00');
+	$tend = strtotime($entry->finish);
+	$tcf = 800/(550+$entry->phrf);
+	$tcfspin = empty($entry->spinnaker) ? 0.04*$tcf : 0;
+	$tcffurl = empty($entry->rollerFurling) ? 0 : 0.02*$tcf;
+	$entry->tcf = $tcf - $tcfspin - $tcffurl;
+	$entry->corrected = $entry->tcf*($tend - $tstart);
 }
 
 $id = false;
@@ -40,13 +67,31 @@ if (array_key_exists('id', $_GET)) {
 	}
 }
 $edit = false;
-if (array_key_exists('edit', $_GET)) {
+if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
 	$edit = boolval($_GET['edit']);
 }
 
 $race = new Race($id);
 
 
+if (array_key_exists('entry_submit', $_POST)) {
+	$postedentry = $_POST['entry'];
+	$entry = new Entry($postedentry);
+	// checkbox values won't come through quite right
+	$entry->spinnaker = array_key_exists('spinnaker', $postedentry);
+	$entry->rollerFurling = array_key_exists('rollerFurling', $postedentry);
+	fixFinishTimeFormat($entry);
+	if ($entry->save()) {
+		// Punt complex javascript by just reloading the page
+		header('Location: race.php?id='.$_GET['id'].'&edit=true');
+		exit();
+	}
+} else {
+	$entry = new Entry();
+}
+
+$boat = new Boat();
+$allboats = $boat->findAll('', 'name ASC');
 ?>
 <html>
     <head>
@@ -54,11 +99,12 @@ $race = new Race($id);
         <title>Berkeley YC Results Program</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/entryform.js"></script>
     </head>
     <body>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
-		<?php if (!$id) {
+		<?php if (!$id && getAccessLevel() >= User::ADMIN_ACCESS) {
 			require_once('raceform.inc.php');
 		} else { ?>
 		<table id="race">
@@ -72,6 +118,11 @@ $race = new Race($id);
 			</tr>
 		</table>
 
+<?php
+foreach ($allboats as $b) {
+	echo '<span style="display:none" id="boat_'.$b->id.'">'.$b->name.'$$'.$b->sail.'$$'.$b->model.'$$'.$b->phrf.'$$'.$b->rollerFurling.'</span>';
+}
+?>
 		<table id="entries">
 			<tr>
 				<th>Number</th>
