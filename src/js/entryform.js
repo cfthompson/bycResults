@@ -18,11 +18,56 @@
  */
 
 function boat_onChange() {
-	var id = $("#newentryboat").val();
-	$("#newentrysail").val(id);
+	var id = $("#entryboat").val();
+	$("#entrysail").val(id);
 	var boatspan = $("#boat_"+id);
 	var boatprops = boatspan.html().split("$$");
-	$("#newentrytype").html(boatprops[2]);
+	$("#entrytype").html(boatprops[2]);
 	$("#phrf").val(boatprops[3]);
 	$("#rollerFurling").prop("checked", boatprops[4] == "1");
+}
+
+function entry_recalc() {
+	var phrf = $("#phrf").val();
+	var spin = $("#spinnaker").checked;
+	var furl = $("#rollerFurling").checked;
+	var finish = $("#finish").val();
+	if (phrf == "") {
+		entry_clearcalc();
+		return;
+	}
+
+	if (!/\d{6}/.test(finish)) {
+		entry_clearcalc();
+		return;
+	}
+	phrf = parseInt(phrf);
+	var h = finish.substr(0, 2) - 13;
+	var m = finish.substr(2, 2);
+	var s = finish.substr(4, 2);
+	var elapsed = parseInt(h*3600)+parseInt(m*60)+parseInt(s);
+
+	$("#elapsed").html(""+h+":"+m+":"+s);
+	var tcf = (550.0 + phrf);
+	tcf = 800/tcf;
+	var tcfspin = spin ? 0.0 : 0.04*tcf;
+	var tcffurl = furl ? 0.02*tcf : 0.0; 
+	$("#tcf").html((tcf - tcfspin - tcffurl).toFixed(2));
+	var corrected = elapsed * tcf;
+	var r = corrected % 3600;
+	h = (corrected - r)/3600;
+	corrected = r;
+	r = corrected % 60;
+	m = ((corrected - r)/60).toFixed(0);
+	if (m < 10) m = "0"+m;
+	s = r.toFixed(2);
+	if (s < 10) s = "0"+s;
+	$("#corrected").html(""+h+":"+m+":"+s);
+}
+
+function entry_clearcalc() {
+	$("#elapsed").html("");
+	$("#tcf").html("");
+	$("#corrected").html("");
+	$("#gap").html("");
 }
