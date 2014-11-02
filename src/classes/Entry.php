@@ -19,6 +19,8 @@
  * MA 02110-1301  USA
  */
 require_once('SQLiteModel.php');
+require_once('Race.php');
+require_once('Boat.php');
 
 /**
  * Description of Entry

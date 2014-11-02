@@ -98,22 +98,6 @@ $race = new Race($id);
 				$telapsed = $tend - $tstart;
 				$elapsed = strtohms($telapsed);
 				$corrected = strtohms($entry->corrected);
-				/*
-				$hr = fmod($telapsed, 3600);
-				$h = ($telapsed - $hr)/3600;
-				$mr = fmod($hr, 60);
-				$m = ($hr - $mr)/60;
-				$s = $mr;
-				$elapsed = sprintf('%02d:%02d:%02d', $h, $m, $s);
-				$corrected = $entry->corrected;
-				$hr = fmod($corrected, 3600);
-				$h = ($corrected - $hr)/3600;
-				$mr = fmod($hr, 60);
-				$m = ($hr - $mr)/60;
-				$s = $mr;
-				$corrected = sprintf('%02d:%02d:%02d', $h, $m, $s);
-				 * 
-				 */
 				$tcf = sprintf('%.02f', $entry->tcf);
 				$gap = 'n/a';
 				if (count($race->entries) > $i) {
