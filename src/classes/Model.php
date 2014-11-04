@@ -134,7 +134,7 @@ class Model {
 		if (!empty($where)) $sql .= " WHERE $where";
 		if (!empty($orderby)) $sql .= " ORDER BY $orderby";
 		$result = $conn->query($sql);
-		if (!$result) return false;
+		if (!$result) return array();
 		$ref = new ReflectionClass($this);
 		$objs = array();
 		foreach ($result as $row) {

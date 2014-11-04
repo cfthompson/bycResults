@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once(dirname(__FILE__).'/SQLiteModel.php');
+require_once(dirname(__FILE__).'/Model.php');
 require_once(dirname(__FILE__).'/Race.php');
 require_once(dirname(__FILE__).'/Boat.php');
 
@@ -27,7 +27,7 @@ require_once(dirname(__FILE__).'/Boat.php');
  *
  * @author rfgunion
  */
-class Entry extends SQLiteModel {
+class Entry extends Model {
 	protected $table = 'entries';
 	protected $columns = array(
 		'id',

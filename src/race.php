@@ -68,7 +68,7 @@ if (array_key_exists('id', $_GET)) {
 }
 $edit = false;
 if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
-	$edit = boolval($_GET['edit']);
+	$edit = !!($_GET['edit']);
 }
 
 $race = new Race($id);

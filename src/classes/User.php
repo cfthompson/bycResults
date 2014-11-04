@@ -18,14 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once(dirname(__FILE__).'/SQLiteModel.php');
+require_once(dirname(__FILE__).'/Model.php');
 
 /**
  * Description of User
  *
  * @author rfgunion
  */
-class User extends SQLiteModel {
+class User extends Model {
 	const NO_ACCESS = 0;
 	const USER_ACCESS = 1;
 	const ADMIN_ACCESS = 100;
@@ -43,10 +43,22 @@ class User extends SQLiteModel {
 		'passwd',
 	);
 
+	/* SQLite version: 
 	public function findUser($uid, $pw) {
 		$hash = crypt($pw, '$2y$12ienvhe.xhzieahdkfleyir');
 		$where = "uid='$uid' AND passwd='$hash'";
 		$users =  $this->findAll($where);
+		if (!$users || empty($users)) return false;
+		$this->data = $users[0]->data;
+		return true;
+	}
+	 * 
+	 */
+
+	/* MySQL version: */
+	public function findUser($uid, $pw) {
+		$where = "uid='$uid' AND passwd=PASSWORD('$pw')";
+		$users = $this->findAll($where);
 		if (!$users || empty($users)) return false;
 		$this->data = $users[0]->data;
 		return true;
