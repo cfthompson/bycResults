@@ -47,12 +47,6 @@ MA 02110-1301  USA
 	<td><select id="entrysail" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
 			<option value="0"></option>
 			<?php function sortboatsbysail($a, $b) {
-				if (is_numeric($a->sail) && is_numeric($b->sail)) {
-					$x = intval($a->sail);
-					$y = intval($b->sail);
-					if ($x = $y) return 0;
-					return $x < $y ? -1 : 1;
-				}
 				if ($a->sail == $b->sail) return 0;
 				return $a->sail < $b->sail ? -1 : 1;
 			}
