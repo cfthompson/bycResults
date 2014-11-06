@@ -102,6 +102,9 @@ $allboats = $boat->findAll('', 'name ASC');
 		<script type="text/javascript" src="js/entryform.js"></script>
     </head>
     <body>
+		<div id="header">
+		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		</div>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 		<?php if (!$id && getAccessLevel() >= User::ADMIN_ACCESS) {

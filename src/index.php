@@ -14,9 +14,13 @@ $races = $r->findAll('', 'racedate DESC');
 <html>
     <head>
         <meta charset="UTF-8">
-        <title></title>
+        <title>Berkeley YC Race Results</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+		<div id="header">
+		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		</div>
 		<h1>Berkeley Yacht Club Race Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 

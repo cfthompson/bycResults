@@ -19,6 +19,7 @@
  * MA 02110-1301  USA
  */
 require_once(dirname(__FILE__).'/Model.php');
+require_once(dirname(__FILE__).'/Series.php');
 require_once(dirname(__FILE__).'/Entry.php');
 
 /**
@@ -30,13 +31,16 @@ class Race extends Model {
 	protected $table = 'races';
 	protected $columns = array(
 		'id',
-		'type',
+		'seriesid',
 		'racedate',
+		'rcboat',
+		'rcskipper',
+		'preparer',
 	);
-	public static $VALID_TYPES = array(
-		'Sunday Chowder',
-		'Friday Night',
-	);
+	//public static $VALID_TYPES = array(
+		//'Sunday Chowder',
+		//'Friday Night',
+	//);
 
 	public function __get($name) {
 		if ($name == 'entries') {
@@ -49,6 +53,12 @@ class Race extends Model {
 				}
 			}
 			return $this->data['entries'];
+		}
+		if ($name == 'series') {
+			if (!array_key_exists('series', $this->data)) {
+				$this->data['series'] = new Series($this->seriesid);
+			}
+			return $this->data['series'];
 		}
 		return parent::__get($name);
 	}
@@ -69,13 +79,17 @@ class Race extends Model {
 				}
 			}
 			return;
+		} else if ($name == 'series') {
+			$this->data['series'] = new Series($this->seriesid);
+			return;
+		} else if ($name == 'seriesid') {
+			$this->data['seriesid'] = $val;
+			$this->data['series'] = new Series($this->seriesid);
 		}
 		parent::__set($name, $val);
 	}
 
 	public function save() {
-		if (!in_array($this->type, Race::$VALID_TYPES))
-			return false;
 		if (empty($this->racedate))
 			return false;
 		return parent::save();

@@ -20,4 +20,34 @@ MA 02110-1301  USA
     Created on : Nov 1, 2014, 11:50:36 AM
     Author     : rfgunion
 */
+body {
+	font-family: sans-serif;
+	margin: 1em;
+}
+
+table {
+	border-collapse: collapse;
+	margin: 1em;
+}
+
+table td, table th {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+table th {
+	background-color: #eee;
+}
+
+tr:nth-child(even) {
+	background: #fff;
+}
+
+tr:nth-child(odd) {
+	background: #eef;
+}
+
+div#header {
+	background-color: #e3e3e3;
+}
 
