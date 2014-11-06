@@ -1,4 +1,3 @@
-<?php
 /* 
  * Copyright (C) 2014 rfgunion.
  *
@@ -17,17 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once("auth.php");
-?>
-<div id="nav">
-<a href="index.php" class="nav">Home</a>
-<?php $level = getAccessLevel();
-if ($level >= User::ADMIN_ACCESS) { ?>
-<a href="series.php" class="nav">New Series</a>
-<a href="race.php" class="nav">New Race</a>
-<a href="roster.php" class="nav">Roster</a>
-<a href="logout.php" class="nav">Logout</a>
-<?php } else if ($level == User::NO_ACCESS) { ?>
-<a href="login.php" class="nav">Login</a>
-<?php } ?>
-</div>
+
+function seriestype_change() {
+	var typename = $("option.seriestype:selected").html();
+	$("#seriestypeprefix").html(typename);
+}
+
+$(function() {
+	seriestype_change();
+});

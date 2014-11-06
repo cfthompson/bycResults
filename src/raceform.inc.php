@@ -17,10 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
+require_once('classes/SeriesTypes.php');
+
 $msg = array(
 	'top'=>'',
 	'type'=>'',
 	'date'=>'',
+	'preparer'=>'',
+	'rcskipper'=>'',
+	'rcboat'=>'',
 );
 
 function parseRaceForm() {
@@ -48,6 +53,9 @@ function parseRaceForm() {
 		}
 		$race->racedate = $date;
 	}
+	$race->preparer = $post['preparer'];
+	$race->rcskipper = $post['rcskipper'];
+	$race->rcboat = $post['rcboat'];
 	if (!$race->save()) {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
@@ -78,8 +86,9 @@ $title = array_key_exists('id', $_GET) ?
 			<th>Race Type:</th>
 			<td><select name="race[type]" id="racetype">
 					<option></option>
-					<?php foreach (Race::$VALID_TYPES as $t) {
-						echo "<option>$t</option>";
+					<?php $types = new SeriesTypes();
+					foreach ($types->findAll() as $t) {
+						echo "<option value='{$t->id}'>{$t->name}</option>";
 					}?>
 				</select></td>
 			<td class="errormsg"><?php echo $msg['type']; ?></td>
@@ -88,6 +97,21 @@ $title = array_key_exists('id', $_GET) ?
 			<th>Race Date:</th>
 			<td><input type="text" name="race[date]" id="racedate" value="<?php echo $racedate; ?>"> (MM/DD/YYYY)</td>
 			<td class="errormsg"><?php echo $msg['date']; ?></td>
+		</tr>
+		<tr>
+			<th>Prepared By:</th>
+			<td><input type="text" name="race[preparer]" id="preparer" value="<?php echo $race->preparer; ?>"></td>
+			<td class="errormsg"><?php echo $msg['preparer']; ?></td>
+		</tr>
+		<tr>
+			<th>Committee Boat:</th>
+			<td><input type="text" name="race[rcskipper]" id="rcskipper" value="<?php echo $race->rcskipper; ?>"></td>
+			<td class="errormsg"><?php echo $msg['rcskipper']; ?></td>
+		</tr>
+		<tr>
+			<th>RC Boat Skipper:</th>
+			<td><input type="text" name="race[rcboat]" id="rcboat" value="<?php echo $race->rcboat; ?>"></td>
+			<td class="errormsg"><?php echo $msg['rcboat']; ?></td>
 		</tr>
 		<tr>
 			<th></th>

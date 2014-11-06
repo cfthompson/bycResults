@@ -117,7 +117,7 @@ $allboats = $boat->findAll('', 'name ASC');
 			</tr>
 			<tr>
 				<td><?php echo $race->racedate; ?></td>
-				<td><?php echo $race->type; ?></td>
+				<td><?php echo $race->series->name; ?></td>
 			</tr>
 		</table>
 

@@ -50,7 +50,8 @@ class Model {
 			$this->find($idOrRow);
 		} else if (is_array($idOrRow)) {
 			foreach ($this->columns as $col) {
-				$this->$col = $idOrRow[$col];
+				if (array_key_exists($col, $idOrRow))
+					$this->$col = $idOrRow[$col];
 			}
 		}
 	}

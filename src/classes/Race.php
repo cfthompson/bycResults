@@ -37,10 +37,6 @@ class Race extends Model {
 		'rcskipper',
 		'preparer',
 	);
-	//public static $VALID_TYPES = array(
-		//'Sunday Chowder',
-		//'Friday Night',
-	//);
 
 	public function __get($name) {
 		if ($name == 'entries') {
