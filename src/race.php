@@ -66,12 +66,16 @@ if (array_key_exists('id', $_GET)) {
 		$id = intval($id);
 	}
 }
+$race = new Race($id);
+
+if (array_key_exists('seriesid', $_GET) && is_numeric($_GET['seriesid'])) {
+	$race->seriesid = intval($_GET['seriesid']);
+}
+
 $edit = false;
 if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
 	$edit = !!($_GET['edit']);
 }
-
-$race = new Race($id);
 
 
 if (array_key_exists('entry_submit', $_POST)) {
@@ -91,7 +95,7 @@ if (array_key_exists('entry_submit', $_POST)) {
 }
 
 $boat = new Boat();
-$allboats = $boat->findAll('', 'name ASC');
+$allboats = $boat->findAll('', 'sail ASC');
 ?>
 <html>
     <head>
@@ -107,17 +111,27 @@ $allboats = $boat->findAll('', 'name ASC');
 		</div>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
-		<?php if (!$id && getAccessLevel() >= User::ADMIN_ACCESS) {
+		<?php if ($edit) {
 			require_once('raceform.inc.php');
 		} else { ?>
 		<table id="race">
 			<tr>
-				<th>Date</th>
-				<th>Type</th>
+				<th>Date:</th>
+				<td><?php echo $race->racedate; ?></td>
+				<th>Series:</th>
+				<td><?php echo $race->series->name; ?></td>
 			</tr>
 			<tr>
-				<td><?php echo $race->racedate; ?></td>
-				<td><?php echo $race->series->name; ?></td>
+				<th>RC Boat:</th>
+				<td><?php echo $race->rcboat; ?></td>
+				<th>RC Skipper:</th>
+				<td><?php echo $race->rcskipper; ?></td>
+			</tr>
+			<tr>
+				<th>Prepared By:</th>
+				<td><?php echo $race->preparer; ?></td>
+				<th></th>
+				<td></td>
 			</tr>
 		</table>
 
@@ -126,11 +140,12 @@ foreach ($allboats as $b) {
 	echo '<span style="display:none" id="boat_'.$b->id.'">'.$b->name.'$$'.$b->sail.'$$'.$b->model.'$$'.$b->phrf.'$$'.$b->rollerFurling.'</span>';
 }
 ?>
+		<h3>Race Results:</h3>
 		<table id="entries">
 			<tr>
-				<th>Number</th>
-				<th>Boat</th>
+				<th>Place</th>
 				<th>Sail Number</th>
+				<th>Boat</th>
 				<th>Type</th>
 				<th>PHRF</th>
 				<th>Spinnaker?</th>
@@ -161,8 +176,8 @@ foreach ($allboats as $b) {
 				}
 				echo '<tr>
 					<td>'.$i.'</td>
-					<td>'.$entry->name.'</td>
 					<td>'.$entry->sail.'</td>
+					<td>'.$entry->name.'</td>
 					<td>'.$entry->model.'</td>
 					<td>'.$entry->phrf.'</td>
 					<td>'.$entry->spinnaker.'</td>

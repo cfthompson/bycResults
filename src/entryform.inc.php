@@ -19,9 +19,9 @@ MA 02110-1301  USA
 <?php
 
 /* Columns to display inputs for:
-<th>Number</th>
-<th>Boat</th>
+<th>Place</th>
 <th>Sail Number</th>
+<th>Boat</th>
 <th>Type</th>
 <th>PHRF</th>
 <th>Spinnaker?</th>
@@ -37,20 +37,20 @@ MA 02110-1301  USA
 <form id="entry_form" method="post">
 	<input type="hidden" name="entry[raceid]" value="<?php echo $_GET['id']; ?>">
 	<td><input type="submit" name="entry_submit" id="entry_submit" value="Add"></td>
-	<td><select id="entryboat" name="entry[boatid]" value="<?php echo $entry->boatid; ?>" onchange="boat_onChange()">
+	<td><select id="entrysail" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
 			<option value="0"></option>
 			<?php foreach ($allboats as $b) {
 				echo "<option value=\"{$b->id}\">{$b->sail} - {$b->name}</option>";
 			} ?>
 		</select>
 	</td>
-	<td><select id="entrysail" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
+	<td><select id="entryboat" name="entry[boatid]" value="<?php echo $entry->boatid; ?>" onchange="boat_onChange()">
 			<option value="0"></option>
-			<?php function sortboatsbysail($a, $b) {
-				if ($a->sail == $b->sail) return 0;
-				return $a->sail < $b->sail ? -1 : 1;
+			<?php function sortboatsbyname($a, $b) {
+				if ($a->name == $b->name) return 0;
+				return $a->name < $b->name ? -1 : 1;
 			}
-			usort($allboats, 'sortboatsbysail');
+			usort($allboats, 'sortboatsbyname');
 			foreach ($allboats as $b) {
 				echo "<option value=\"{$b->id}\">{$b->sail} - {$b->name}</option>";
 			} ?>

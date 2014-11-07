@@ -21,6 +21,8 @@
 require_once(dirname(__FILE__).'/Model.php');
 require_once(dirname(__FILE__).'/Series.php');
 require_once(dirname(__FILE__).'/Entry.php');
+require_once(dirname(__FILE__).'/Division.php');
+require_once(dirname(__FILE__).'/DivisionType.php');
 
 /**
  * Description of Race
@@ -62,7 +64,7 @@ class Race extends Model {
 	public function __set($name, $val) {
 		if ($name == 'racedate') {
 			$racedate = strtotime($val);
-			$this->data['racedate'] = strftime('%F', $racedate);
+			$this->data['racedate'] = strftime('%m/%d/%Y', $racedate);
 			return;
 		} else if ($name == 'entries') {
 			// $val must be an array of either Entry instances or arrays
@@ -88,6 +90,34 @@ class Race extends Model {
 	public function save() {
 		if (empty($this->racedate))
 			return false;
+		if (!$this->seriesid)
+			return false;
 		return parent::save();
+	}
+
+	public function saveNew() {
+		if (!parent::saveNew()) {
+			return false;
+		}
+
+		if (!array_key_exists('divisions', $this->data)) {
+			$this->data['divisions'] = array();
+			$dtype = new DivisionType();
+			$dtypes = $dtype->findAll('seriestypeid='.$this->series->typeid);
+			foreach ($dtypes as $dt) {
+				$d = new Division(array(
+					'raceid'=>$this->id,
+					'starttime'=>$dt->defaultstarttime,
+					'minphrf'=>$dt->minphrf,
+					'maxphrf'=>$dt->maxphrf,
+					'minlength'=>$dt->minlength,
+					'maxlength'=>$dt->maxlength,
+				));
+				if ($d->saveNew()) {
+					$this->data['divisions'][] = $d;
+				}
+			}
+		}
+		return true;
 	}
 }

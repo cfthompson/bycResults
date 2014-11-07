@@ -1,3 +1,5 @@
+<?php
+
 /* 
  * Copyright (C) 2014 rfgunion.
  *
@@ -16,15 +18,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
+require_once('auth.php');
+require_once('classes/Race.php');
 
-function seriestype_change() {
-	var seriesid = $("#seriesid").val();
-	if (seriesid == null || seriesid == "") {
-		var typename = $("option.seriestype:selected").html();
-		$("#seriestypeprefix").html(typename);
-	}
-}
+// @variable: $s Series
+$race = new Race();
+$races = $race->findAll('seriesid='.$s->id, 'racedate DESC');
 
-$(function() {
-	seriestype_change();
-});
+?>
+<table id="races">
+	<tr>
+		<th>Date</th>
+		<th># Boats</th>
+		<?php if (getAccessLevel() >= User::ADMIN_ACCESS) {
+			echo '<th>Edit</th>';
+		} ?>
+	</tr>
+	<?php foreach ($races as $race) {
+		echo '<tr>
+		<td><a href="race.php?id='.$race->id.'">'.$race->racedate.'</a></td>
+		<td>'.count($race->entries).'</td>
+		';
+		if (getAccessLevel() >= User::ADMIN_ACCESS) {
+			echo '<td><a href="race.php?id='.$race->id.'&edit=true">Edit</a></td>';
+		}
+		echo '</tr>';
+	} ?>
+</table>

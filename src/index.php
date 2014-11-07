@@ -6,11 +6,11 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <?php
+require_once('classes/Series.php');
 require_once('classes/Race.php');
-$r = new Race();
-$races = $r->findAll('', 'racedate DESC');
+$s = new Series();
+$series = $s->findAll();
 ?>
-
 <html>
     <head>
         <meta charset="UTF-8">
@@ -24,26 +24,23 @@ $races = $r->findAll('', 'racedate DESC');
 		<h1>Berkeley Yacht Club Race Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 
-		<table id="races">
+		<table id="series">
 			<tr>
-				<th>Date</th>
-				<th>Type</th>
-				<th># Boats</th>
-				<?php if (getAccessLevel() >= User::ADMIN_ACCESS) {
-					echo '<th>Edit</th>';
-				} ?>
+				<th>Series</th>
+				<th></th>
 			</tr>
-			<?php foreach ($races as $race) {
-				echo '<tr>
-				<td><a href="race.php?id='.$race->id.'">'.$race->racedate.'</a></td>
-				<td>'.$race->type.'</td>
-				<td>'.count($race->entries).'</td>
-				';
-				if (getAccessLevel() >= User::ADMIN_ACCESS) {
-					echo '<td><a href="race.php?id='.$race->id.'&edit=true">Edit</a></td>';
-				}
-				echo '</tr>';
-			} ?>
-		</table>
+			<?php foreach ($series as $s) { ?>
+			<tr>
+				<td><a href="series.php?id=<?php echo $s->id; ?>"><?php echo $s->name; ?></a></td>
+				<td>
+				<?php if (getAccessLevel() >= User::ADMIN_ACCESS) { ?>
+					<a class="newrace" href="race.php?seriesid=<?php echo $s->id; ?>&edit=true">Add a Race</a>
+				<?php } ?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><?php require_once('races.inc.php'); ?></td>
+			</tr>
+			<?php } ?>
     </body>
 </html>

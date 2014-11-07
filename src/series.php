@@ -20,29 +20,39 @@ MA 02110-1301  USA
 */
 require_once('auth.php');
 require_once('classes/Series.php');
-require_once('classes/SeriesTypes.php');
+require_once('classes/SeriesType.php');
 
 $msg = array(
 	'top'=>'',
 	'seriestype'=>'',
 	'seriesname'=>'',
 );
-$seriestype = 0;
+
+$id = false;
+$edit = false;
+if (array_key_exists('id', $_GET)) {
+	$id = $_GET['id'];
+	if (!is_numeric($id)) $id = false;
+	else {
+		$edit = array_key_exists('edit', $_GET) && $_GET['edit'];
+	}
+} else {
+	$edit = true;
+}
+$series = new Series($id);
 
 function parseSeriesForm() {
-	global $msg, $seriestype;
-	if (!array_key_exists('seriestype', $_POST) || empty($_POST['seriestype'])) {
+	global $msg, $series;
+	$series = new Series($_POST['series']);
+	if (!$series->typeid) {
 		$msg['seriestype'] = 'Please select a series type';
 		return;
 	}
-	$seriestype = $_POST['seriestype'];
-	$st = new SeriesTypes($seriestype);
-	$series = new Series($_POST['series']);
 	if (empty($series->name)) {
 		$msg['seriesname'] = 'Please enter a name';
 		return;
 	}
-	$series->name = $st->name.' '.$series->name;
+	$series->name = $series->type->name.' '.$series->name;
 	if (!$series->save()) {
 		$msg['top'] = 'Failed to save series';
 		return;
@@ -67,28 +77,20 @@ if (array_key_exists('submit', $_POST)) {
     <body>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
-		<form id="seriesform" method="post">
-		<?php
-		$id = false;
-		if (array_key_exists('id', $_GET)) {
-			$id = $_GET['id'];
-			if (!is_numeric($id)) $id = false;
-			else {
-				echo '<input type="hidden" name="series[id]" value="'.$id.'">';
-			}
-		}
-		$series = new Series($id);
-		$type = new SeriesTypes();
+	<?php if ($edit) {
+		$type = new SeriesType();
 		$types = $type->findAll();
-		?>
+	?>
 		<div class="errormsg"><?php echo $msg['top']; ?></div>
+		<form id="seriesform" method="post">
+		<?php if ($id) echo '<input type="hidden" name="series[id]" id="seriesid" value="'.$id.'">'; ?>
 		<table id="series">
 			<tr>
 				<th>Type:</th>
-				<td><select id="seriestype" name="seriestype" onchange="seriestype_change()">
+				<td><select id="seriestype" name="series[typeid]" onchange="seriestype_change()">
 						<option></option>
 						<?php foreach ($types as $t) {
-							$sel = $t->id == $seriestype ? 'selected' : '';
+							$sel = $t->id == $series->typeid ? 'selected' : '';
 							echo "<option class='seriestype' value='{$t->id}' $sel>{$t->name}</option>";
 						} ?>
 				</td>
@@ -105,5 +107,17 @@ if (array_key_exists('submit', $_POST)) {
 			</tr>
 		</table>
 		</form>
+	<?php } else { ?>
+		<table id="series">
+			<tr>
+				<th>Type:</th>
+				<td><?php echo $series->type->name; ?></td>
+			</tr>
+			<tr>
+				<th>Name:</th>
+				<td><?php echo $series->name; ?></td>
+			</tr>
+		</table>
+	<?php } ?>
     </body>
 </html>

@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once('classes/SeriesTypes.php');
+require_once('classes/SeriesType.php');
 
 $msg = array(
 	'top'=>'',
-	'type'=>'',
+	'seriesid'=>'',
 	'date'=>'',
 	'preparer'=>'',
 	'rcskipper'=>'',
@@ -35,27 +35,23 @@ function parseRaceForm() {
 		$msg['top'] = 'Please enter values before submitting';
 		return;
 	}
-	$race->type = $post['type'];
-	if ($race->type == '') {
-		$msg['type'] = 'Please select a race type';
+	$race = new Race($post);
+	if (!$race->seriesid) {
+		$msg['seriesid'] = 'Please select a series';
+		return;
 	}
-	$date = $post['date'];
-	if ($date == '') {
+	if (empty($race->racedate)) {
 		$msg['date'] = 'Please enter a race date';
-	} else {
-		$result = preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date);
-		if ($result === false) {
-			$msg['date'] = 'Error parsing date';
-			return;
-		} else if ($result === 0) {
-			$msg['date'] = 'Invalid date format';
-			return;
-		}
-		$race->racedate = $date;
+		return;
 	}
-	$race->preparer = $post['preparer'];
-	$race->rcskipper = $post['rcskipper'];
-	$race->rcboat = $post['rcboat'];
+	$result = preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $race->racedate);
+	if ($result === false) {
+		$msg['date'] = 'Error parsing date';
+		return;
+	} else if ($result === 0) {
+		$msg['date'] = 'Invalid date format';
+		return;
+	}
 	if (!$race->save()) {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
@@ -70,9 +66,8 @@ if (array_key_exists('submit', $_POST)) {
 
 // Default to today's date
 if (empty($race->racedate)) {
-	$race->racedate = strftime('%Y-%m-%d');
+	$race->racedate = strftime('%m/%d/%Y');
 }
-$racedate = strftime('%m/%d/%Y', strtotime($race->racedate));
 
 $title = array_key_exists('id', $_GET) ?
 	'Information for Race '.$_GET['id'] :
@@ -83,19 +78,20 @@ $title = array_key_exists('id', $_GET) ?
 <form id="raceform" method="post">
 	<table id="race">
 		<tr>
-			<th>Race Type:</th>
-			<td><select name="race[type]" id="racetype">
+			<th>Series:</th>
+			<td><select name="race[seriesid]" id="seriesid">
 					<option></option>
-					<?php $types = new SeriesTypes();
-					foreach ($types->findAll() as $t) {
-						echo "<option value='{$t->id}'>{$t->name}</option>";
+					<?php $series = new Series();
+					foreach ($series->findAll() as $s) {
+						$sel = $s->id == $race->seriesid ? 'selected' : '';
+						echo "<option value='{$s->id}' $sel>{$s->name}</option>";
 					}?>
 				</select></td>
-			<td class="errormsg"><?php echo $msg['type']; ?></td>
+			<td class="errormsg"><?php echo $msg['seriesid']; ?></td>
 		</tr>
 		<tr>
 			<th>Race Date:</th>
-			<td><input type="text" name="race[date]" id="racedate" value="<?php echo $racedate; ?>"> (MM/DD/YYYY)</td>
+			<td><input type="text" name="race[racedate]" id="racedate" value="<?php echo $race->racedate; ?>"> (MM/DD/YYYY)</td>
 			<td class="errormsg"><?php echo $msg['date']; ?></td>
 		</tr>
 		<tr>

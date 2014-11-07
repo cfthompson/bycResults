@@ -89,9 +89,10 @@ class Model {
 		$conn = Model::db();
 		if ($this->id == 0) return $this->saveNew();
 		$sets = array();
-		foreach ($this->data as $key=>$val) {
-			if ($key == 'id') continue;
-			$sets[] = "$key='$val'";
+		foreach ($this->columns as $col) {
+			if ($col == 'id') continue;
+			if (!array_key_exists($col, $this->data)) continue;
+			$sets[] = "$col='{$this->data[$col]}'";
 		}
 		$sql = "UPDATE {$this->table} SET ".implode(', ', $sets)." WHERE id={$this->data['id']}";
 		$conn->query($sql);
@@ -102,10 +103,11 @@ class Model {
 		$conn = Model::db();
 		$cols = array();
 		$vals = array();
-		foreach ($this->data as $key=>$val) {
-			if ($key == 'id') continue;
-			$cols[] = "`$key`";
-			$vals[] = "'{$this->escape($val)}'";
+		foreach ($this->columns as $col) {
+			if ($col == 'id') continue;
+			if (!array_key_exists($col, $this->data)) continue;
+			$cols[] = "`$col`";
+			$vals[] = "'{$this->data[$col]}'";
 		}
 		$sql = "INSERT INTO {$this->table} (".implode(', ', $cols).") VALUES (".implode(', ', $vals).")";
 		$conn->query($sql);

@@ -18,17 +18,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-require_once(dirname(__FILE__).'/Model.php');
+require_once('Model.php');
 
 /**
- * Description of SeriesTypes
+ * Description of DivisionType
  *
  * @author rfgunion
  */
-class SeriesTypes extends Model {
-	public $table = 'seriestypes';
+class DivisionType extends Model {
+	public $table = 'divisiontypes';
 	public $columns = array(
 		'id',
+		'seriestypeid',
+		'defaultstarttime',
 		'name',
+		'minphrf',
+		'maxphrf',
+		'minlength',
+		'maxlength',
 	);
 }

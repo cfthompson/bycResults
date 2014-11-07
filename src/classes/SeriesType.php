@@ -19,48 +19,40 @@
  * MA 02110-1301  USA
  */
 require_once(dirname(__FILE__).'/Model.php');
-require_once(dirname(__FILE__).'/SeriesType.php');
-require_once(dirname(__FILE__).'/Race.php');
+require_once(dirname(__FILE__).'/DivisionType.php');
 
 /**
- * Description of Series
+ * Description of SeriesType
  *
  * @author rfgunion
  */
-class Series extends Model {
-	public $table = 'series';
+class SeriesType extends Model {
+	public $table = 'seriestypes';
 	public $columns = array(
 		'id',
-		'typeid',
 		'name',
 	);
 
 	public function __get($name) {
-		if ($name == 'type') {
-			if (!array_key_exists('type', $this->data)) {
-				$this->data['type'] = new SeriesType($this->typeid);
+		if ($name == 'divisions') {
+			if ($this->id) {
+				if (!array_key_exists('divisions', $this->data)) {
+					$d = new DivisionType();
+					$this->data['divisions'] = $d->findAll('seriestypeid='.$this->id);
+				}
+			} else {
+				$this->data['divisions'] = array();
 			}
-			return $this->data['type'];
-		}
-		if ($name == 'races') {
-			if (!array_key_exists('races', $this->data)) {
-				$race = new Race();
-				$this->data['races'] = $race->findAll('seriesid='.$this->id, 'racedate DESC');
-			}
+			return $this->data['divisions'];
 		}
 		return parent::__get($name);
 	}
 
 	public function __set($name, $val) {
-		if ($name == 'type') {
-			$this->data['type'] = new SeriesType($this->typeid);
+		if ($name == 'divisions') {
+			$this->data['divisions'] = $val;
 			return;
 		}
 		parent::__set($name, $val);
-		if ($name == 'typeid') {
-			$this->data['type'] = new SeriesType($this->data['typeid']);
-			return;
-		}
 	}
-
 }
