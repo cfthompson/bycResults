@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <?php
 /*
 Copyright (C) 2014 rfgunion.
@@ -66,6 +65,7 @@ if (array_key_exists('submit', $_POST)) {
 }
 
 ?>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
