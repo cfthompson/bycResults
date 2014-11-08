@@ -140,8 +140,10 @@ class Model {
 		if (!$result) return array();
 		$ref = new ReflectionClass($this);
 		$objs = array();
-		foreach ($result as $row) {
-			$objs[] = $ref->newInstanceArgs([$row]);
+		$row = $result->fetch_assoc();
+		while ($row) {
+			$objs[] = $ref->newInstanceArgs(array($row));
+			$row = $result->fetch_assoc();
 		}
 		return $objs;
 	}
