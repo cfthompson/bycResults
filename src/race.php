@@ -104,6 +104,9 @@ $allboats = $boat->findAll('', 'sail ASC');
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/entryform.js"></script>
+		<?php if ($edit) { ?>
+		<script type="text/javascript" src="js/raceform.js"></script>
+		<?php } ?>
     </head>
     <body>
 		<div id="header">
@@ -134,63 +137,69 @@ $allboats = $boat->findAll('', 'sail ASC');
 				<td></td>
 			</tr>
 		</table>
+		<?php } ?>
 
-<?php
-foreach ($allboats as $b) {
-	echo '<span style="display:none" id="boat_'.$b->id.'">'.$b->name.'$$'.$b->sail.'$$'.$b->model.'$$'.$b->phrf.'$$'.$b->rollerFurling.'</span>';
-}
-?>
-		<h3>Race Results:</h3>
-		<table id="entries">
-			<tr>
-				<th>Place</th>
-				<th>Sail Number</th>
-				<th>Boat</th>
-				<th>Type</th>
-				<th>PHRF</th>
-				<th>Spinnaker?</th>
-				<th>Roller Furling?</th>
-				<th>Finish Time</th>
-				<th>Elapsed</th>
-				<th>TCF</th>
-				<th>Corrected</th>
-				<th>Ahead of Next</th>
-			</tr>
-			<?php $i = 1;
-			if ($edit) { 
-				require_once('entryform.inc.php');
-			}
-
-			$tstart = strtotime($race->racedate.' 13:00:00');
-			foreach ($race->entries as $entry) {
-				$tend = strtotime($entry->finish);
-				$telapsed = $tend - $tstart;
-				$elapsed = strtohms($telapsed);
-				$corrected = strtohms($entry->corrected);
-				$tcf = sprintf('%.02f', $entry->tcf);
-				$gap = 'n/a';
-				if (count($race->entries) > $i) {
-					$othercorr = $race->entries[$i]->corrected;
-					$secs = $othercorr - $entry->corrected;
-					$gap = strtohms($secs);
+		<?php if ($race->id && $edit) {
+			foreach ($allboats as $b) {
+				echo '<span style="display:none" id="boat_'.$b->id.'">'.$b->name.'$$'.$b->sail.'$$'.$b->model.'$$'.$b->phrf.'$$'.$b->rollerFurling.'</span>';
+			} 
+			foreach ($race->divisions as $d) {
+				echo '<span style="display:none" id="division_'.$d->id.'">'.$d->name.'$$'.$d->starttime.'$$'.$d->minphrf.'$$'.$d->maxphrf.'$$'.$d->minlength.'$$'.$d->maxlength.'</span>';
+			} ?>
+			<h3>Race Results:</h3>
+			<table id="entries">
+				<tr>
+					<th>Place</th>
+					<th>Division</th>
+					<th>Sail Number</th>
+					<th>Boat</th>
+					<th>Type</th>
+					<th>PHRF</th>
+					<th>Spinnaker?</th>
+					<th>Roller Furling?</th>
+					<th>Finish Time</th>
+					<th>Elapsed</th>
+					<th>TCF</th>
+					<th>Corrected</th>
+					<th>Ahead of Next</th>
+				</tr>
+				<?php $i = 1;
+				if ($edit) { 
+					require_once('entryform.inc.php');
 				}
-				echo '<tr>
-					<td>'.$i.'</td>
-					<td>'.$entry->sail.'</td>
-					<td>'.$entry->name.'</td>
-					<td>'.$entry->model.'</td>
-					<td>'.$entry->phrf.'</td>
-					<td>'.$entry->spinnaker.'</td>
-					<td>'.$entry->rollerFurling.'</td>
-					<td>'.$entry->finish.'</td>
-					<td>'.$elapsed.'</td>
-					<td>'.$tcf.'</td>
-					<td>'.$corrected.'</td>
-					<td>'.$gap.'</td>
-				</tr>';
-				++$i;
-			}?>
-		</table>
+	
+				foreach ($race->divisions as $division) {
+					$tstart = strtotime($race->racedate) + $division->starttime;
+					foreach ($race->entries as $entry) {
+						$tend = strtotime($entry->finish);
+						$telapsed = $tend - $tstart;
+						$elapsed = strtohms($telapsed);
+						$corrected = strtohms($entry->corrected);
+						$tcf = sprintf('%.02f', $entry->tcf);
+						$gap = 'n/a';
+						if (count($race->entries) > $i) {
+							$othercorr = $race->entries[$i]->corrected;
+							$secs = $othercorr - $entry->corrected;
+							$gap = strtohms($secs);
+						}
+						echo '<tr>
+							<td>'.$i.'</td>
+							<td>'.$entry->sail.'</td>
+							<td>'.$entry->name.'</td>
+							<td>'.$entry->model.'</td>
+							<td>'.$entry->phrf.'</td>
+							<td>'.$entry->spinnaker.'</td>
+							<td>'.$entry->rollerFurling.'</td>
+							<td>'.$entry->finish.'</td>
+							<td>'.$elapsed.'</td>
+							<td>'.$tcf.'</td>
+							<td>'.$corrected.'</td>
+							<td>'.$gap.'</td>
+						</tr>';
+						++$i;
+					}
+				}?>
+			</table>
 		<?php } ?>
 	</body>
 </html>

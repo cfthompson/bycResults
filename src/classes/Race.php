@@ -58,13 +58,24 @@ class Race extends Model {
 			}
 			return $this->data['series'];
 		}
+		if ($name == 'divisions') {
+			if (!array_key_exists('divisions', $this->data)) {
+				if ($this->id) {
+					$div = new Division();
+					$this->data['divisions'] = $div->findAll('raceid='.$this->id);
+				} else {
+					$this->data['divisions'] = array();
+				}
+			}
+			return $this->data['divisions'];
+		}
 		return parent::__get($name);
 	}
 
 	public function __set($name, $val) {
 		if ($name == 'racedate') {
 			$racedate = strtotime($val);
-			$this->data['racedate'] = strftime('%m/%d/%Y', $racedate);
+			$this->data['racedate'] = strftime('%Y-%m-%d', $racedate);
 			return;
 		} else if ($name == 'entries') {
 			// $val must be an array of either Entry instances or arrays
@@ -108,6 +119,7 @@ class Race extends Model {
 				$d = new Division(array(
 					'raceid'=>$this->id,
 					'starttime'=>$dt->defaultstarttime,
+					'name'=>$dt->name,
 					'minphrf'=>$dt->minphrf,
 					'maxphrf'=>$dt->maxphrf,
 					'minlength'=>$dt->minlength,

@@ -20,6 +20,7 @@ MA 02110-1301  USA
 
 /* Columns to display inputs for:
 <th>Place</th>
+<th>Division</th>
 <th>Sail Number</th>
 <th>Boat</th>
 <th>Type</th>
@@ -37,6 +38,7 @@ MA 02110-1301  USA
 <form id="entry_form" method="post">
 	<input type="hidden" name="entry[raceid]" value="<?php echo $_GET['id']; ?>">
 	<td><input type="submit" name="entry_submit" id="entry_submit" value="Add"></td>
+	<td><div id="division"></div></td>
 	<td><select id="entrysail" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
 			<option value="0"></option>
 			<?php foreach ($allboats as $b) {

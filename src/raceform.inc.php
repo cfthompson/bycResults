@@ -35,21 +35,23 @@ function parseRaceForm() {
 		$msg['top'] = 'Please enter values before submitting';
 		return;
 	}
-	$race = new Race($post);
-	if (!$race->seriesid) {
-		$msg['seriesid'] = 'Please select a series';
-		return;
-	}
-	if (empty($race->racedate)) {
+
+	if (empty($post['racedate'])) {
 		$msg['date'] = 'Please enter a race date';
 		return;
 	}
-	$result = preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $race->racedate);
+	$result = preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $post['racedate']);
 	if ($result === false) {
 		$msg['date'] = 'Error parsing date';
 		return;
 	} else if ($result === 0) {
 		$msg['date'] = 'Invalid date format';
+		return;
+	}
+
+	$race = new Race($post);
+	if (!$race->seriesid) {
+		$msg['seriesid'] = 'Please select a series';
 		return;
 	}
 	if (!$race->save()) {
@@ -66,8 +68,10 @@ if (array_key_exists('submit', $_POST)) {
 
 // Default to today's date
 if (empty($race->racedate)) {
-	$race->racedate = strftime('%m/%d/%Y');
+	$race->racedate = strftime('%Y-%m-%d');
 }
+$t = strtotime($race->racedate);
+$racedate = strftime('%m/%d/%Y', $t);
 
 $title = array_key_exists('id', $_GET) ?
 	'Information for Race '.$_GET['id'] :
@@ -75,14 +79,18 @@ $title = array_key_exists('id', $_GET) ?
 ?>
 <h2><?php echo $title; ?></h2>
 <div class="errormsg"><?php echo $msg['top']; ?></div>
+<?php $series = new Series();
+$allseries = $series->findAll();
+foreach ($allseries as $s) {
+	echo '<span style="display:none" id="series_'.$s->id.'">'.$s->typeid.'$$'.$s->name.'</span>';
+} ?>
 <form id="raceform" method="post">
 	<table id="race">
 		<tr>
 			<th>Series:</th>
 			<td><select name="race[seriesid]" id="seriesid">
 					<option></option>
-					<?php $series = new Series();
-					foreach ($series->findAll() as $s) {
+					<?php foreach ($allseries as $s) {
 						$sel = $s->id == $race->seriesid ? 'selected' : '';
 						echo "<option value='{$s->id}' $sel>{$s->name}</option>";
 					}?>
@@ -91,7 +99,7 @@ $title = array_key_exists('id', $_GET) ?
 		</tr>
 		<tr>
 			<th>Race Date:</th>
-			<td><input type="text" name="race[racedate]" id="racedate" value="<?php echo $race->racedate; ?>"> (MM/DD/YYYY)</td>
+			<td><input type="text" name="race[racedate]" id="racedate" value="<?php echo $racedate; ?>"> (MM/DD/YYYY)</td>
 			<td class="errormsg"><?php echo $msg['date']; ?></td>
 		</tr>
 		<tr>
