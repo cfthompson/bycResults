@@ -18,6 +18,9 @@
  * MA 02110-1301  USA
  */
 require_once('classes/SeriesType.php');
+require_once('classes/Course.php');
+
+// @variable $race
 
 $msg = array(
 	'top'=>'',
@@ -66,6 +69,16 @@ if (array_key_exists('submit', $_POST)) {
 	parseRaceForm();
 }
 
+// Retrieve all divisions for this race
+$div = new Division();
+$divs = $div->findAll('raceid='.$race->id, 'starttime');
+$msg['div'] = array();
+foreach ($divs as $d) {
+	$msg['div'][$d->id] = array(
+		'starttime'=>'',
+		'course'=>'');
+}
+
 // Default to today's date
 if (empty($race->racedate)) {
 	$race->racedate = strftime('%Y-%m-%d');
@@ -83,7 +96,13 @@ $title = array_key_exists('id', $_GET) ?
 $allseries = $series->findAll();
 foreach ($allseries as $s) {
 	echo '<span style="display:none" id="series_'.$s->id.'">'.$s->typeid.'$$'.$s->name.'</span>';
-} ?>
+} 
+$course = new Course();
+$allcourses = $course->findAll();
+foreach ($allcourses as $c) {
+	echo '<span style="display:none" id="course_'.$c->id.'">'.$c->number.'$$'.$c->distance.'</span>';
+}
+?>
 <form id="raceform" method="post">
 	<table id="race">
 		<tr>
@@ -117,9 +136,32 @@ foreach ($allseries as $s) {
 			<td><input type="text" name="race[rcboat]" id="rcboat" value="<?php echo $race->rcboat; ?>"></td>
 			<td class="errormsg"><?php echo $msg['rcboat']; ?></td>
 		</tr>
+		<?php foreach ($divs as $d) {
+			$hour = intval($d->starttime/3600);
+			$minute = ($d->starttime - ($hour*3600))/60;
+			echo '<tr><th colspan="3">'.$d->name.' Division:</th></tr>'
+					. '<tr><th>Start Time (HHMM):</th>'
+					. '<td>'
+					. '<input type="number" name="race[divisions]['.$d->id.'][starthour]" value="'.$hour.'">'
+					. '<input type="number" name="race[divisions]['.$d->id.'][startminute]" value="'.$minute.'"></td>'
+					. '<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
+					. '</tr>'
+					. '<tr><th>Course:</th>'
+					. '<td><select id="course"><option value="0"></option>';
+			foreach ($allcourses as $c) {
+				echo '<option value="'.$c->id.'">'.$c->number.'</option>';
+			}
+			echo '</select></td>'
+					. '<td class="errormsg">'.$msg['div'][$d->id]['course'].'</td>'
+					. '</tr>'
+					. '<tr><th>Distance:</th>'
+					. '<td><span id="distance"></span></td>'
+					. '<td></td>'
+					. '</tr>';
+		} ?>
 		<tr>
 			<th></th>
-			<td><input type="submit" name="submit" id="submit" value="Submit"></td>
+			<td><input type="submit" name="submit" id="submit" value="Next->"></td>
 			<td class="errormsg"></td>
 		</tr>
 	</table>

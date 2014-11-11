@@ -30,7 +30,7 @@ $series = $s->findAll();
 				<?php if (getAccessLevel() >= User::ADMIN_ACCESS) { ?>
 				<a class="newrace" href="race.php?seriesid=<?php echo $s->id; ?>&edit=true">Add a Race</a>
 				<?php } ?>
-				<?php require_once('races.inc.php'); ?></li>
+				<?php require('races.inc.php'); ?></li>
 			<?php } ?>
 		</ul>
     </body>
