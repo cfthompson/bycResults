@@ -41,6 +41,15 @@ function onchange_seriesid() {
 	});
 }
 
+function onchange_course() {
+	var courseid = $("#course option:selected").val();
+	var html = $("#course_"+courseid).html();
+	var props = html.split("$$");
+	var distance = props[1];
+	$("#distance").html(distance);
+}
+
 $(function() {
 	$("#seriesid").change(onchange_seriesid);
+	$("#course").change(onchange_course);
 });
