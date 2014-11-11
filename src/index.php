@@ -24,23 +24,14 @@ $series = $s->findAll();
 		<h1>Berkeley Yacht Club Race Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 
-		<table id="series">
-			<tr>
-				<th>Series</th>
-				<th></th>
-			</tr>
+		<ul id="series">
 			<?php foreach ($series as $s) { ?>
-			<tr>
-				<td><a href="series.php?id=<?php echo $s->id; ?>"><?php echo $s->name; ?></a></td>
-				<td>
+			<li><a hrf="series.php?id=<?php echo $s->id; ?>"><?php echo $s->name; ?></a>
 				<?php if (getAccessLevel() >= User::ADMIN_ACCESS) { ?>
-					<a class="newrace" href="race.php?seriesid=<?php echo $s->id; ?>&edit=true">Add a Race</a>
+				<a class="newrace" href="race.php?seriesid=<?php echo $s->id; ?>&edit=true">Add a Race</a>
 				<?php } ?>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2"><?php require_once('races.inc.php'); ?></td>
-			</tr>
+				<?php require_once('races.inc.php'); ?></li>
 			<?php } ?>
+		</ul>
     </body>
 </html>
