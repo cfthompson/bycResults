@@ -18,7 +18,8 @@
  */
 
 function boat_onChange() {
-	var id = $("#entryboat").val();
+	var id = $(this).val();
+	$("#entryboat").val(id);
 	$("#entrysail").val(id);
 	var boatspan = $("#boat_"+id);
 	var boatprops = boatspan.html().split("$$");
@@ -71,3 +72,8 @@ function entry_clearcalc() {
 	$("#corrected").html("");
 	$("#gap").html("");
 }
+
+$(function() {
+	$("#entrysail").change(boat_onChange);
+	$("#entryboat").change(boat_onChange);
+})
