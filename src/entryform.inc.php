@@ -1,4 +1,5 @@
-<!--
+<?php
+/*
 Copyright (C) 2014 rfgunion.
 
 This library is free software; you can redistribute it and/or
@@ -15,8 +16,10 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA 02110-1301  USA
--->
-<?php
+*/
+
+// @variable: $entry
+// @variable: raceid
 
 /* Columns to display inputs for:
 <th>Place</th>
@@ -36,9 +39,9 @@ MA 02110-1301  USA
 ?>
 <tr>
 <form id="entry_form" method="post">
-	<input type="hidden" name="entry[raceid]" value="<?php echo $_GET['id']; ?>">
+	<input type="hidden" name="entry[raceid]" value="<?php echo $raceid; ?>">
 	<td><input type="submit" name="entry_submit" id="entry_submit" value="Add"></td>
-	<td><div id="division"></div></td>
+	<td><span id="division"></span><input type="hidden" name="entry[divisionid]" id="divisionid" value="<?php echo $entry->divisionid; ?>"></td>
 	<td><select id="entrysail" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
 			<option value="0"></option>
 			<?php foreach ($allboats as $b) {
@@ -46,7 +49,7 @@ MA 02110-1301  USA
 			} ?>
 		</select>
 	</td>
-	<td><select id="entryboat" name="entry[boatid]" value="<?php echo $entry->boatid; ?>" onchange="boat_onChange()">
+	<td><select id="entryboat" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
 			<option value="0"></option>
 			<?php function sortboatsbyname($a, $b) {
 				if ($a->name == $b->name) return 0;

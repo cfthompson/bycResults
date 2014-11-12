@@ -26,26 +26,59 @@ function boat_onChange() {
 	$("#entrytype").html(boatprops[2]);
 	$("#phrf").val(boatprops[3]);
 	$("#rollerFurling").prop("checked", boatprops[4] == "1");
+	var divid = "";
+	$(".division").each(function() {
+		var tmpdivid = $(this).prop("id").split("_")[1];
+		var divprops = $(this).html().split("$$");
+		// divprops:
+		// 0 = name
+		// 1 = starttime
+		// 2 = minphrf
+		// 3 = maxphrf
+		// 4 = minlength
+		// 5 = maxlength
+		// TODO: Implement division splits by length and phrf
+		if (divprops[2] != "") {
+		} else if (divprops[3] != "") {
+		} else if (divprops[4] != "") {
+		} else if (divprops[5] != "") {
+		} else {
+			divid = tmpdivid;
+		}
+	});
+	if (divid == "") {
+		entry_clearcalc();
+		return;
+	}
+	$("#division").html(divid);
+	$("#divisionid").val(divid);
+	$("#finish").focus();
 }
 
 function entry_recalc() {
+	var division = $("#divisionid").val();
 	var phrf = $("#phrf").val();
 	var spin = $("#spinnaker").checked;
 	var furl = $("#rollerFurling").checked;
 	var finish = $("#finish").val();
-	if (phrf == "") {
+	if (phrf == "" || division == "") {
 		entry_clearcalc();
-		return;
+		return false;
 	}
 
 	if (!/\d{6}/.test(finish)) {
 		entry_clearcalc();
-		return;
+		return false;
 	}
 	phrf = parseInt(phrf);
-	var h = finish.substr(0, 2) - 13;
+	var h = finish.substr(0, 2);
 	var m = finish.substr(2, 2);
 	var s = finish.substr(4, 2);
+	if (h < 0 || m < 0 || s < 0 ||
+		h > 23 || m > 59 || s > 59) {
+		entry_clearcalc();
+		return false;
+	}
 	var elapsed = parseInt(h*3600)+parseInt(m*60)+parseInt(s);
 
 	$("#elapsed").html(""+h+":"+m+":"+s);
@@ -64,6 +97,8 @@ function entry_recalc() {
 	s = r.toFixed(2);
 	if (s < 10) s = "0"+s;
 	$("#corrected").html(""+h+":"+m+":"+s);
+	$("#entry_submit").prop("disabled", false);
+	return true;
 }
 
 function entry_clearcalc() {
@@ -71,9 +106,19 @@ function entry_clearcalc() {
 	$("#tcf").html("");
 	$("#corrected").html("");
 	$("#gap").html("");
+	$("#entry_submit").prop("disabled", true);
+}
+
+function onEntrySubmit(event) {
+	if (!entry_recalc()) {
+		event.preventDefault();
+		return;
+	}
 }
 
 $(function() {
 	$("#entrysail").change(boat_onChange);
 	$("#entryboat").change(boat_onChange);
-})
+	$("#entry_submit").click(onEntrySubmit);
+	entry_clearcalc();
+});

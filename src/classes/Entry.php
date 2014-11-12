@@ -21,6 +21,7 @@
 require_once(dirname(__FILE__).'/Model.php');
 require_once(dirname(__FILE__).'/Race.php');
 require_once(dirname(__FILE__).'/Boat.php');
+require_once(dirname(__FILE__).'/Division.php');
 
 /**
  * Description of Entry
@@ -33,12 +34,13 @@ class Entry extends Model {
 		'id',
 		'raceid',
 		'boatid',
+		'divisionid',
 		'phrf',
 		'finish',
 		'spinnaker',
 		'rollerFurling',
-		'corrected',
 		'tcf',
+		'corrected',
 	);
 	protected $boatcolumns = array(
 		'name',
@@ -80,16 +82,57 @@ class Entry extends Model {
 			}
 			return $this->race->$name;
 		}
+		if ($name == 'division' && $this->divisionid) {
+			if (!array_key_exists('division', $this->data)) {
+				$this->data['division'] = new Division($this->divisionid);
+			}
+			return $this->data['division'];
+		}
+		if ($name == 'tcf') {
+			$this->calcTCF();
+			return $this->data['tcf'];
+		}
+		if ($name == 'corrected') {
+			$this->calcCorrected();
+			return $this->data['corrected'];
+		}
+
 		return parent::__get($name);
+	}
+
+	protected function calcTCF() {
+		if (!array_key_exists('tcf', $this->data)) {
+			$tcf = 800/(550+$this->phrf);
+			$spincredit = $this->spinnaker ? 0 : 0.04*$tcf;
+			$rfcredit = $this->rollerFurling ? 0.02*$tcf : 0;
+			$this->data['tcf'] = $tcf - $spincredit - $rfcredit;
+		}
+	}
+
+	protected function calcCorrected() {
+		if (!array_key_exists('corrected', $this->data)) {
+			$this->calcTCF();
+			$starttime = $this->division->starttime;
+			$finish = $this->finish;
+			$h = substr($finish, 0, 2);
+			$m = substr($finish, 3, 2);
+			$s = substr($finish, 6, 2);
+			$hms = $h*3600 + $m*60 + $s;
+			$elapsed = $hms - $starttime;
+			$corrected = $elapsed * $this->data['tcf'];
+			$this->data['corrected'] = $corrected;
+		}
 	}
 
 	public function save() {
 		if (!array_key_exists('raceid', $this->data)
 			|| !array_key_exists('boatid', $this->data)
+			|| !array_key_exists('divisionid', $this->data)
 			|| !array_key_exists('phrf', $this->data)
 			|| !array_key_exists('finish', $this->data)) {
 			return false;
 		}
+		$this->calcCorrected();
 		return parent::save();
 	}
 }
