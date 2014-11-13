@@ -67,6 +67,11 @@ function parseRaceForm() {
 				$msg['div'][$divid]['course'] = 'Please enter a course number';
 				return;
 			}
+			if (!array_key_exists('distance', $vals) || !is_numeric($vals['distance'])
+					|| $vals['distance'] <= 0.0) {
+				$msg['div'][$divid]['distance'] = 'Please enter a valid distance';
+				return;
+			}
 			if (!is_numeric($vals['starthour']) || !is_numeric($vals['startminute'])
 				|| $vals['starthour'] < 0 || $vals['starthour'] > 23
 				|| $vals['startminute'] < 0 || $vals['startminute'] > 59) {
@@ -76,6 +81,7 @@ function parseRaceForm() {
 			$starttime = $vals['starthour']*3600 + $vals['startminute'];
 			$div = new Division($divid);
 			$div->course = $vals['course'];
+			$div->distance = $vals['distance'];
 			$div->starttime = $starttime;
 			$divisions[$divid] = $div;
 		}
@@ -108,7 +114,8 @@ $msg['div'] = array();
 foreach ($divs as $d) {
 	$msg['div'][$d->id] = array(
 		'starttime'=>'',
-		'course'=>'');
+		'course'=>'',
+		'distance'=>'');
 }
 
 if (array_key_exists('submit', $_POST)) {
@@ -188,14 +195,15 @@ foreach ($allcourses as $c) {
 					. '<tr><th>Course:</th>'
 					. '<td><select id="course" name="division['.$d->id.'][course]"><option></option>';
 			foreach ($allcourses as $c) {
-				echo '<option value="'.$c->id.'">'.$c->number.'</option>';
+				$sel = ($c->id === $d->course) ? 'selected ' : '';
+				echo '<option value="'.$c->id.'" '.$sel.'>'.$c->number.'</option>';
 			}
 			echo '</select></td>'
 					. '<td class="errormsg">'.$msg['div'][$d->id]['course'].'</td>'
 					. '</tr>'
 					. '<tr><th>Distance:</th>'
-					. '<td><input disabled name="division['.$d->id.'][distance]" id="distance"></td>'
-					. '<td></td>'
+					. '<td><input readonly name="division['.$d->id.'][distance]" id="distance" value="'.$d->distance.'"></td>'
+					. '<td class="errormsg">'.$msg['div'][$d->id]['distance'].'</td>'
 					. '</tr>';
 		} ?>
 		<tr>
