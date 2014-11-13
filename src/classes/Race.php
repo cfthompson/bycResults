@@ -100,6 +100,10 @@ class Race extends Model {
 			$this->data['series'] = new Series($this->seriesid);
 			return;
 		}
+		if ($name == 'divisions') {
+			$this->data['divisions'] = $val;
+			return;
+		}
 		parent::__set($name, $val);
 	}
 
