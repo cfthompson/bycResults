@@ -39,4 +39,21 @@ class Division extends Model {
 		'minlength',
 		'maxlength',
 	);
+
+	public function __set($name, $val) {
+		if (in_array($name, array(
+			'course',
+			'distance',
+			'minphrf',
+			'maxphrf',
+			'minlength',
+			'maxlength',
+		))) {
+			if (empty($val)) {
+				$this->data[$name] = null;
+				return;
+			}
+		}
+		parent::__set($name, $val);
+	}
 }
