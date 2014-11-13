@@ -92,6 +92,7 @@ class Model {
 		foreach ($this->columns as $col) {
 			if ($col == 'id') continue;
 			if (!array_key_exists($col, $this->data)) continue;
+			if ($this->data[$col] === null) continue;
 			$sets[] = "$col='{$this->data[$col]}'";
 		}
 		$sql = "UPDATE {$this->table} SET ".implode(', ', $sets)." WHERE id={$this->data['id']}";
@@ -106,6 +107,7 @@ class Model {
 		foreach ($this->columns as $col) {
 			if ($col == 'id') continue;
 			if (!array_key_exists($col, $this->data)) continue;
+			if ($this->data[$col] === null) continue;
 			$cols[] = "`$col`";
 			$vals[] = "'{$this->data[$col]}'";
 		}
