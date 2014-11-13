@@ -45,7 +45,7 @@ function onchange_course() {
 	var courseid = $("#course option:selected").val();
 	if (courseid == "") {
 		$("#distance").val("");
-		$("#distance").prop("disabled", true);
+		$("#distance").prop("readonly", true);
 		return;
 	}
 	var html = $("#course_"+courseid).html();
@@ -53,7 +53,7 @@ function onchange_course() {
 	var distance = props[1];
 	var obj = $("#distance");
 	obj.val(distance);
-	obj.prop("disabled", distance > 0);
+	obj.prop("readonly", distance > 0);
 }
 
 $(function() {
