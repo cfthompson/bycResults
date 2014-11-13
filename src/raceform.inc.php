@@ -186,7 +186,7 @@ foreach ($allcourses as $c) {
 					. '<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
 					. '</tr>'
 					. '<tr><th>Course:</th>'
-					. '<td><select id="course" name="division['.$d->id.'][course]"><option value="0"></option>';
+					. '<td><select id="course" name="division['.$d->id.'][course]"><option></option>';
 			foreach ($allcourses as $c) {
 				echo '<option value="'.$c->id.'">'.$c->number.'</option>';
 			}
@@ -194,7 +194,7 @@ foreach ($allcourses as $c) {
 					. '<td class="errormsg">'.$msg['div'][$d->id]['course'].'</td>'
 					. '</tr>'
 					. '<tr><th>Distance:</th>'
-					. '<td><span id="distance"></span></td>'
+					. '<td><input disabled name="division['.$d->id.'][distance]" id="distance"></td>'
 					. '<td></td>'
 					. '</tr>';
 		} ?>
