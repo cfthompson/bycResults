@@ -60,11 +60,12 @@ class Race extends Model {
 		}
 		if ($name == 'divisions') {
 			if (!array_key_exists('divisions', $this->data)) {
+				$this->data['divisions'] = array();
 				if ($this->id) {
 					$div = new Division();
-					$this->data['divisions'] = $div->findAll('raceid='.$this->id);
-				} else {
-					$this->data['divisions'] = array();
+					foreach ($div->findAll('raceid='.$this->id) as $d) {
+						$this->data['divisions'][$d->id] = $d;
+					}
 				}
 			}
 			return $this->data['divisions'];
@@ -77,7 +78,8 @@ class Race extends Model {
 			$racedate = strtotime($val);
 			$this->data['racedate'] = strftime('%Y-%m-%d', $racedate);
 			return;
-		} else if ($name == 'entries') {
+		}
+		if ($name == 'entries') {
 			// $val must be an array of either Entry instances or arrays
 			$this->data['entries'] = array();
 			foreach ($val as $entry) {
@@ -88,12 +90,15 @@ class Race extends Model {
 				}
 			}
 			return;
-		} else if ($name == 'series') {
+		}
+		if ($name == 'series') {
 			$this->data['series'] = new Series($this->seriesid);
 			return;
-		} else if ($name == 'seriesid') {
+		}
+		if ($name == 'seriesid') {
 			$this->data['seriesid'] = $val;
 			$this->data['series'] = new Series($this->seriesid);
+			return;
 		}
 		parent::__set($name, $val);
 	}
@@ -103,7 +108,15 @@ class Race extends Model {
 			return false;
 		if (!$this->seriesid)
 			return false;
-		return parent::save();
+		if (!parent::save()) {
+			return false;
+		}
+		$result = true;
+		foreach ($this->divisions as $d) {
+			if (!$d->save())
+				$result = false;
+		}
+		return $result;
 	}
 
 	public function saveNew() {
@@ -126,7 +139,7 @@ class Race extends Model {
 					'maxlength'=>$dt->maxlength,
 				));
 				if ($d->saveNew()) {
-					$this->data['divisions'][] = $d;
+					$this->data['divisions'][$d->id] = $d;
 				}
 			}
 		}
