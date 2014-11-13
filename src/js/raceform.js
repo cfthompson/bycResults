@@ -43,10 +43,17 @@ function onchange_seriesid() {
 
 function onchange_course() {
 	var courseid = $("#course option:selected").val();
+	if (courseid == "") {
+		$("#distance").val("");
+		$("#distance").prop("disabled", true);
+		return;
+	}
 	var html = $("#course_"+courseid).html();
 	var props = html.split("$$");
 	var distance = props[1];
-	$("#distance").html(distance);
+	var obj = $("#distance");
+	obj.val(distance);
+	obj.prop("disabled", distance > 0);
 }
 
 $(function() {
