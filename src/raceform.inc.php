@@ -32,7 +32,7 @@ $msg = array(
 );
 
 function parseRaceForm() {
-	global $msg, $race;
+	global $msg, $race, $id;
 	$post = $_POST['race'];
 	if (empty($post)) {
 		$msg['top'] = 'Please enter values before submitting';
@@ -57,26 +57,62 @@ function parseRaceForm() {
 		$msg['seriesid'] = 'Please select a series';
 		return;
 	}
+
+	if ($id) {
+		// Existing race: validate divisions
+		$divisions = array();
+		foreach ($_POST['division'] as $divid=>$vals) {
+			if (!array_key_exists('course', $vals) || !is_numeric($vals['course'])
+					|| $vals['course'] < 1) {
+				$msg['div'][$divid]['course'] = 'Please enter a course number';
+				return;
+			}
+			if (!is_numeric($vals['starthour']) || !is_numeric($vals['startminute'])
+				|| $vals['starthour'] < 0 || $vals['starthour'] > 23
+				|| $vals['startminute'] < 0 || $vals['startminute'] > 59) {
+				$msg['div'][$divid]['starttime'] = 'Invalid start time';
+				return;
+			}
+			$starttime = $vals['starthour']*3600 + $vals['startminute'];
+			$div = new Division($divid);
+			$div->course = $vals['course'];
+			$div->starttime = $starttime;
+			$divisions[$divid] = $div;
+		}
+		$race->divisions = $divisions;
+	}
+
 	if (!$race->save()) {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
 	}
-	header('Location: entries.php?raceid='.$race->id.'&edit=true');
+	$page = 'entries.php';
+	$idparam = 'raceid';
+	if (!$id) {
+		// New race: Give user a chance to enter course number, start times
+		$page = 'race.php';
+		$idparam = 'id';
+	}
+
+	header("Location: $page?$idparam={$race->id}&edit=true");
 	exit();
 }
 
-if (array_key_exists('submit', $_POST)) {
-	parseRaceForm();
+$id = false;
+if (array_key_exists('id', $_GET) && is_numeric($_GET['id'])) {
+	$id = intval($_GET['id']);
 }
 
-// Retrieve all divisions for this race
-$div = new Division();
-$divs = $div->findAll('raceid='.$race->id, 'starttime');
+$divs = $race->divisions;
 $msg['div'] = array();
 foreach ($divs as $d) {
 	$msg['div'][$d->id] = array(
 		'starttime'=>'',
 		'course'=>'');
+}
+
+if (array_key_exists('submit', $_POST)) {
+	parseRaceForm();
 }
 
 // Default to today's date
@@ -86,7 +122,7 @@ if (empty($race->racedate)) {
 $t = strtotime($race->racedate);
 $racedate = strftime('%m/%d/%Y', $t);
 
-$title = array_key_exists('id', $_GET) ?
+$title = $id ?
 	'Information for Race '.$_GET['id'] :
 	'Information for new Race';
 ?>
@@ -104,6 +140,9 @@ foreach ($allcourses as $c) {
 }
 ?>
 <form id="raceform" method="post">
+	<?php if ($id) {
+		echo '<input type="hidden" name="race[id]" value="'.$id.'">';
+	} ?>
 	<table id="race">
 		<tr>
 			<th>Series:</th>
@@ -142,12 +181,12 @@ foreach ($allcourses as $c) {
 			echo '<tr><th colspan="3">'.$d->name.' Division:</th></tr>'
 					. '<tr><th>Start Time (HHMM):</th>'
 					. '<td>'
-					. '<input type="number" name="race[divisions]['.$d->id.'][starthour]" value="'.$hour.'">'
-					. '<input type="number" name="race[divisions]['.$d->id.'][startminute]" value="'.$minute.'"></td>'
+					. '<input type="number" name="division['.$d->id.'][starthour]" value="'.$hour.'">'
+					. '<input type="number" name="division['.$d->id.'][startminute]" value="'.$minute.'"></td>'
 					. '<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
 					. '</tr>'
 					. '<tr><th>Course:</th>'
-					. '<td><select id="course"><option value="0"></option>';
+					. '<td><select id="course" name="division['.$d->id.'][course]"><option value="0"></option>';
 			foreach ($allcourses as $c) {
 				echo '<option value="'.$c->id.'">'.$c->number.'</option>';
 			}
