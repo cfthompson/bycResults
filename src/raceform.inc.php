@@ -61,7 +61,7 @@ function parseRaceForm() {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
 	}
-	header('Location: race.php?id='.$race->id.'&edit=true');
+	header('Location: entries.php?raceid='.$race->id.'&edit=true');
 	exit();
 }
 
