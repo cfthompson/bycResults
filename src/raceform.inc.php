@@ -190,7 +190,7 @@ foreach ($allcourses as $c) {
 					. '<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
 					. '</tr>'
 					. '<tr class="divisionrow"><th>Course:</th>'
-					. '<td><select id="course" name="division['.$d->id.'][course]"><option></option>';
+					. '<td><select class="course" name="division['.$d->id.'][course]"><option></option>';
 			foreach ($allcourses as $c) {
 				$sel = ($c->id === $d->course) ? 'selected ' : '';
 				echo '<option value="'.$c->id.'" '.$sel.'>'.$c->number.'</option>';
@@ -199,7 +199,7 @@ foreach ($allcourses as $c) {
 					. '<td class="errormsg">'.$msg['div'][$d->id]['course'].'</td>'
 					. '</tr>'
 					. '<tr class="divisionrow"><th>Distance:</th>'
-					. '<td><input readonly name="division['.$d->id.'][distance]" id="distance" value="'.$d->distance.'"></td>'
+					. '<td><input readonly name="division['.$d->id.'][distance]" class="distance" value="'.$d->distance.'"></td>'
 					. '<td class="errormsg">'.$msg['div'][$d->id]['distance'].'</td>'
 					. '</tr>';
 		} ?>
