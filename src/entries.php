@@ -142,7 +142,9 @@ if (array_key_exists('entry_submit', $_POST) && $edit) {
 	
 				foreach ($race->divisions as $division) {
 					$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id);
-					$tstart = strtotime($race->racedate) + $division->starttime;
+					$tstart = strtotime($race->racedate.' 13:00:00');// + $division->starttime;
+					$tstart2 = strtotime($race->racedate);// + $division->starttime;
+					$tstart3 = strtotime($race->racedate.' '.$division->starttime);
 					foreach ($entries as $entry) {
 						$tend = strtotime($race->racedate.' '.$entry->finish);
 						$telapsed = $tend - $tstart;

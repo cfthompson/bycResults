@@ -146,6 +146,11 @@ class Race extends Model {
 					$this->data['divisions'][$d->id] = $d;
 				}
 			}
+		} else {
+			foreach ($this->data['divisions'] as $d) {
+				$d->raceid = $this->id;
+				$d->save();
+			}
 		}
 		return true;
 	}

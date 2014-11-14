@@ -58,49 +58,43 @@ function parseRaceForm() {
 		return;
 	}
 
-	if ($id) {
-		// Existing race: validate divisions
-		$divisions = array();
-		foreach ($_POST['division'] as $divid=>$vals) {
-			if (!array_key_exists('course', $vals) || !is_numeric($vals['course'])
-					|| $vals['course'] < 1) {
-				$msg['div'][$divid]['course'] = 'Please enter a course number';
-				return;
-			}
-			if (!array_key_exists('distance', $vals) || !is_numeric($vals['distance'])
-					|| $vals['distance'] <= 0.0) {
-				$msg['div'][$divid]['distance'] = 'Please enter a valid distance';
-				return;
-			}
-			if (!is_numeric($vals['starthour']) || !is_numeric($vals['startminute'])
-				|| $vals['starthour'] < 0 || $vals['starthour'] > 23
-				|| $vals['startminute'] < 0 || $vals['startminute'] > 59) {
-				$msg['div'][$divid]['starttime'] = 'Invalid start time';
-				return;
-			}
-			$starttime = $vals['starthour']*3600 + $vals['startminute'];
-			$div = new Division($divid);
-			$div->course = $vals['course'];
-			$div->distance = $vals['distance'];
-			$div->starttime = $starttime;
-			$divisions[$divid] = $div;
+	$divisions = array();
+	foreach ($_POST['division'] as $divid=>$vals) {
+		if (!array_key_exists('course', $vals) || !is_numeric($vals['course'])
+				|| $vals['course'] < 1) {
+			$msg['div'][$divid]['course'] = 'Please enter a course number';
+			return;
 		}
-		$race->divisions = $divisions;
+		if (!array_key_exists('distance', $vals) || !is_numeric($vals['distance'])
+				|| $vals['distance'] <= 0.0) {
+			$msg['div'][$divid]['distance'] = 'Please enter a valid distance';
+			return;
+		}
+		if (!is_numeric($vals['starthour']) || !is_numeric($vals['startminute'])
+			|| $vals['starthour'] < 0 || $vals['starthour'] > 23
+			|| $vals['startminute'] < 0 || $vals['startminute'] > 59) {
+			$msg['div'][$divid]['starttime'] = 'Invalid start time';
+			return;
+		}
+		$starttime = $vals['starthour'].':'.$vals['startminute'].':00';
+		if ($divid > 0) {
+			$div = new Division($divid);
+		} else {
+			$div = new Division();
+		}
+		$div->course = $vals['course'];
+		$div->distance = $vals['distance'];
+		$div->starttime = $starttime;
+		$divisions[$divid] = $div;
 	}
+	$race->divisions = $divisions;
 
 	if (!$race->save()) {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
 	}
-	$page = 'entries.php';
-	$idparam = 'raceid';
-	if (!$id) {
-		// New race: Give user a chance to enter course number, start times
-		$page = 'race.php';
-		$idparam = 'id';
-	}
 
-	header("Location: $page?$idparam={$race->id}&edit=true");
+	header("Location: entries.php?raceid={$race->id}&edit=true");
 	exit();
 }
 
@@ -143,7 +137,7 @@ foreach ($allseries as $s) {
 $course = new Course();
 $allcourses = $course->findAll();
 foreach ($allcourses as $c) {
-	echo '<span style="display:none" id="course_'.$c->id.'">'.$c->number.'$$'.$c->distance.'</span>';
+	echo '<span style="display:none" class="courseid" id="course_'.$c->id.'">'.$c->number.'$$'.$c->distance.'</span>';
 }
 ?>
 <form id="raceform" method="post">
@@ -182,17 +176,20 @@ foreach ($allcourses as $c) {
 			<td><input type="text" name="race[rcboat]" id="rcboat" value="<?php echo $race->rcboat; ?>"></td>
 			<td class="errormsg"><?php echo $msg['rcboat']; ?></td>
 		</tr>
+		<tr id="divisionheader">
+			<th colspan="3">Divisions</th>
+		</tr>
 		<?php foreach ($divs as $d) {
-			$hour = intval($d->starttime/3600);
-			$minute = ($d->starttime - ($hour*3600))/60;
-			echo '<tr><th colspan="3">'.$d->name.' Division:</th></tr>'
-					. '<tr><th>Start Time (HHMM):</th>'
+			$hour = substr($d->starttime, 0, 2);
+			$minute = substr($d->starttime, 3, 2);
+			echo '<tr class="divisionrow"><th colspan="3">'.$d->name.' Division:</th></tr>'
+					. '<tr class="divisionrow"><th>Start Time (HHMM):</th>'
 					. '<td>'
 					. '<input type="number" name="division['.$d->id.'][starthour]" value="'.$hour.'">'
 					. '<input type="number" name="division['.$d->id.'][startminute]" value="'.$minute.'"></td>'
 					. '<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
 					. '</tr>'
-					. '<tr><th>Course:</th>'
+					. '<tr class="divisionrow"><th>Course:</th>'
 					. '<td><select id="course" name="division['.$d->id.'][course]"><option></option>';
 			foreach ($allcourses as $c) {
 				$sel = ($c->id === $d->course) ? 'selected ' : '';
@@ -201,7 +198,7 @@ foreach ($allcourses as $c) {
 			echo '</select></td>'
 					. '<td class="errormsg">'.$msg['div'][$d->id]['course'].'</td>'
 					. '</tr>'
-					. '<tr><th>Distance:</th>'
+					. '<tr class="divisionrow"><th>Distance:</th>'
 					. '<td><input readonly name="division['.$d->id.'][distance]" id="distance" value="'.$d->distance.'"></td>'
 					. '<td class="errormsg">'.$msg['div'][$d->id]['distance'].'</td>'
 					. '</tr>';

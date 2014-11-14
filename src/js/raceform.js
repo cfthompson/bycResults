@@ -22,41 +22,60 @@ function onchange_seriesid() {
 	var html = $("#series_"+seriesid).html();
 	var props = html.split("$$");
 	var seriestypeid = props[0];
+	$(".divisionrow").remove();
 	$.getJSON("json/divisiontypes.php?seriestypeid="+seriestypeid, function(data) {
-		var divs = [];
-		$.each(data, function(divid, div) {
-			divs.push("<li id='"+divid+"'>"+
-					"<dl><dt>name</dt><dd>"+div.name+"</dd>"+
-					"<dt>defaultstarttime</dt><dd>"+div.defaultstarttime+"</dd>"+
-					"<dt>minphrf</dt><dd>"+div.minphrf+"</dd>"+
-					"<dt>maxphrf</dt><dd>"+div.maxphrf+"</dd>"+
-					"<dt>minlength</dt><dd>"+div.minlength+"</dd>"+
-					"<dt>maxlength</dt><dd>"+div.maxlength+"</dd>"+
-					"</dl></li>");
+		var html = "";
+		var divid = 0;
+		$.each(data, function(divtypeid, div) {
+			divid -= 1;
+			var starttime = div.defaultstarttime;
+			var hour = starttime.substr(0, 2);
+			var minute = starttime.substr(3, 2);
+			html += '<tr class="divisionrow">'+
+				'<th colspan="3">'+div.name+' Division:</th></tr>'+
+				'<tr class="divisionrow"><th>Start Time (HHMM):</th>'+
+				'<td>'+
+				'<input type="number" name="division['+divid+'][starthour]" value="'+hour+'">'+
+				'<input type="number" name="division['+divid+'][startminute]" value="'+minute+'"></td>'+
+				'<td class="errormsg"></td>'+
+				'</tr>'+
+				'<tr class="divisionrow"><th>Course:</th>'+
+				'<td><select class="course" name="division['+divid+'][course]"><option></option>';
+			$("span.courseid").each(function() {
+				var course_id = $(this).attr('id').split("_");
+				var courseid = course_id[1];
+				var content = $(this).html().split("$$");
+				var coursenumber = content[0];
+				html += '<option value="'+courseid+'">'+coursenumber+'</option>';
+			});
+			html += '</select></td>'+
+				'<td class="errormsg"></td>'+
+				'</tr>'+
+				'<tr class="divisionrow"><th>Distance:</th>'+
+				'<td><input readonly name="division['+divid+'][distance]" class="distance" value="'+div.distance+'"></td>'+
+				'<td class="errormsg"></td>'+
+				'</tr>';
 		});
-		$("<ul/>", {
-			"class": "division",
-			html: divs.join("")
-		}).appendTo("body");
+		$("#divisionheader").after(html);
 	});
 }
 
 function onchange_course() {
-	var courseid = $("#course option:selected").val();
+	var courseid = $("option:selected", this).val();
+	var mydistance = $(this).parent().parent().next().find('.distance');
 	if (courseid == "") {
-		$("#distance").val("");
-		$("#distance").prop("readonly", true);
+		mydistance.val("");
+		mydistance.prop("readonly", true);
 		return;
 	}
 	var html = $("#course_"+courseid).html();
 	var props = html.split("$$");
 	var distance = props[1];
-	var obj = $("#distance");
-	obj.val(distance);
-	obj.prop("readonly", distance > 0);
+	mydistance.val(distance);
+	mydistance.prop("readonly", distance > 0);
 }
 
 $(function() {
 	$("#seriesid").change(onchange_seriesid);
-	$("#course").change(onchange_course);
+	$("table#race").on("change", "tbody tr td select.course", onchange_course);
 });
