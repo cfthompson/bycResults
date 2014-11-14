@@ -59,18 +59,7 @@ function fixFinishTimeFormat($entry) {
 		$second = substr($finish, 4, 2);
 		// TODO: be more flexible on time format (javascript?)
 		$entry->finish = sprintf('%02d:%02d:%02d', $hour, $minute, $second);
-	} else {
-		return;
 	}
-	$race = $entry->race;
-	$strfinish = $race->racedate.' '.$entry->finish;
-	$tstart = strtotime($race->racedate.' 13:00:00');
-	$tend = strtotime($strfinish);
-	$tcf = 800/(550+$entry->phrf);
-	$tcfspin = empty($entry->spinnaker) ? 0.04*$tcf : 0;
-	$tcffurl = empty($entry->rollerFurling) ? 0 : 0.02*$tcf;
-	$entry->tcf = $tcf - $tcfspin - $tcffurl;
-	$entry->corrected = $entry->tcf*($tend - $tstart);
 }
 
 function parseEntryForm() {
@@ -142,9 +131,7 @@ if (array_key_exists('entry_submit', $_POST) && $edit) {
 	
 				foreach ($race->divisions as $division) {
 					$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id);
-					$tstart = strtotime($race->racedate.' 13:00:00');// + $division->starttime;
-					$tstart2 = strtotime($race->racedate);// + $division->starttime;
-					$tstart3 = strtotime($race->racedate.' '.$division->starttime);
+					$tstart = strtotime($race->racedate.' '.$division->starttime);
 					foreach ($entries as $entry) {
 						$tend = strtotime($race->racedate.' '.$entry->finish);
 						$telapsed = $tend - $tstart;
@@ -159,7 +146,7 @@ if (array_key_exists('entry_submit', $_POST) && $edit) {
 						}
 						echo '<tr>
 							<td>'.$i.'</td>
-							<td>'.$division->id.'</td>
+							<td>'.$division->name.'</td>
 							<td>'.$entry->sail.'</td>
 							<td>'.$entry->name.'</td>
 							<td>'.$entry->model.'</td>

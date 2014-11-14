@@ -27,6 +27,7 @@ function boat_onChange() {
 	$("#phrf").val(boatprops[3]);
 	$("#rollerFurling").prop("checked", boatprops[4] == "1");
 	var divid = "";
+	var divname = "";
 	$(".division").each(function() {
 		var tmpdivid = $(this).prop("id").split("_")[1];
 		var divprops = $(this).html().split("$$");
@@ -44,49 +45,90 @@ function boat_onChange() {
 		} else if (divprops[5] != "") {
 		} else {
 			divid = tmpdivid;
+			divname = divprops[0];
 		}
 	});
 	if (divid == "") {
 		entry_clearcalc();
 		return;
 	}
-	$("#division").html(divid);
+	$("#division").html(divname);
 	$("#divisionid").val(divid);
 	$("#finish").focus();
 }
 
-function entry_recalc() {
-	var division = $("#divisionid").val();
-	var phrf = $("#phrf").val();
-	var spin = $("#spinnaker").checked;
-	var furl = $("#rollerFurling").checked;
-	var finish = $("#finish").val();
-	if (phrf == "" || division == "") {
-		entry_clearcalc();
-		return false;
+function timeToSeconds(time) {
+	var h, m, s;
+	if (/\d{6}/.test(time)) {
+		h = parseInt(time.substr(0, 2));
+		m = parseInt(time.substr(2, 2));
+		s = parseInt(time.substr(4, 2));
+	} else if (/\d{2}:\d{2}:\d{2}/.test(time)) {
+		h = parseInt(time.substr(0, 2));
+		m = parseInt(time.substr(3, 2));
+		s = parseInt(time.substr(6, 2));
 	}
-
-	if (!/\d{6}/.test(finish)) {
-		entry_clearcalc();
-		return false;
-	}
-	phrf = parseInt(phrf);
-	var h = finish.substr(0, 2);
-	var m = finish.substr(2, 2);
-	var s = finish.substr(4, 2);
 	if (h < 0 || m < 0 || s < 0 ||
 		h > 23 || m > 59 || s > 59) {
+		return -1;
+	}
+	var result = (h * 3600) + (m * 60) + s;
+	return result;
+}
+
+function entry_recalc() {
+	var divisionid = $("#divisionid").val();
+	var phrf = $("#phrf").val();
+	var spin = $("#spinnaker").prop("checked");
+	var furl = $("#rollerFurling").prop("checked");
+	var finish = $("#finish").val();
+	if (phrf == "" || divisionid == "") {
 		entry_clearcalc();
 		return false;
 	}
-	var elapsed = parseInt(h*3600)+parseInt(m*60)+parseInt(s);
 
-	$("#elapsed").html(""+h+":"+m+":"+s);
-	var tcf = (550.0 + phrf);
-	tcf = 800/tcf;
+	divisionid = parseInt(divisionid);
+	phrf = parseInt(phrf);
+	var starttime = "";
+	$(".division").each(function() {
+		var tmpdivid = parseInt($(this).prop("id").split("_")[1]);
+		if (tmpdivid !== divisionid) return;
+		var divprops = $(this).html().split("$$");
+		// divprops:
+		// 0 = name
+		// 1 = starttime
+		// 2 = minphrf
+		// 3 = maxphrf
+		// 4 = minlength
+		// 5 = maxlength
+		starttime = divprops[1];
+	});
+	var tstart = timeToSeconds(starttime);
+	var tfinish = timeToSeconds(finish);
+	if (tstart < 0 || tfinish < 0) {
+		entry_clearcalc();
+		return false;
+	}
+	var elapsed = tfinish - tstart;
+	var t = elapsed;
+	var h = parseInt(t/3600);
+	t -= h*3600;
+	var m = parseInt(t/60);
+	t -= m*60;
+	var s = t;
+
+	var elapsedstr = ""+h+":";
+	if (m < 10) elapsedstr += "0";
+	elapsedstr += m+":";
+	if (s < 10) elapsedstr += "0";
+	elapsedstr += s;
+
+	$("#elapsed").html(elapsedstr);
+	var tcf = 800.0/(550.0 + phrf);
 	var tcfspin = spin ? 0.0 : 0.04*tcf;
 	var tcffurl = furl ? 0.02*tcf : 0.0; 
-	$("#tcf").html((tcf - tcfspin - tcffurl).toFixed(2));
+	tcf += tcfspin + tcffurl;
+	$("#tcf").html(tcf.toFixed(2));
 	var corrected = elapsed * tcf;
 	var r = corrected % 3600;
 	h = (corrected - r)/3600;
@@ -119,6 +161,8 @@ function onEntrySubmit(event) {
 $(function() {
 	$("#entrysail").change(boat_onChange);
 	$("#entryboat").change(boat_onChange);
+	var objs = $(".calcinput");
+	objs.change(entry_recalc);
 	$("#entry_submit").click(onEntrySubmit);
 	entry_clearcalc();
 });

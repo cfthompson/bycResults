@@ -105,22 +105,31 @@ class Entry extends Model {
 			$tcf = 800/(550+$this->phrf);
 			$spincredit = $this->spinnaker ? 0 : 0.04*$tcf;
 			$rfcredit = $this->rollerFurling ? 0.02*$tcf : 0;
-			$this->data['tcf'] = $tcf - $spincredit - $rfcredit;
+			$this->data['tcf'] = $tcf + $spincredit + $rfcredit;
 		}
+	}
+
+	protected function timeToSeconds($timestr) {
+		$h = substr($timestr, 0, 2);
+		$m = substr($timestr, 3, 2);
+		$s = substr($timestr, 6, 2);
+		$seconds = ($h * 3600) + ($m * 60) + $s;
+		return $seconds;
 	}
 
 	protected function calcCorrected() {
 		if (!array_key_exists('corrected', $this->data)) {
 			$this->calcTCF();
-			$starttime = $this->division->starttime;
-			$finish = $this->finish;
-			$h = substr($finish, 0, 2);
-			$m = substr($finish, 3, 2);
-			$s = substr($finish, 6, 2);
-			$hms = $h*3600 + $m*60 + $s;
-			$elapsed = $hms - $starttime;
+			$starttime = $this->timeToSeconds($this->division->starttime);
+			$finishtime = $this->timeToSeconds($this->finish);
+			$elapsed = $finishtime - $starttime;
 			$corrected = $elapsed * $this->data['tcf'];
-			$this->data['corrected'] = $corrected;
+			$h = intval($corrected/3600);
+			$corrected -= $h*3600;
+			$m = intval($corrected/60);
+			$corrected -= $m*60;
+			$s = $corrected;
+			$this->data['corrected'] = sprintf("%d:%02d:%.02f", $h, $m, $s);
 		}
 	}
 
