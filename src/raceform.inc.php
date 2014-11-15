@@ -205,7 +205,7 @@ foreach ($allcourses as $c) {
 		} ?>
 		<tr>
 			<th></th>
-			<td><input type="submit" name="submit" id="submit" value="Next->"></td>
+			<td><input type="submit" name="submit" id="submit" value="Next->" <?php echo ($id ? '' : 'disabled'); ?>></td>
 			<td class="errormsg"></td>
 		</tr>
 	</table>

@@ -20,9 +20,13 @@
 function onchange_seriesid() {
 	var seriesid = $("#seriesid option:selected").val();
 	var html = $("#series_"+seriesid).html();
+	$(".divisionrow").remove();
+	if (html === "") {
+		update_submit();
+		return;
+	}
 	var props = html.split("$$");
 	var seriestypeid = props[0];
-	$(".divisionrow").remove();
 	$.getJSON("json/divisiontypes.php?seriestypeid="+seriestypeid, function(data) {
 		var html = "";
 		var divid = 0;
@@ -57,6 +61,7 @@ function onchange_seriesid() {
 				'</tr>';
 		});
 		$("#divisionheader").after(html);
+		update_submit();
 	});
 }
 
@@ -66,6 +71,7 @@ function onchange_course() {
 	if (courseid == "") {
 		mydistance.val("");
 		mydistance.prop("readonly", true);
+		$("#submit").prop("disabled", true);
 		return;
 	}
 	var html = $("#course_"+courseid).html();
@@ -73,8 +79,28 @@ function onchange_course() {
 	var distance = props[1];
 	mydistance.val(distance);
 	mydistance.prop("readonly", distance > 0);
+	update_submit();
 }
 
+function update_submit() {
+	var disableit = $("#seriesid option:selected").val() === "";
+
+	if (!disableit) {
+		$(".course").each(function() {
+			if ($(this).val() === "") {
+				disableit = true;
+			}
+		});
+	}
+	if (!disableit) {
+		$(".distance").each(function() {
+			if (parseFloat($(this).val()) === 0) {
+				disableit=true;
+			}
+		});
+	}
+	$("#submit").prop("disabled", disableit);
+}
 $(function() {
 	$("#seriesid").change(onchange_seriesid);
 	$("table#race").on("change", "tbody tr td select.course", onchange_course);
