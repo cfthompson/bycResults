@@ -46,7 +46,7 @@ function parseEntryForm() {
 	fixFinishTimeFormat($entry);
 	if ($entry->save()) {
 		// Punt complex javascript by just reloading the page
-		header('Location: entries.php?raceid='.$_GET['raceid'].'&edit=true');
+		echo '<script type="text/javascript">window.location.replace("entries.php?raceid='.$_GET['raceid'].'&edit=true");</script>';
 		exit();
 	}
 }
