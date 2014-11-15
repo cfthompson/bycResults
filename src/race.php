@@ -84,6 +84,7 @@ if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
 				<td></td>
 			</tr>
 		</table>
+		<?php require_once('entrylist.inc.php'); ?>
 		<?php } ?>
 	</body>
 </html>

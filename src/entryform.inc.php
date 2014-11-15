@@ -18,8 +18,41 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA 02110-1301  USA
 */
 
-// @variable: $entry
-// @variable: raceid
+// @variable: $entry an Entry object
+// @variable: $race a Race object
+// @variable: $allboats all the Boat objects
+
+function fixFinishTimeFormat($entry) {
+	$finish = $entry->finish;
+	if (!$finish) return;
+	$hour = $minute = $second = 0;
+	if (preg_match('/\d{6}/', $finish)) {
+		$hour = substr($finish, 0, 2);
+		$minute = substr($finish, 2, 2);
+		$second = substr($finish, 4, 2);
+		// TODO: be more flexible on time format (javascript?)
+		$entry->finish = sprintf('%02d:%02d:%02d', $hour, $minute, $second);
+	}
+}
+
+function parseEntryForm() {
+	global $entry;
+	$postedentry = $_POST['entry'];
+	$entry = new Entry($postedentry);
+	// checkbox values won't come through quite right
+	$entry->spinnaker = array_key_exists('spinnaker', $postedentry);
+	$entry->rollerFurling = array_key_exists('rollerFurling', $postedentry);
+	fixFinishTimeFormat($entry);
+	if ($entry->save()) {
+		// Punt complex javascript by just reloading the page
+		header('Location: entries.php?raceid='.$_GET['raceid'].'&edit=true');
+	}
+}
+
+$entry = new Entry();
+if (array_key_exists('entry_submit', $_POST) && $edit) {
+	parseEntryForm();
+}
 
 /* Columns to display inputs for:
 <th>Place</th>
@@ -38,6 +71,12 @@ MA 02110-1301  USA
  */
 ?>
 <tr>
+<?php foreach ($allboats as $b) {
+	echo '<span style="display:none" id="boat_'.$b->id.'">'.$b->name.'$$'.$b->sail.'$$'.$b->model.'$$'.$b->phrf.'$$'.$b->length.'$$'.$b->rollerFurling.'</span>';
+} 
+foreach ($race->divisions as $d) {
+	echo '<span style="display:none" class="division" id="division_'.$d->id.'">'.$d->name.'$$'.$d->starttime.'$$'.$d->minphrf.'$$'.$d->maxphrf.'$$'.$d->minlength.'$$'.$d->maxlength.'</span>';
+} ?>
 <form id="entry_form" method="post">
 	<input type="hidden" name="entry[raceid]" value="<?php echo $raceid; ?>">
 	<td><input type="submit" name="entry_submit" id="entry_submit" value="Add"></td>
