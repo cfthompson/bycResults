@@ -56,5 +56,8 @@ require_once('classes/Entry.php');
 		<a href="race.php?id=<?php echo $raceid; ?>&edit=true">Edit this Race</a>
 		<?php } ?>
 		<?php require_once('entrylist.inc.php'); ?>
+		<?php if ($edit) { ?>
+		<a href="race.php?id=<?php echo $raceid; ?>">Finished: View this Race</a>
+		<?php } ?>
 	</body>
 </html>
