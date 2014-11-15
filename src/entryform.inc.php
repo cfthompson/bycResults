@@ -41,12 +41,13 @@ function parseEntryForm() {
 	$postedentry = $_POST['entry'];
 	$entry = new Entry($postedentry);
 	// checkbox values won't come through quite right
-	$entry->spinnaker = array_key_exists('spinnaker', $postedentry);
-	$entry->rollerFurling = array_key_exists('rollerFurling', $postedentry);
+	$entry->spinnaker = array_key_exists('spinnaker', $postedentry) ? 1 : 0;
+	$entry->rollerFurling = array_key_exists('rollerFurling', $postedentry) ? 1 : 0;
 	fixFinishTimeFormat($entry);
 	if ($entry->save()) {
 		// Punt complex javascript by just reloading the page
 		header('Location: entries.php?raceid='.$_GET['raceid'].'&edit=true');
+		exit();
 	}
 }
 
