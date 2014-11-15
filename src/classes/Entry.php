@@ -105,7 +105,7 @@ class Entry extends Model {
 			$tcf = 800/(550+$this->phrf);
 			$spincredit = $this->spinnaker ? 0 : 0.04*$tcf;
 			$rfcredit = $this->rollerFurling ? 0.02*$tcf : 0;
-			$this->data['tcf'] = $tcf + $spincredit + $rfcredit;
+			$this->data['tcf'] = $tcf - $spincredit - $rfcredit;
 		}
 	}
 

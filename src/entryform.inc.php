@@ -63,8 +63,8 @@ MA 02110-1301  USA
 	</td>
 	<td><div id="entrytype"></div></td>
 	<td><input type="number" class="calcinput" name="entry[phrf]" id="phrf" value="<?php echo $entry->phrf; ?>"></td>
-	<td><input type="checkbox" class="calcinput" name="entry[spinnaker]" id="spinnaker" value="<?php echo $entry->spinnaker; ?>"></td>
-	<td><input type="checkbox" class="calcinput" name="entry[rollerFurling]" id="rollerFurling" value="<?php echo $entry->rollerFurling; ?>"></td>
+	<td><input type="checkbox" class="calcinput" name="entry[spinnaker]" id="spinnaker" <?php echo $entry->spinnaker ? 'checked' : ''; ?>></td>
+	<td><input type="checkbox" class="calcinput" name="entry[rollerFurling]" id="rollerFurling" <?php echo $entry->rollerFurling ? 'checked' : ''; ?>></td>
 	<td><input type="text" class="calcinput" name="entry[finish]" id="finish" value="<?php echo $entry->finish; ?>"></td>
 	<td><div id="elapsed"></div></td>
 	<td><div id="tcf"></div></td>

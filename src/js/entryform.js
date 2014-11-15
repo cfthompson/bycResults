@@ -23,9 +23,16 @@ function boat_onChange() {
 	$("#entrysail").val(id);
 	var boatspan = $("#boat_"+id);
 	var boatprops = boatspan.html().split("$$");
+	// boatprops:
+	// 0 = name
+	// 1 = sail
+	// 2 = model
+	// 3 = phrf
+	// 4 = length
+	// 5 = rollerFurling
 	$("#entrytype").html(boatprops[2]);
 	$("#phrf").val(boatprops[3]);
-	$("#rollerFurling").prop("checked", boatprops[4] == "1");
+	$("#rollerFurling").prop("checked", boatprops[5] == "1");
 	var divid = "";
 	var divname = "";
 	$(".division").each(function() {
@@ -127,7 +134,7 @@ function entry_recalc() {
 	var tcf = 800.0/(550.0 + phrf);
 	var tcfspin = spin ? 0.0 : 0.04*tcf;
 	var tcffurl = furl ? 0.02*tcf : 0.0; 
-	tcf += tcfspin + tcffurl;
+	tcf -= tcfspin + tcffurl;
 	$("#tcf").html(tcf.toFixed(2));
 	var corrected = elapsed * tcf;
 	var r = corrected % 3600;
