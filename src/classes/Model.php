@@ -29,6 +29,8 @@ require_once('Config.php');
 class Model {
 
 	private static $conn = false;
+	// Set to true to send db errors to the html output
+	private $echoErrors = false;
 
 	protected static function db() {
 		if (Model::$conn === false) {
@@ -97,6 +99,9 @@ class Model {
 		}
 		$sql = "UPDATE {$this->table} SET ".implode(', ', $sets)." WHERE id={$this->data['id']}";
 		$conn->query($sql);
+		if ($conn->errno != 0 && $this->echoErrors) {
+			echo "Db error: {$conn->errno}  {$conn->error}<br>";
+		}
 		return $conn->errno == 0;
 	}
 
@@ -113,6 +118,9 @@ class Model {
 		}
 		$sql = "INSERT INTO {$this->table} (".implode(', ', $cols).") VALUES (".implode(', ', $vals).")";
 		$conn->query($sql);
+		if ($conn->errno != 0 && $this->echoErrors) {
+			echo "Db error: {$conn->errno}  {$conn->error}<br>";
+		}
 		$this->id = $conn->insert_id;
 		return $conn->errno == 0;
 	}
