@@ -34,8 +34,6 @@ if (array_key_exists('edit', $_GET) && getAccessLevel()>= User::ADMIN_ACCESS) {
 
 $raceid = intval($_GET['raceid']);
 $race = new Race($raceid);
-$boat = new Boat();
-$allboats = $boat->findAll();
 
 require_once('classes/Entry.php');
 
@@ -47,9 +45,6 @@ require_once('classes/Entry.php');
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/entryform.js"></script>
-		<?php if ($edit) { ?>
-		<script type="text/javascript" src="js/raceform.js"></script>
-		<?php } ?>
     </head>
     <body>
 		<div id="header">

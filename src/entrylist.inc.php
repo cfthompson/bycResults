@@ -82,8 +82,8 @@ function strtohms($secs) {
 				<td>'.$entry->name.'</td>
 				<td>'.$entry->model.'</td>
 				<td>'.$entry->phrf.'</td>
-				<td>'.$entry->spinnaker.'</td>
-				<td>'.$entry->rollerFurling.'</td>
+				<td>'.($entry->spinnaker ? 'Y' : 'N').'</td>
+				<td>'.($entry->rollerFurling ? 'Y' : 'N').'</td>
 				<td>'.$entry->finish.'</td>
 				<td>'.$elapsed.'</td>
 				<td>'.sprintf('%.02f', $entry->tcf).'</td>

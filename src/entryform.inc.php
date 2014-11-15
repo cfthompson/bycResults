@@ -20,7 +20,8 @@ MA 02110-1301  USA
 
 // @variable: $entry an Entry object
 // @variable: $race a Race object
-// @variable: $allboats all the Boat objects
+$boat = new Boat();
+$allboats = $boat->findAll();
 
 function fixFinishTimeFormat($entry) {
 	$finish = $entry->finish;
@@ -50,7 +51,7 @@ function parseEntryForm() {
 }
 
 $entry = new Entry();
-if (array_key_exists('entry_submit', $_POST) && $edit) {
+if (array_key_exists('entry_submit', $_POST)) {
 	parseEntryForm();
 }
 
@@ -101,7 +102,7 @@ foreach ($race->divisions as $d) {
 		</select>
 	</td>
 	<td><div id="entrytype"></div></td>
-	<td><input type="number" class="calcinput" name="entry[phrf]" id="phrf" value="<?php echo $entry->phrf; ?>"></td>
+	<td><input type="number" length="4" maxlength="4" class="calcinput" name="entry[phrf]" id="phrf" value="<?php echo $entry->phrf; ?>"></td>
 	<td><input type="checkbox" class="calcinput" name="entry[spinnaker]" id="spinnaker" <?php echo $entry->spinnaker ? 'checked' : ''; ?>></td>
 	<td><input type="checkbox" class="calcinput" name="entry[rollerFurling]" id="rollerFurling" <?php echo $entry->rollerFurling ? 'checked' : ''; ?>></td>
 	<td><input type="text" class="calcinput" name="entry[finish]" id="finish" value="<?php echo $entry->finish; ?>"></td>
