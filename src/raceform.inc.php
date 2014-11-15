@@ -94,7 +94,7 @@ function parseRaceForm() {
 		return;
 	}
 
-	header("Location: entries.php?raceid={$race->id}&edit=true");
+	echo '<script type="text/javascript">window.location.replace("entries.php?raceid='.$race->id.'&edit=true");</script>';
 	exit();
 }
 
