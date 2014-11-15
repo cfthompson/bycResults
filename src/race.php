@@ -61,6 +61,9 @@ if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
 		</div>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
+		<?php if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) { ?>
+		<a href="race.php?id=<?php echo $id; ?>&edit=true">Edit this Race</a>
+		<?php } ?>
 		<?php if ($edit) {
 			require_once('raceform.inc.php');
 		} else { ?>

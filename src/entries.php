@@ -52,6 +52,9 @@ require_once('classes/Entry.php');
 		</div>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
+		<?php if ($raceid && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) { ?>
+		<a href="race.php?id=<?php echo $raceid; ?>&edit=true">Edit this Race</a>
+		<?php } ?>
 		<?php require_once('entrylist.inc.php'); ?>
 	</body>
 </html>
