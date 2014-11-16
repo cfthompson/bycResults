@@ -157,4 +157,10 @@ class Model {
 		}
 		return $objs;
 	}
+
+	public function delete() {
+		$conn = Model::db();
+		$sql = "DELETE FROM {$this->table} WHERE id={$this->id}";
+		$conn->query($sql);
+	}
 }

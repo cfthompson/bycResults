@@ -55,6 +55,11 @@ function parseEntryForm() {
 if (array_key_exists('entry_submit', $_POST)) {
 	parseEntryForm();
 }
+if (array_key_exists('entry_delete', $_POST)) {
+	$entry->delete();
+	echo '<script type="text/javascript">window.location.replace("entries.php?raceid='.$_GET['raceid'].'&edit=true");</script>';
+	exit();
+}
 
 /* Columns to display inputs for:
 <th>Place</th>
@@ -85,7 +90,12 @@ foreach ($race->divisions as $d) {
 		<input type="hidden" name="entry[id]" value="<?php echo $entry->id; ?>">
 	<?php } ?>
 	<td><input type="submit" name="entry_submit" id="entry_submit" value="<?php echo ($entry->id) ? 'Submit' : 'Add'; ?>"></td>
-	<td><span id="division"></span><input type="hidden" name="entry[divisionid]" id="divisionid" value="<?php echo $entry->divisionid; ?>"></td>
+	<td>
+		<?php if ($entry->id) { ?>
+		<input type="submit" name="entry_delete" value="Delete">
+		<?php } ?>
+		<span id="division"></span><input type="hidden" name="entry[divisionid]" id="divisionid" value="<?php echo $entry->divisionid; ?>">
+	</td>
 	<td><select id="entrysail" name="entry[boatid]">
 			<option value="0"></option>
 			<?php foreach ($allboats as $b) {
