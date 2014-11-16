@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: localhost (MySQL 5.5.30)
+# Host: gunionmac.als.lbl.gov (MySQL 5.5.30)
 # Database: sailresults
-# Generation Time: 2014-11-06 21:06:07 +0000
+# Generation Time: 2014-11-16 17:12:58 +0000
 # ************************************************************
 
 
@@ -32,6 +32,7 @@ CREATE TABLE `boats` (
   `name` varchar(50) NOT NULL DEFAULT '',
   `model` varchar(50) DEFAULT NULL,
   `phrf` int(11) NOT NULL,
+  `length` int(11) NOT NULL,
   `FridayNightClass` int(11) NOT NULL,
   `rollerFurling` tinyint(1) NOT NULL DEFAULT '0',
   `skipper` varchar(50) DEFAULT NULL,
@@ -65,9 +66,10 @@ DROP TABLE IF EXISTS `divisions`;
 CREATE TABLE `divisions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `raceid` int(11) unsigned NOT NULL,
-  `starttime` int(11) NOT NULL,
-  `course` int(11) NOT NULL,
-  `distance` float NOT NULL,
+  `starttime` time NOT NULL,
+  `course` int(11) DEFAULT NULL,
+  `distance` float DEFAULT NULL,
+  `name` varchar(20) DEFAULT '',
   `minphrf` int(11) DEFAULT NULL,
   `maxphrf` int(11) DEFAULT NULL,
   `minlength` int(11) DEFAULT NULL,
@@ -85,7 +87,7 @@ DROP TABLE IF EXISTS `divisiontypes`;
 CREATE TABLE `divisiontypes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `seriestypeid` int(11) unsigned NOT NULL,
-  `defaultstarttime` int(11) NOT NULL,
+  `defaultstarttime` time NOT NULL,
   `name` varchar(20) NOT NULL DEFAULT '',
   `minphrf` int(11) DEFAULT NULL,
   `maxphrf` int(11) DEFAULT NULL,
@@ -110,6 +112,8 @@ CREATE TABLE `entries` (
   `finish` time DEFAULT NULL,
   `spinnaker` tinyint(1) DEFAULT NULL,
   `rollerFurling` tinyint(1) DEFAULT NULL,
+  `tcf` float DEFAULT NULL,
+  `corrected` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `raceid` (`raceid`),
   KEY `boatid` (`boatid`),
@@ -143,6 +147,7 @@ DROP TABLE IF EXISTS `series`;
 
 CREATE TABLE `series` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `typeid` int(10) unsigned NOT NULL,
   `name` varchar(40) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
