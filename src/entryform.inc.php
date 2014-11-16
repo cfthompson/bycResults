@@ -55,7 +55,7 @@ function parseEntryForm() {
 if (array_key_exists('entry_submit', $_POST)) {
 	parseEntryForm();
 }
-if (array_key_exists('entry_delete', $_POST)) {
+else if (array_key_exists('entry_delete', $_POST)) {
 	$entry->delete();
 	echo '<script type="text/javascript">window.location.replace("entries.php?raceid='.$_GET['raceid'].'&edit=true");</script>';
 	exit();
