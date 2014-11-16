@@ -35,7 +35,7 @@ class Boat extends Model {
 		'name',
 		'model',
 		'phrf',
-		'FridayNightClass',
+		'length',
 		'rollerFurling',
 		'skipper',
 		'email',

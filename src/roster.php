@@ -45,7 +45,7 @@ require_once('classes/Boat.php');
 				<th>Name</th>
 				<th>Type</th>
 				<th>PHRF</th>
-				<th>Friday Night Class</th>
+				<th>Length</th>
 				<th>Roller Furling?</th>
 				<th>Skipper</th>
 				<th>Email</th>
@@ -58,7 +58,7 @@ require_once('classes/Boat.php');
 				<td class="link"><a href="boat.php?id='.$b->id.'">'.$b->name.'</a></td>
 				<td class="val">'.$b->model.'</td>
 				<td class="val">'.$b->phrf.'</td>
-				<td class="val">'.$b->FridayNightClass.'</td>
+				<td class="val">'.$b->length.'</td>
 				<td class="val">'.$b->rollerFurling.'</td>
 				<td class="val">'.$b->skipper.'</td>
 				<td class="val">'.$b->email.'</td>
