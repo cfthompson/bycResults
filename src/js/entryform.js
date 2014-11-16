@@ -171,5 +171,6 @@ $(function() {
 	var objs = $(".calcinput");
 	objs.change(entry_recalc);
 	$("#entry_submit").click(onEntrySubmit);
-	entry_clearcalc();
+	$("#entrysail").trigger("change");
+	entry_recalc();
 });

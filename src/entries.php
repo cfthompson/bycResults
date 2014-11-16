@@ -27,15 +27,19 @@ if (!array_key_exists('raceid', $_GET) || !is_numeric($_GET['raceid'])) {
 	header('Location: index.php');
 	exit();
 }
+$raceid = intval($_GET['raceid']);
+$race = new Race($raceid);
+
 $edit = false;
 if (array_key_exists('edit', $_GET) && getAccessLevel()>= User::ADMIN_ACCESS) {
 	$edit = !!$_GET['edit'];
 }
 
-$raceid = intval($_GET['raceid']);
-$race = new Race($raceid);
-
-require_once('classes/Entry.php');
+$entryid = false;
+if (array_key_exists('entryid', $_GET) && is_numeric($_GET['entryid'])) {
+	$entryid = intval($_GET['entryid']);
+}
+$entry = new Entry($entryid);
 
 ?>
 <html>

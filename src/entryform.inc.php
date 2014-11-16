@@ -19,6 +19,7 @@ MA 02110-1301  USA
 */
 
 // @variable: $entry an Entry object
+// @variable: $raceid the $_GET parameter for the race id
 // @variable: $race a Race object
 $boat = new Boat();
 $allboats = $boat->findAll();
@@ -51,7 +52,6 @@ function parseEntryForm() {
 	}
 }
 
-$entry = new Entry();
 if (array_key_exists('entry_submit', $_POST)) {
 	parseEntryForm();
 }
@@ -81,16 +81,20 @@ foreach ($race->divisions as $d) {
 } ?>
 <form id="entry_form" method="post">
 	<input type="hidden" name="entry[raceid]" value="<?php echo $raceid; ?>">
-	<td><input type="submit" name="entry_submit" id="entry_submit" value="Add"></td>
+	<?php if ($entry->id) { ?>
+		<input type="hidden" name="entry[id]" value="<?php echo $entry->id; ?>">
+	<?php } ?>
+	<td><input type="submit" name="entry_submit" id="entry_submit" value="<?php echo ($entry->id) ? 'Submit' : 'Add'; ?>"></td>
 	<td><span id="division"></span><input type="hidden" name="entry[divisionid]" id="divisionid" value="<?php echo $entry->divisionid; ?>"></td>
-	<td><select id="entrysail" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
+	<td><select id="entrysail" name="entry[boatid]">
 			<option value="0"></option>
 			<?php foreach ($allboats as $b) {
-				echo "<option value=\"{$b->id}\">{$b->sail} - {$b->name}</option>";
+				$sel = ($b->id === $entry->boatid) ? 'selected' : '';
+				echo "<option $sel value=\"{$b->id}\">{$b->sail} - {$b->name}</option>";
 			} ?>
 		</select>
 	</td>
-	<td><select id="entryboat" name="entry[boatid]" value="<?php echo $entry->boatid; ?>">
+	<td><select id="entryboat" name="entry[boatid]">
 			<option value="0"></option>
 			<?php function sortboatsbyname($a, $b) {
 				if ($a->name == $b->name) return 0;
@@ -98,7 +102,8 @@ foreach ($race->divisions as $d) {
 			}
 			usort($allboats, 'sortboatsbyname');
 			foreach ($allboats as $b) {
-				echo "<option value=\"{$b->id}\">{$b->sail} - {$b->name}</option>";
+				$sel = ($b->id === $entry->boatid) ? 'selected' : '';
+				echo "<option $sel value=\"{$b->id}\">{$b->sail} - {$b->name}</option>";
 			} ?>
 		</select>
 	</td>

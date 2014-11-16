@@ -25,7 +25,7 @@ require_once('classes/Entry.php');
 
 // @variable $edit true for edit mode, false for readonly
 // @variable $race a Race object
-$entry = new Entry();
+// @variable $entry an Entry object
 
 function strtohms($secs) {
 	$hr = fmod($secs, 3600);
@@ -37,9 +37,17 @@ function strtohms($secs) {
 	return $result;
 }
 
+$showlinks = false;
+if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
+	$showlinks = true;
+}
 ?>
 
+<?php if ($showlinks) { ?>
+<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Race Results:</a></h3>
+<?php } else { ?>
 <h3>Race Results:</h3>
+<?php } ?>
 <table id="entries">
 	<tr>
 		<th>Place</th>
@@ -57,39 +65,49 @@ function strtohms($secs) {
 		<th>Ahead of Next</th>
 	</tr>
 	<?php $i = 1;
-	if ($edit) { 
+	if ($edit && !$entry->id) { 
 		require_once('entryform.inc.php');
 	}
 	
 	foreach ($race->divisions as $division) {
 		$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id, 'corrected');
 		$tstart = strtotime($race->racedate.' '.$division->starttime);
-		foreach ($entries as $entry) {
-			$tend = strtotime($race->racedate.' '.$entry->finish);
+		foreach ($entries as $e) {
+			$tend = strtotime($race->racedate.' '.$e->finish);
 			$telapsed = $tend - $tstart;
 			$elapsed = strtohms($telapsed);
 			$gap = 'n/a';
 			if (count($entries) > $i) {
-				$tcorrected = strtotime($race->racedate.' '.$entry->corrected);
+				$tcorrected = strtotime($race->racedate.' '.$e->corrected);
 				$tothercorr = strtotime($race->racedate.' '.$entries[$i]->corrected);
 				$secs = $tothercorr - $tcorrected;
 				$gap = strtohms($secs);
 			}
-			echo '<tr>
-				<td>'.$i.'</td>
-				<td>'.$division->name.'</td>
-				<td>'.$entry->sail.'</td>
-				<td>'.$entry->name.'</td>
-				<td>'.$entry->model.'</td>
-				<td>'.$entry->phrf.'</td>
-				<td>'.($entry->spinnaker ? 'Y' : 'N').'</td>
-				<td>'.($entry->rollerFurling ? 'Y' : 'N').'</td>
-				<td>'.$entry->finish.'</td>
-				<td>'.$elapsed.'</td>
-				<td>'.sprintf('%.02f', $entry->tcf).'</td>
-				<td>'.$entry->corrected.'</td>
-				<td>'.$gap.'</td>
-			</tr>';
+			if ($edit && $entry->id && ($e->id === $entry->id)) {
+				require_once('entryform.inc.php');
+			} else {
+				$link = '';
+				$lend = '';
+				if ($edit) {
+					$link = '<a href="entries.php?edit=true&raceid='.$raceid.'&entryid='.$e->id.'">';
+					$lend = '</a>';
+				}
+				echo '<tr>
+					<td>'.$link.$i.$lend.'</td>
+					<td>'.$division->name.'</td>
+					<td>'.$link.$e->sail.$lend.'</td>
+					<td>'.$link.$e->name.$lend.'</td>
+					<td>'.$e->model.'</td>
+					<td>'.$e->phrf.'</td>
+					<td>'.($e->spinnaker ? 'Y' : 'N').'</td>
+					<td>'.($e->rollerFurling ? 'Y' : 'N').'</td>
+					<td>'.$e->finish.'</td>
+					<td>'.$elapsed.'</td>
+					<td>'.sprintf('%.02f', $e->tcf).'</td>
+					<td>'.$e->corrected.'</td>
+					<td>'.$gap.'</td>
+				</tr>';
+			}
 			++$i;
 		}
 	}?>

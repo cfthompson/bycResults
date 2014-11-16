@@ -43,6 +43,11 @@ if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
 	$edit = !!($_GET['edit']);
 }
 
+$showlinks = false;
+if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
+	$showlinks = true;
+}
+
 ?>
 <html>
     <head>
@@ -61,12 +66,14 @@ if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
 		</div>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
-		<?php if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) { ?>
-		<a href="race.php?id=<?php echo $id; ?>&edit=true">Edit this Race</a>
-		<?php } ?>
 		<?php if ($edit) {
 			require_once('raceform.inc.php');
 		} else { ?>
+		<?php if ($showlinks) { ?>
+		<h3><a href="race.php?edit=true&id=<?php echo $race->id; ?>">Race Info:</a></h3>
+		<?php } else { ?>
+		<h3>Race Info:</h3>
+		<?php } ?>
 		<table id="race">
 			<tr>
 				<th>Date:</th>
@@ -87,7 +94,8 @@ if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
 				<td></td>
 			</tr>
 		</table>
-		<?php require_once('entrylist.inc.php'); ?>
+		<?php $entry = new Entry();
+		require_once('entrylist.inc.php'); ?>
 		<?php } ?>
 	</body>
 </html>
