@@ -104,4 +104,5 @@ function update_submit() {
 $(function() {
 	$("#seriesid").change(onchange_seriesid);
 	$("table#race").on("change", "tbody tr td select.course", onchange_course);
+	$("#seriesid").trigger('change');
 });
