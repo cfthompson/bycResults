@@ -167,12 +167,12 @@ foreach ($allcourses as $c) {
 			<td class="errormsg"><?php echo $msg['preparer']; ?></td>
 		</tr>
 		<tr>
-			<th>Committee Boat:</th>
+			<th>RC Boat Skipper:</th>
 			<td><input type="text" name="race[rcskipper]" id="rcskipper" value="<?php echo $race->rcskipper; ?>"></td>
 			<td class="errormsg"><?php echo $msg['rcskipper']; ?></td>
 		</tr>
 		<tr>
-			<th>RC Boat Skipper:</th>
+			<th>Committee Boat:</th>
 			<td><input type="text" name="race[rcboat]" id="rcboat" value="<?php echo $race->rcboat; ?>"></td>
 			<td class="errormsg"><?php echo $msg['rcboat']; ?></td>
 		</tr>
