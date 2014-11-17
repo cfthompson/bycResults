@@ -142,7 +142,7 @@ foreach ($allcourses as $c) {
 ?>
 <form id="raceform" method="post">
 	<?php if ($id) {
-		echo '<input type="hidden" name="race[id]" value="'.$id.'">';
+		echo '<input type="hidden" id="raceid" name="race[id]" value="'.$id.'">';
 	} ?>
 	<table id="race">
 		<tr>

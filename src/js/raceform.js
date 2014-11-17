@@ -21,13 +21,18 @@ function onchange_seriesid() {
 	var seriesid = $("#seriesid option:selected").val();
 	var html = $("#series_"+seriesid).html();
 	$(".divisionrow").remove();
-	if (html === "") {
+	if (html === null) {
 		update_submit();
 		return;
 	}
 	var props = html.split("$$");
 	var seriestypeid = props[0];
-	$.getJSON("json/divisiontypes.php?seriestypeid="+seriestypeid, function(data) {
+	var url = "json/divisiontypes.php?seriestypeid="+seriestypeid;
+	if ($("#raceid").length === 1) {
+		var raceid = $("#raceid").val();
+		url += "&raceid="+raceid;
+	}
+	$.getJSON(url, function(data) {
 		var html = "";
 		var divid = 0;
 		$.each(data, function(divtypeid, div) {
