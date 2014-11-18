@@ -43,7 +43,7 @@ function parseRaceForm() {
 		$msg['date'] = 'Please enter a race date';
 		return;
 	}
-	$result = preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $post['racedate']);
+	$result = preg_match('/^(\d{2})\/?(\d{2})\/?(\d{4})$/', $post['racedate'], $matches);
 	if ($result === false) {
 		$msg['date'] = 'Error parsing date';
 		return;
@@ -51,6 +51,8 @@ function parseRaceForm() {
 		$msg['date'] = 'Invalid date format';
 		return;
 	}
+	// Ensure racedate is in expected format
+	$post['racedate'] = $matches[1].'/'.$matches[2].'/'.$matches[3];
 
 	$race = new Race($post);
 	if (!$race->seriesid) {
@@ -70,13 +72,15 @@ function parseRaceForm() {
 			$msg['div'][$divid]['distance'] = 'Please enter a valid distance';
 			return;
 		}
-		if (!is_numeric($vals['starthour']) || !is_numeric($vals['startminute'])
-			|| $vals['starthour'] < 0 || $vals['starthour'] > 23
-			|| $vals['startminute'] < 0 || $vals['startminute'] > 59) {
+		$result = preg_match('/^(\d{2}):?(\d{2})/', $vals['starthourminute'], $matches);
+		if ($result === false) {
+			$msg['div'][$divid]['starttime'] = 'Error parsing start time';
+			return;
+		} else if ($result === 0) {
 			$msg['div'][$divid]['starttime'] = 'Invalid start time';
 			return;
 		}
-		$starttime = $vals['starthour'].':'.$vals['startminute'].':00';
+		$starttime = $matches[1].':'.$matches[2].':00';
 		if ($divid > 0) {
 			$div = new Division($divid);
 		} else {
@@ -180,14 +184,12 @@ foreach ($allcourses as $c) {
 			<th colspan="3">Divisions</th>
 		</tr>
 		<?php foreach ($divs as $d) {
-			$hour = substr($d->starttime, 0, 2);
-			$minute = substr($d->starttime, 3, 2);
+			$hm = substr($d->starttime, 0, 2).substr($d->starttime, 3, 2);
 			echo '<tr class="divisionrow"><th colspan="3">'.$d->name.' Division:</th></tr>'
-					. '<tr class="divisionrow"><th>Start Time (HHMM):</th>'
+					. '<tr class="divisionrow"><th>Start Time:</th>'
 					. '<td>'
-					. '<input type="number" name="division['.$d->id.'][starthour]" value="'.$hour.'">'
-					. '<input type="number" name="division['.$d->id.'][startminute]" value="'.$minute.'"></td>'
-					. '<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
+					. '<input type="number" name="division['.$d->id.'][starthourminute]" value="'.$hm.'">'
+					. ' (HH:MM)<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
 					. '</tr>'
 					. '<tr class="divisionrow"><th>Course:</th>'
 					. '<td><select class="course" name="division['.$d->id.'][course]"><option></option>';

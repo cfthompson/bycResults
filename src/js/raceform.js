@@ -36,15 +36,13 @@ function onchange_seriesid() {
 		var html = "";
 		$.each(data, function(divid, div) {
 			var starttime = div.starttime;
-			var hour = starttime.substr(0, 2);
-			var minute = starttime.substr(3, 2);
+			var hm = starttime.substr(0, 2)+":"+starttime.substr(3, 2);
 			html += '<tr class="divisionrow">'+
 				'<th colspan="3">'+div.name+' Division:</th></tr>'+
-				'<tr class="divisionrow"><th>Start Time (HHMM):</th>'+
+				'<tr class="divisionrow"><th>Start Time:</th>'+
 				'<td>'+
-				'<input type="number" name="division['+divid+'][starthour]" value="'+hour+'">'+
-				'<input type="number" name="division['+divid+'][startminute]" value="'+minute+'"></td>'+
-				'<td class="errormsg"></td>'+
+				'<input type="text" name="division['+divid+'][starthourminute]" value="'+hm+'">'+
+				' (HH:MM)<td class="errormsg"></td>'+
 				'</tr>'+
 				'<tr class="divisionrow"><th>Course:</th>'+
 				'<td><select class="course" name="division['+divid+'][course]"><option></option>';
