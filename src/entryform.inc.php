@@ -22,7 +22,7 @@ MA 02110-1301  USA
 // @variable: $raceid the $_GET parameter for the race id
 // @variable: $race a Race object
 $boat = new Boat();
-$allboats = $boat->findAll();
+$allboats = $boat->findAll('', 'ABS(sail)');
 
 function fixFinishTimeFormat($entry) {
 	$finish = $entry->finish;
