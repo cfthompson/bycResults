@@ -27,17 +27,15 @@ function onchange_seriesid() {
 	}
 	var props = html.split("$$");
 	var seriestypeid = props[0];
-	var url = "json/divisiontypes.php?seriestypeid="+seriestypeid;
+	var url = "json/divisions.php?seriestypeid="+seriestypeid;
 	if ($("#raceid").length === 1) {
 		var raceid = $("#raceid").val();
 		url += "&raceid="+raceid;
 	}
 	$.getJSON(url, function(data) {
 		var html = "";
-		var divid = 0;
-		$.each(data, function(divtypeid, div) {
-			divid -= 1;
-			var starttime = div.defaultstarttime;
+		$.each(data, function(divid, div) {
+			var starttime = div.starttime;
 			var hour = starttime.substr(0, 2);
 			var minute = starttime.substr(3, 2);
 			html += '<tr class="divisionrow">'+
@@ -55,7 +53,8 @@ function onchange_seriesid() {
 				var courseid = course_id[1];
 				var content = $(this).html().split("$$");
 				var coursenumber = content[0];
-				html += '<option value="'+courseid+'">'+coursenumber+'</option>';
+				var sel = (courseid === div.course) ? "selected " : "";
+				html += '<option '+sel+'value="'+courseid+'">'+coursenumber+'</option>';
 			});
 			html += '</select></td>'+
 				'<td class="errormsg"></td>'+
