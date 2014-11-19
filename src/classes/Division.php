@@ -30,6 +30,7 @@ class Division extends Model {
 	public $columns = array(
 		'id',
 		'raceid',
+		'typeid',
 		'starttime',
 		'course',
 		'distance',
@@ -55,5 +56,38 @@ class Division extends Model {
 			}
 		}
 		parent::__set($name, $val);
+	}
+
+	public function __get($name) {
+		if ($name == 'description') {
+			if (!array_key_exists('description', $this->data)) {
+				$desc = '';
+				if (!is_null($this->minphrf)) {
+					$desc .= 'PHRF '.$this->minphrf;
+					if (!is_null($this->maxphrf)) {
+						$desc .= ' to '.$this->maxphrf;
+					} else {
+						$desc .= ' and above';
+					}
+				} else if (!is_null($this->maxphrf)) {
+					$desc .= 'PHRF '.$this->maxphrf.' and below';
+				}
+				if (!is_null($this->minlength)) {
+					if (!empty($desc)) $desc .= '; ';
+					$desc .= 'Length '.$this->minlength;
+					if (!is_null($this->maxlength)) {
+						$desc .= ' to '.$this->maxlength;
+					} else {
+						$desc .= ' and above';
+					}
+				} else if (!is_null($this->maxlength)) {
+					if (!empty($desc)) $desc .= '; ';
+					$desc .= 'Length '.$this->maxlength.' and below';
+				}
+				$this->data['description'] = $desc;
+			}
+			return $this->data['description'];
+		}
+		return parent::__get($name);
 	}
 }

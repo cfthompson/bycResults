@@ -96,9 +96,26 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 			<tr>
 				<th>Prepared By:</th>
 				<td><?php echo $race->preparer; ?></td>
-				<th></th>
-				<td></td>
+				<th># Boats:</th>
+				<td><?php echo count($race->entries); ?></td>
 			</tr>
+			<?php foreach ($race->divisions as $d) { ?>
+			<tr>
+				<th colspan="4"><?php echo $d->name; ?> Division:</th>
+			</tr>
+			<tr>
+				<th>Start:</th>
+				<td><?php echo $d->starttime; ?></td>
+				<th>Course/Distance:</th>
+				<td><?php echo $d->course.' / '.$d->distance; ?></td>
+			</tr>
+			<?php /* if ($d->description) { */ ?>
+			<tr>
+				<th>Description:</th>
+				<td colspan="3"><?php echo $d->description; ?></td>
+			</tr>
+			<?php /* }*/ ?>
+			<?php } ?>
 		</table>
 		<?php $entry = new Entry();
 		require_once('entrylist.inc.php'); ?>
