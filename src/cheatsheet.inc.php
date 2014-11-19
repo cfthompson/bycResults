@@ -23,7 +23,6 @@ require_once('classes/Race.php');
 require_once('classes/Boat.php');
 require_once('classes/Entry.php');
 
-// @variable $edit true for edit mode, false for readonly
 // @variable $race a Race object
 // @variable $entry an Entry object
 
@@ -38,7 +37,7 @@ function strtohms($secs) {
 }
 
 $showlinks = false;
-if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
+if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS) {
 	$showlinks = true;
 }
 ?>
@@ -56,10 +55,6 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 		<th>Ahead of Next</th>
 	</tr>
 	<?php $i = 1;
-	if ($edit && !$entry->id) { 
-		require_once('entryform.inc.php');
-	}
-	
 	foreach ($race->divisions as $division) {
 		$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id, 'corrected');
 		$tstart = strtotime($race->racedate.' '.$division->starttime);
@@ -74,22 +69,12 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 				$secs = $tothercorr - $tcorrected;
 				$gap = strtohms($secs);
 			}
-			if ($edit && $entry->id && ($e->id === $entry->id)) {
-				require_once('entryform.inc.php');
-			} else {
-				$link = '';
-				$lend = '';
-				if ($edit) {
-					$link = '<a href="entries.php?edit=true&raceid='.$raceid.'&entryid='.$e->id.'">';
-					$lend = '</a>';
-				}
-				echo '<tr>
-					<td>'.$division->name.'</td>
-					<td>'.$link.$i.$lend.'</td>
-					<td>'.$link.$e->name.$lend.'</td>
-					<td>'.$gap.'</td>
-				</tr>';
-			}
+			echo '<tr>
+				<td>'.$division->name.'</td>
+				<td>'.$i.'</td>
+				<td>'.$e->name.'</td>
+				<td>'.$gap.'</td>
+			</tr>';
 			++$i;
 		}
 	}?>

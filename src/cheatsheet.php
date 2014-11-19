@@ -38,13 +38,8 @@ if (array_key_exists('seriesid', $_GET) && is_numeric($_GET['seriesid'])) {
 	$race->seriesid = intval($_GET['seriesid']);
 }
 
-$edit = ($id === false);
-if (array_key_exists('edit', $_GET) && getAccessLevel() >= User::ADMIN_ACCESS) {
-	$edit = !!($_GET['edit']);
-}
-
 $showlinks = false;
-if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
+if ($id && getAccessLevel() >= User::ADMIN_ACCESS) {
 	$showlinks = true;
 }
 
@@ -56,9 +51,6 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/race.js"></script>
-		<?php if ($edit) { ?>
-		<script type="text/javascript" src="js/raceform.js"></script>
-		<?php } ?>
     </head>
     <body>
 		<div id="header">
@@ -72,9 +64,6 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 			<input type="radio" class="view_select" name="view_cheatsheet" id="view_cheatsheet" checked>
 			<label for="view_cheatsheet">CheatSheet</label>
 		</div>
-		<?php if ($edit) {
-			require_once('raceform.inc.php');
-		} else { ?>
 		<?php if ($showlinks) { ?>
 		<h3><a href="race.php?edit=true&id=<?php echo $race->id; ?>">Race Info:</a></h3>
 		<?php } else { ?>
@@ -96,12 +85,28 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 			<tr>
 				<th>Prepared By:</th>
 				<td><?php echo $race->preparer; ?></td>
-				<th></th>
-				<td></td>
+				<th># Boats:</th>
+				<td><?php echo count($race->entries); ?></td>
 			</tr>
+			<?php foreach ($race->divisions as $d) { ?>
+			<tr>
+				<th colspan="4"><?php echo $d->name; ?> Division:</th>
+			</tr>
+			<tr>
+				<th>Start:</th>
+				<td><?php echo $d->starttime; ?></td>
+				<th>Course/Distance:</th>
+				<td><?php echo $d->course.' / '.$d->distance; ?></td>
+			</tr>
+			<?php if ($d->description) { ?>
+			<tr>
+				<th>Description:</th>
+				<td colspan="3"><?php echo $d->description; ?></td>
+			</tr>
+			<?php } ?>
+			<?php } ?>
 		</table>
 		<?php $entry = new Entry();
 		require_once('cheatsheet.inc.php'); ?>
-		<?php } ?>
 	</body>
 </html>

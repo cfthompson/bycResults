@@ -109,12 +109,12 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 				<th>Course/Distance:</th>
 				<td><?php echo $d->course.' / '.$d->distance; ?></td>
 			</tr>
-			<?php /* if ($d->description) { */ ?>
+			<?php if ($d->description) { ?>
 			<tr>
 				<th>Description:</th>
 				<td colspan="3"><?php echo $d->description; ?></td>
 			</tr>
-			<?php /* }*/ ?>
+			<?php } ?>
 			<?php } ?>
 		</table>
 		<?php $entry = new Entry();
