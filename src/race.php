@@ -54,9 +54,8 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
         <meta charset="UTF-8">
         <title>Berkeley YC Results Program</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		<script type="text/javascript" src="js/jquery.js"></script>
-		<script type="text/javascript" src="js/race.js"></script>
 		<?php if ($edit) { ?>
+		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/raceform.js"></script>
 		<?php } ?>
     </head>
@@ -66,11 +65,8 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 		</div>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
-		<div id="raceview">View As:
-			<input type="radio" class="view_select" name="view_normal" id="view_normal" checked>
-			<label for="view_normal">Full Details</label>
-			<input type="radio" class="view_select" name="view_cheatsheet" id="view_cheatsheet">
-			<label for="view_cheatsheet">CheatSheet</label>
+		<div id="raceview">Select View:
+			<span class="selected">Normal</span> or <a href="cheatsheet.php?id=<?php echo $id; ?>">Cheat Sheet</a>
 		</div>
 		<?php if ($edit) {
 			require_once('raceform.inc.php');

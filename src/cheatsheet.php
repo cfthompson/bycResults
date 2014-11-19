@@ -49,8 +49,6 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS) {
         <meta charset="UTF-8">
         <title>Berkeley YC Results Program</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		<script type="text/javascript" src="js/jquery.js"></script>
-		<script type="text/javascript" src="js/race.js"></script>
     </head>
     <body>
 		<div id="header">
@@ -58,11 +56,8 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS) {
 		</div>
 		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
-		<div id="raceview">View As:
-			<input type="radio" class="view_select" name="view_normal" id="view_normal">
-			<label for="view_normal">Full Details</label>
-			<input type="radio" class="view_select" name="view_cheatsheet" id="view_cheatsheet" checked>
-			<label for="view_cheatsheet">CheatSheet</label>
+		<div id="raceview">Select View:
+			<a href="race.php?id=<?php echo $id; ?>">Normal</a> or <span class="selected">Cheat Sheet</span>
 		</div>
 		<?php if ($showlinks) { ?>
 		<h3><a href="race.php?edit=true&id=<?php echo $race->id; ?>">Race Info:</a></h3>
