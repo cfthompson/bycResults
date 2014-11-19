@@ -30,6 +30,7 @@ if ($race->id) {
 	foreach ($race->divisions as $d) {
 		$items[$d->id] = array(
 			'name'=>$d->name,
+			'typeid'=>$d->typeid,
 			'starttime'=>$d->starttime,
 			'minphrf'=>$d->minphrf,
 			'maxphrf'=>$d->maxphrf,
@@ -61,6 +62,7 @@ $divid = -1;
 foreach ($divs as $d) {
 	$items[$divid] = array(
 		'name'=>$d->name,
+		'typeid'=>$d->id,
 		'starttime'=>$d->defaultstarttime,
 		'minphrf'=>$d->minphrf,
 		'maxphrf'=>$d->maxphrf,

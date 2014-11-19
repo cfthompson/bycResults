@@ -81,13 +81,10 @@ function parseRaceForm() {
 			return;
 		}
 		$starttime = $matches[1].':'.$matches[2].':00';
+		$div = new Division($vals);
 		if ($divid > 0) {
-			$div = new Division($divid);
-		} else {
-			$div = new Division();
+			$div->id = $divid;
 		}
-		$div->course = $vals['course'];
-		$div->distance = $vals['distance'];
 		$div->starttime = $starttime;
 		$divisions[$divid] = $div;
 	}
@@ -183,7 +180,7 @@ foreach ($allcourses as $c) {
 		<tr id="divisionheader">
 			<th colspan="3">Divisions</th>
 		</tr>
-		<?php foreach ($divs as $d) {
+		<?php /* foreach ($divs as $d) {
 			$hm = substr($d->starttime, 0, 2).substr($d->starttime, 3, 2);
 			echo '<tr class="divisionrow"><th colspan="3">'.$d->name.' Division:</th></tr>'
 					. '<tr class="divisionrow"><th>Start Time:</th>'
@@ -204,7 +201,7 @@ foreach ($allcourses as $c) {
 					. '<td><input readonly name="division['.$d->id.'][distance]" class="distance" value="'.$d->distance.'"></td>'
 					. '<td class="errormsg">'.$msg['div'][$d->id]['distance'].'</td>'
 					. '</tr>';
-		} ?>
+		}*/ ?>
 		<tr>
 			<th></th>
 			<td><input type="submit" name="submit" id="submit" value="Next->" <?php echo ($id ? '' : 'disabled'); ?>></td>

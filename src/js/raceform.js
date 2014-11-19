@@ -41,6 +41,7 @@ function onchange_seriesid() {
 				'<th colspan="3">'+div.name+' Division:</th></tr>'+
 				'<tr class="divisionrow"><th>Start Time:</th>'+
 				'<td>'+
+				'<input type="hidden" name="division['+divid+'][typeid]" value="'+div.typeid+'">'+
 				'<input type="text" name="division['+divid+'][starthourminute]" value="'+hm+'">'+
 				' (HH:MM)<td class="errormsg"></td>'+
 				'</tr>'+
