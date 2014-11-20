@@ -45,7 +45,7 @@ class Race extends Model {
 			if (!array_key_exists('entries', $this->data)) {
 				if ($this->id) {
 					$entry = new Entry();
-					$this->data['entries'] = $entry->findAll('raceid='.$this->id, 'corrected');
+					$this->data['entries'] = $entry->findAll('raceid='.$this->id, 'divisionid, status, corrected');
 				} else {
 					$this->data['entries'] = array();
 				}

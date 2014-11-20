@@ -59,6 +59,17 @@ class Division extends Model {
 	}
 
 	public function __get($name) {
+		if ($name == 'entries') {
+			if (!array_key_exists('entries', $this->data)) {
+				if ($this->id) {
+					$entry = new Entry();
+					$this->data['entries'] = $entry->findAll('divisionid='.$this->id, 'status, corrected');
+				} else {
+					$this->data['entries'] = array();
+				}
+			}
+			return $this->data['entries'];
+		}
 		if ($name == 'description') {
 			if (!array_key_exists('description', $this->data)) {
 				$desc = '';

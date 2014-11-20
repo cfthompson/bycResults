@@ -17,42 +17,49 @@
  * MA 02110-1301  USA
  */
 
+function is_inrange(val, minval, maxval) {
+	if (minval !== "") {
+		if (val < parseInt(minval))
+			return false;
+		if (maxval !== "" && val > parseInt(maxval))
+			return false;
+	} else if (maxval !== "") {
+		if (val > parseInt(maxval))
+			return false;
+	}
+	return true;
+}
+
 function boat_onChange() {
 	var id = $(this).val();
 	$("#entryboat").val(id);
 	$("#entrysail").val(id);
 	var boatspan = $("#boat_"+id);
 	var boatprops = boatspan.html().split("$$");
-	// boatprops:
-	// 0 = name
-	// 1 = sail
-	// 2 = model
-	// 3 = phrf
-	// 4 = length
-	// 5 = rollerFurling
-	$("#entrytype").html(boatprops[2]);
-	$("#phrf").val(boatprops[3]);
-	$("#rollerFurling").prop("checked", boatprops[5] == "1");
+	var boatname = boatprops[0];         // 0 = name
+	var sail = boatprops[1];             // 1 = sail
+	var model = boatprops[2];            // 2 = model
+	var phrf = parseInt(boatprops[3]);   // 3 = phrf
+	var length = parseInt(boatprops[4]); // 4 = length
+	var rollFurl = boatprops[5];         // 5 = rollerFurling
+	$("#entrytype").html(model);
+	$("#phrf").val(phrf);
+	$("#rollerFurling").prop("checked", rollFurl == "1");
 	var divid = "";
 	var divname = "";
 	$(".division").each(function() {
+		if (divid !== "") return;
 		var tmpdivid = $(this).prop("id").split("_")[1];
 		var divprops = $(this).html().split("$$");
-		// divprops:
-		// 0 = name
-		// 1 = starttime
-		// 2 = minphrf
-		// 3 = maxphrf
-		// 4 = minlength
-		// 5 = maxlength
-		// TODO: Implement division splits by length and phrf
-		if (divprops[2] != "") {
-		} else if (divprops[3] != "") {
-		} else if (divprops[4] != "") {
-		} else if (divprops[5] != "") {
-		} else {
+		var tmpdivname = divprops[0];    // 0 = name
+		var starttime = divprops[1];     // 1 = starttime
+		var minphrf = divprops[2];       // 2 = minphrf
+		var maxphrf = divprops[3];       // 3 = maxphrf
+		var minlength = divprops[4];     // 4 = minlength
+		var maxlength = divprops[5];     // 5 = maxlength
+		if (is_inrange(phrf, minphrf, maxphrf) && is_inrange(length, minlength, maxlength)) {
 			divid = tmpdivid;
-			divname = divprops[0];
+			divname = tmpdivname;
 		}
 	});
 	if (divid == "") {

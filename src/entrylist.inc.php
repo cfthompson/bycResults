@@ -41,12 +41,14 @@ $showlinks = false;
 if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 	$showlinks = true;
 }
+
+$allentries = $race->entries;
 ?>
 
 <?php if ($showlinks) { ?>
 <h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Boats:</a></h3>
 <?php } else { ?>
-<h3>Boats:</h3>
+<h3><?php echo count($allentries); ?> Boats:</h3>
 <?php } ?>
 <table id="entries">
 	<tr>
@@ -70,7 +72,8 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 	}
 	
 	foreach ($race->divisions as $division) {
-		$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id, 'status, corrected');
+		$entries = $division->entries;
+		//$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id, 'status, corrected');
 		$tstart = strtotime($race->racedate.' '.$division->starttime);
 		// Find # boats that actually finished
 		$finishers = 0;
