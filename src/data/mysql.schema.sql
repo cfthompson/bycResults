@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.5.30)
 # Database: sailresults
-# Generation Time: 2014-11-20 01:17:36 +0000
+# Generation Time: 2014-11-20 02:48:30 +0000
 # ************************************************************
 
 
@@ -141,7 +141,9 @@ CREATE TABLE `races` (
   `rcboat` varchar(30) DEFAULT NULL,
   `rcskipper` varchar(30) DEFAULT NULL,
   `preparer` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `seriesid` (`seriesid`),
+  CONSTRAINT `races_ibfk_1` FOREIGN KEY (`seriesid`) REFERENCES `series` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -155,7 +157,9 @@ CREATE TABLE `series` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `typeid` int(10) unsigned NOT NULL,
   `name` varchar(40) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `typeid` (`typeid`),
+  CONSTRAINT `series_ibfk_1` FOREIGN KEY (`typeid`) REFERENCES `seriestypes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
