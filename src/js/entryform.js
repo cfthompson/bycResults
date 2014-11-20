@@ -61,7 +61,7 @@ function boat_onChange() {
 	}
 	$("#division").html(divname);
 	$("#divisionid").val(divid);
-	$("#finish").focus();
+	$("#finish").val("").focus();
 }
 
 function timeToSeconds(time) {
@@ -88,9 +88,17 @@ function entry_recalc() {
 	var phrf = $("#phrf").val();
 	var spin = $("#spinnaker").prop("checked");
 	var furl = $("#rollerFurling").prop("checked");
-	var finish = $("#finish").val();
+	var finish = $("#finish").val().toUpperCase();
 	if (phrf == "" || divisionid == "") {
-		entry_clearcalc();
+		entry_clearcalc(true);
+		return false;
+	}
+	if (finish == 'DNF' || finish == 'DSQ') {
+		entry_clearcalc(false);
+		return true;
+	}
+	if (!/^\d{6}$/.test(finish) && !/^\d{2}:\d{2}:\d{2}$/.test(finish)) {
+		entry_clearcalc(true);
 		return false;
 	}
 
@@ -113,7 +121,7 @@ function entry_recalc() {
 	var tstart = timeToSeconds(starttime);
 	var tfinish = timeToSeconds(finish);
 	if (tstart < 0 || tfinish < 0) {
-		entry_clearcalc();
+		entry_clearcalc(true);
 		return false;
 	}
 	var elapsed = tfinish - tstart;
@@ -150,12 +158,12 @@ function entry_recalc() {
 	return true;
 }
 
-function entry_clearcalc() {
+function entry_clearcalc(disable_the_submit_button) {
 	$("#elapsed").html("");
 	$("#tcf").html("");
 	$("#corrected").html("");
 	$("#gap").html("");
-	$("#entry_submit").prop("disabled", true);
+	$("#entry_submit").prop("disabled", disable_the_submit_button);
 }
 
 function onEntrySubmit(event) {

@@ -20,8 +20,8 @@ $series = $s->findAll();
     <body>
 		<div id="header">
 		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		<h1>Race Results</h1>
 		</div>
-		<h1>Berkeley Yacht Club Race Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 
 		<ul id="series">

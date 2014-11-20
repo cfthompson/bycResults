@@ -41,6 +41,7 @@ class Entry extends Model {
 		'rollerFurling',
 		'tcf',
 		'corrected',
+		'status',
 	);
 	protected $boatcolumns = array(
 		'name',
@@ -89,10 +90,12 @@ class Entry extends Model {
 			return $this->data['division'];
 		}
 		if ($name == 'tcf') {
+			if ($this->status) return false;
 			$this->calcTCF();
 			return $this->data['tcf'];
 		}
 		if ($name == 'corrected') {
+			if ($this->status) return false;
 			$this->calcCorrected();
 			return $this->data['corrected'];
 		}
@@ -101,6 +104,8 @@ class Entry extends Model {
 	}
 
 	protected function calcTCF() {
+		if ($this->status)
+			return;
 		if (!array_key_exists('tcf', $this->data)) {
 			$tcf = 800/(550+$this->phrf);
 			$spincredit = $this->spinnaker ? 0 : 0.04*$tcf;
@@ -118,6 +123,8 @@ class Entry extends Model {
 	}
 
 	protected function calcCorrected() {
+		if ($this->status)
+			return;
 		if (!array_key_exists('corrected', $this->data)) {
 			$this->calcTCF();
 			$starttime = $this->timeToSeconds($this->division->starttime);

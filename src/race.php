@@ -62,8 +62,8 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
     <body>
 		<div id="header">
 		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		<h1>Race Results</h1>
 		</div>
-		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 		<div id="raceview">Select View:
 			<span class="selected">Normal</span> or <a href="cheatsheet.php?id=<?php echo $id; ?>">Cheat Sheet</a>

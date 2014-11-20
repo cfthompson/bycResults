@@ -53,8 +53,8 @@ $entry = new Entry($entryid);
     <body>
 		<div id="header">
 		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		<h1>Race Results</h1>
 		</div>
-		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 		<?php if ($raceid && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) { ?>
 		<a href="race.php?id=<?php echo $raceid; ?>&edit=true">Edit this Race</a>

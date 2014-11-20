@@ -35,8 +35,8 @@ require_once('classes/Boat.php');
     <body>
 		<div id="header">
 		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		<h1>Race Results: Roster</h1>
 		</div>
-		<h1>Berkeley Yacht Club Roster</h1>
 		<?php require_once('nav.inc.php'); ?>
 
 		<table id="roster">

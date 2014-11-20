@@ -34,6 +34,8 @@ function fixFinishTimeFormat($entry) {
 		$second = substr($finish, 4, 2);
 		// TODO: be more flexible on time format (javascript?)
 		$entry->finish = sprintf('%02d:%02d:%02d', $hour, $minute, $second);
+	} else if (strcasecmp($finish, 'dnf') == 0 || strcasecmp($finish, 'dsq') == 0) {
+		$entry->status = strtoupper($finish);
 	}
 }
 
@@ -121,7 +123,7 @@ foreach ($race->divisions as $d) {
 	<td><input type="number" length="4" maxlength="4" class="calcinput" name="entry[phrf]" id="phrf" value="<?php echo $entry->phrf; ?>"></td>
 	<td><input type="checkbox" class="calcinput" name="entry[spinnaker]" id="spinnaker" <?php echo $entry->spinnaker ? 'checked' : ''; ?>></td>
 	<td><input type="checkbox" class="calcinput" name="entry[rollerFurling]" id="rollerFurling" <?php echo $entry->rollerFurling ? 'checked' : ''; ?>></td>
-	<td><input type="text" class="calcinput" name="entry[finish]" id="finish" value="<?php echo $entry->finish; ?>"></td>
+	<td><input type="text" class="calcinput" name="entry[finish]" id="finish" value="<?php echo $entry->status ? $entry->status : $entry->finish; ?>"></td>
 	<td><div id="elapsed"></div></td>
 	<td><div id="tcf"></div></td>
 	<td><div id="corrected"></div></td>

@@ -54,10 +54,11 @@ if (array_key_exists('submit', $_POST)) {
     <body>
 		<div id="header">
 		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		<h1>Race Results</h1>
 		</div>
-		<h1>Berkeley Yacht Club Results</h1>
 		<?php require_once('nav.inc.php'); ?>
 
+		<h2>Edit Boat Information</h2>
 		<form id="boatform" method="post">
 			<?php if ($boat->id) { ?>
 			<input type="hidden" name="boat[id]" value="<?php echo $boat->id; ?>">

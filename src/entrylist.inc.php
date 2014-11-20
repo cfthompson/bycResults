@@ -44,9 +44,9 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 ?>
 
 <?php if ($showlinks) { ?>
-<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Race Results:</a></h3>
+<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Boats:</a></h3>
 <?php } else { ?>
-<h3>Race Results:</h3>
+<h3>Boats:</h3>
 <?php } ?>
 <table id="entries">
 	<tr>
@@ -70,30 +70,29 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 	}
 	
 	foreach ($race->divisions as $division) {
-		$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id, 'corrected');
+		$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id, 'status, corrected');
 		$tstart = strtotime($race->racedate.' '.$division->starttime);
+		// Find # boats that actually finished
+		$finishers = 0;
 		foreach ($entries as $e) {
-			$tend = strtotime($race->racedate.' '.$e->finish);
-			$telapsed = $tend - $tstart;
-			$elapsed = strtohms($telapsed);
-			$gap = 'n/a';
-			if (count($entries) > $i) {
-				$tcorrected = strtotime($race->racedate.' '.$e->corrected);
-				$tothercorr = strtotime($race->racedate.' '.$entries[$i]->corrected);
-				$secs = $tothercorr - $tcorrected;
-				$gap = strtohms($secs);
-			}
+			if ($e->status) break;
+			++$finishers;
+		}
+		foreach ($entries as $e) {
 			if ($edit && $entry->id && ($e->id === $entry->id)) {
 				require_once('entryform.inc.php');
-			} else {
-				$link = '';
-				$lend = '';
-				if ($edit) {
-					$link = '<a href="entries.php?edit=true&raceid='.$raceid.'&entryid='.$e->id.'">';
-					$lend = '</a>';
-				}
+				++$i;
+				continue;
+			}
+			$link = '';
+			$lend = '';
+			if ($edit) {
+				$link = '<a href="entries.php?edit=true&raceid='.$raceid.'&entryid='.$e->id.'">';
+				$lend = '</a>';
+			}
+			if ($e->status) {
 				echo '<tr>
-					<td>'.$link.$i.$lend.'</td>
+					<td></td>
 					<td>'.$division->name.'</td>
 					<td>'.$link.$e->sail.$lend.'</td>
 					<td>'.$link.$e->name.$lend.'</td>
@@ -101,13 +100,39 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 					<td>'.$e->phrf.'</td>
 					<td>'.($e->spinnaker ? 'Y' : 'N').'</td>
 					<td>'.($e->rollerFurling ? 'Y' : 'N').'</td>
-					<td>'.$e->finish.'</td>
-					<td>'.$elapsed.'</td>
-					<td>'.sprintf('%.02f', $e->tcf).'</td>
-					<td>'.$e->corrected.'</td>
-					<td>'.$gap.'</td>
+					<td>'.$e->status.'</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>';
+				continue;
 			}
+			$tend = strtotime($race->racedate.' '.$e->finish);
+			$telapsed = $tend - $tstart;
+			$elapsed = strtohms($telapsed);
+			$gap = 'n/a';
+			if ($finishers > $i) {
+				$tcorrected = strtotime($race->racedate.' '.$e->corrected);
+				$tothercorr = strtotime($race->racedate.' '.$entries[$i]->corrected);
+				$secs = $tothercorr - $tcorrected;
+				$gap = strtohms($secs);
+			}
+			echo '<tr>
+				<td>'.$link.$i.$lend.'</td>
+				<td>'.$division->name.'</td>
+				<td>'.$link.$e->sail.$lend.'</td>
+				<td>'.$link.$e->name.$lend.'</td>
+				<td>'.$e->model.'</td>
+				<td>'.$e->phrf.'</td>
+				<td>'.($e->spinnaker ? 'Y' : 'N').'</td>
+				<td>'.($e->rollerFurling ? 'Y' : 'N').'</td>
+				<td>'.$e->finish.'</td>
+				<td>'.$elapsed.'</td>
+				<td>'.sprintf('%.02f', $e->tcf).'</td>
+				<td>'.$e->corrected.'</td>
+				<td>'.$gap.'</td>
+			</tr>';
 			++$i;
 		}
 	}?>

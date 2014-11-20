@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: gunionmac.als.lbl.gov (MySQL 5.5.30)
+# Host: localhost (MySQL 5.5.30)
 # Database: sailresults
-# Generation Time: 2014-11-16 17:12:58 +0000
+# Generation Time: 2014-11-20 01:17:36 +0000
 # ************************************************************
 
 
@@ -33,7 +33,7 @@ CREATE TABLE `boats` (
   `model` varchar(50) DEFAULT NULL,
   `phrf` int(11) NOT NULL,
   `length` int(11) NOT NULL,
-  `FridayNightClass` int(11) NOT NULL,
+  `FridayNightClass` int(11) DEFAULT NULL,
   `rollerFurling` tinyint(1) NOT NULL DEFAULT '0',
   `skipper` varchar(50) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
@@ -66,6 +66,7 @@ DROP TABLE IF EXISTS `divisions`;
 CREATE TABLE `divisions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `raceid` int(11) unsigned NOT NULL,
+  `typeid` int(11) unsigned NOT NULL,
   `starttime` time NOT NULL,
   `course` int(11) DEFAULT NULL,
   `distance` float DEFAULT NULL,
@@ -74,7 +75,11 @@ CREATE TABLE `divisions` (
   `maxphrf` int(11) DEFAULT NULL,
   `minlength` int(11) DEFAULT NULL,
   `maxlength` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `raceid` (`raceid`),
+  KEY `typeid` (`typeid`),
+  CONSTRAINT `divisions_ibfk_2` FOREIGN KEY (`typeid`) REFERENCES `divisiontypes` (`id`),
+  CONSTRAINT `divisions_ibfk_1` FOREIGN KEY (`raceid`) REFERENCES `races` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -114,6 +119,7 @@ CREATE TABLE `entries` (
   `rollerFurling` tinyint(1) DEFAULT NULL,
   `tcf` float DEFAULT NULL,
   `corrected` time DEFAULT NULL,
+  `status` enum('DNF','DSQ') DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `raceid` (`raceid`),
   KEY `boatid` (`boatid`),

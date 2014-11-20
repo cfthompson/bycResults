@@ -75,7 +75,10 @@ if (array_key_exists('submit', $_POST)) {
 		<script type="text/javascript" src="js/series.js"></script>
     </head>
     <body>
-		<h1>Berkeley Yacht Club Results</h1>
+		<div id="header">
+		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		<h1>Race Results</h1>
+		</div>
 		<?php require_once('nav.inc.php'); ?>
 	<?php if ($edit) {
 		$type = new SeriesType();

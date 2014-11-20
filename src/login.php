@@ -70,8 +70,8 @@ if (array_key_exists('submit', $_POST)) {
     <body>
 		<div id="header">
 		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+		<h1>Berkeley Yacht Club Race Results: Login</h1>
 		</div>
-		<h1>Berkeley Yacht Club: Login</h1>
 		<?php require_once('nav.inc.php'); ?>
 		<div class="errormsg"><?php echo $msg; ?></div>
 		<form id="loginform" method="post">

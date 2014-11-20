@@ -43,9 +43,9 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS) {
 ?>
 
 <?php if ($showlinks) { ?>
-<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Race Results:</a></h3>
+<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Boats:</a></h3>
 <?php } else { ?>
-<h3>Race Results:</h3>
+<h3>Boats:</h3>
 <?php } ?>
 <table id="entries">
 	<tr>
