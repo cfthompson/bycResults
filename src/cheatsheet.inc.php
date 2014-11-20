@@ -43,9 +43,9 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS) {
 ?>
 
 <?php if ($showlinks) { ?>
-<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Boats:</a></h3>
+<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>"><?php echo count($race->entries); ?> Boats:</a></h3>
 <?php } else { ?>
-<h3>Boats:</h3>
+<h3><?php echo count($race->entries); ?> Boats:</h3>
 <?php } ?>
 <table id="entries">
 	<tr>

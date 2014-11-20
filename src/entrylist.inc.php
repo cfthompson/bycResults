@@ -46,7 +46,7 @@ $allentries = $race->entries;
 ?>
 
 <?php if ($showlinks) { ?>
-<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>">Boats:</a></h3>
+<h3><a href="entries.php?edit=true&raceid=<?php echo $race->id; ?>"><?php echo count($allentries); ?> Boats:</a></h3>
 <?php } else { ?>
 <h3><?php echo count($allentries); ?> Boats:</h3>
 <?php } ?>
