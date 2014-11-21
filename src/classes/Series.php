@@ -33,6 +33,9 @@ class Series extends Model {
 		'id',
 		'typeid',
 		'name',
+		'defaultMethod',
+		'defaultParam1',
+		'defaultParam2',
 	);
 
 	public function __get($name) {
@@ -52,6 +55,10 @@ class Series extends Model {
 	}
 
 	public function __set($name, $val) {
+		if (in_array($name, array( 'defaultParam1', 'defaultParam2',)) && empty($val)) {
+			$this->data[$name] = null;
+			return;
+		}
 		if ($name == 'type') {
 			$this->data['type'] = new SeriesType($this->typeid);
 			return;

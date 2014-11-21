@@ -23,6 +23,25 @@ function seriestype_change() {
 		var typename = $("option.seriestype:selected").html();
 		$("#seriestypeprefix").html(typename);
 	}
+	var typeid = $("option.seriestype:selected").val();
+	$("#defaultMethod").prop('disabled', typeid === null);
+	var html = $("#seriestype_"+typeid).html();
+	var spl = html === null ? ["","",""] : html.split("$$");
+	$("#defaultMethod").val(spl[0]);
+	$("#defaultParam1").val(spl[1]);
+	$("#defaultParam2").val(spl[2]);
+	$("#defaultMethod").prop('disabled', html === null);
+	$("#defaultParam1, #defaultParam2").prop('disabled', spl[0] !== 'TOT');
+}
+
+function defaultMethod_change() {
+	var method = $("#defaultMethod").val();
+	$("#defaultParam1, #defaultParam2").prop('disabled', method !== 'TOT');
+	var typeid = $("option.seriestype:selected").val();
+	var html = $("#seriestype_"+typeid).html();
+	var spl = html.split("$$");
+	$("#defaultParam1").val(spl[1]);
+	$("#defaultParam2").val(spl[2]);
 }
 
 $(function() {

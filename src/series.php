@@ -25,6 +25,9 @@ $msg = array(
 	'top'=>'',
 	'seriestype'=>'',
 	'seriesname'=>'',
+	'defaultMethod'=>'',
+	'defaultParam1'=>'',
+	'defaultParam2'=>'',
 );
 
 $id = false;
@@ -83,6 +86,10 @@ if (array_key_exists('submit', $_POST)) {
 	<?php if ($edit) {
 		$type = new SeriesType();
 		$types = $type->findAll();
+		foreach ($types as $t) {
+			$vals = $t->defaultMethod.'$$'.$t->defaultParam1.'$$'.$t->defaultParam2;
+			echo '<span style="display:none" id="seriestype_'.$t->id.'">'.$vals.'</span>';
+		}
 	?>
 		<div class="errormsg"><?php echo $msg['top']; ?></div>
 		<form id="seriesform" method="post">
@@ -96,6 +103,7 @@ if (array_key_exists('submit', $_POST)) {
 							$sel = $t->id == $series->typeid ? 'selected' : '';
 							echo "<option class='seriestype' value='{$t->id}' $sel>{$t->name}</option>";
 						} ?>
+					</select>
 				</td>
 				<td class="errmsg"><?php echo $msg['seriestype']; ?></td>
 			</tr>
@@ -105,8 +113,29 @@ if (array_key_exists('submit', $_POST)) {
 				<td class="errmsg"><?php echo $msg['seriesname']; ?></td>
 			</tr>
 			<tr>
+				<th>Method:</th>
+				<td><select id="defaultMethod" name="series[defaultMethod]" onchange="defaultMethod_change()">
+					<option></option>
+					<?php foreach ($types as $t) {
+						$sel = $t->defaultMethod == $series->defaultMethod ? 'selected' : '';
+						echo "<option class='defaultMethod' value='{$t->defaultMethod}' $sel>{$t->defaultMethod}</option>";
+					} ?></select>
+				<td class="errmsg"><?php echo $msg['defaultMethod']; ?></td>
+				</td>
+			</tr>
+			<tr>
+				<th>Parameter 1:</th>
+				<td><input type="number" name="series[defaultParam1]" id="defaultParam1" value="<?php echo $series->defaultParam1; ?>" <?php echo $series->defaultMethod === 'TOT' ? '' : 'disabled'; ?>></td>
+				<td class="errmsg"><?php echo $msg['defaultParam1']; ?></td>
+			</tr>
+			<tr>
+				<th>Parameter 2:</th>
+				<td><input type="number" name="series[defaultParam2]" id="defaultParam2" value="<?php echo $series->defaultParam2; ?>" <?php echo $series->defaultMethod === 'TOT' ? '' : 'disabled'; ?>></td>
+				<td class="errmsg"><?php echo $msg['defaultParam2']; ?></td>
+			</tr>
+			<tr>
 				<th></th>
-				<td><input type="submit" name="submit" value="Submit"></td>
+				<td colspan="2"><input type="submit" name="submit" value="Submit"></td>
 			</tr>
 		</table>
 		</form>
@@ -120,6 +149,20 @@ if (array_key_exists('submit', $_POST)) {
 				<th>Name:</th>
 				<td><?php echo $series->name; ?></td>
 			</tr>
+			<tr>
+				<th>Method:</th>
+				<td><?php echo $series->defaultMethod; ?></td>
+			</tr>
+			<?php if ($series->defaultMethod == 'TOT') { ?>
+			<tr>
+				<th>Parameter 1:</th>
+				<td><?php echo $series->defaultParam1; ?></td>
+			</tr>
+			<tr>
+				<th>Parameter 2:</th>
+				<td><?php echo $series->defaultParam2; ?></td>
+			</tr>
+			<?php } ?>
 		</table>
 	<?php } ?>
     </body>

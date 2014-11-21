@@ -31,6 +31,9 @@ class SeriesType extends Model {
 	public $columns = array(
 		'id',
 		'name',
+		'defaultMethod',
+		'defaultParam1',
+		'defaultParam2',
 	);
 
 	public function __get($name) {
@@ -49,6 +52,11 @@ class SeriesType extends Model {
 	}
 
 	public function __set($name, $val) {
+		if (in_array($name, array( 'defaultParam1', 'defaultParam2',)) && empty($val)) {
+			$this->data[$name] = null;
+			return;
+		}
+		parent::__set($name, $val);
 		if ($name == 'divisions') {
 			$this->data['divisions'] = $val;
 			return;

@@ -38,6 +38,9 @@ class Race extends Model {
 		'rcboat',
 		'rcskipper',
 		'preparer',
+		'method',
+		'param1',
+		'param2',
 	);
 
 	public function __get($name) {
@@ -74,6 +77,10 @@ class Race extends Model {
 	}
 
 	public function __set($name, $val) {
+		if (in_array($name, array( 'param1', 'param2',)) && empty($val)) {
+			$this->data[$name] = null;
+			return;
+		}
 		if ($name == 'racedate') {
 			$racedate = strtotime($val);
 			$this->data['racedate'] = strftime('%Y-%m-%d', $racedate);
