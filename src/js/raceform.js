@@ -17,20 +17,32 @@
  * MA 02110-1301  USA
  */
 
-function onchange_seriesid() {
-	var seriesid = $("#seriesid option:selected").val();
+var oldseriesid = "";
+
+function getSeriesProps() {
+	var seriesid = $("#seriesid > option:selected").val();
 	var html = $("#series_"+seriesid).html();
+	if (html === null) return null;
+	return html.split("$$");
+
+
+}
+function onchange_seriesid() {
+	var seriesid = $("#seriesid > option:selected").val();
+	var props = getSeriesProps();
 	$(".divisionrow").remove();
-	if (html === null) {
+	if (props === null) {
 		update_submit();
 		return;
 	}
-	var props = html.split("$$");
 
-	var obj = $("#method > option[value='"+props[2]+"']");
-	obj.prop('selected', true);
-	$("#param1").val(props[3]);
-	$("#param2").val(props[4]);
+	if (seriesid !== oldseriesid) {
+		var obj = $("#method > option[value='"+props[2]+"']");
+		obj.prop('selected', true);
+		$("#param1").val(props[3]);
+		$("#param2").val(props[4]);
+	}
+	oldseriesid = seriesid;
 
 	var seriestypeid = props[0];
 	var url = "json/divisions.php?seriestypeid="+seriestypeid;
@@ -74,6 +86,22 @@ function onchange_seriesid() {
 	});
 }
 
+function onchange_method() {
+	var method = $("option:selected", this).val();
+	var isTOT = method === "TOT";
+	var param1 = "", param2 = "";
+	if (isTOT) {
+		var props = getSeriesProps();
+		if (props !== null) {
+			param1 = props[3];
+			param2 = props[4];
+		}
+	}
+	$("#param1").val(param1);
+	$("#param2").val(param2);
+	$("#param1, #param2").prop("disabled", !isTOT);
+}
+
 function onchange_course() {
 	var courseid = $("option:selected", this).val();
 	var mydistance = $(this).parent().parent().next().find('.distance');
@@ -92,7 +120,11 @@ function onchange_course() {
 }
 
 function update_submit() {
-	var disableit = $("#seriesid option:selected").val() === "";
+	var disableit = $("#seriesid > option:selected").val() === "";
+
+	if (!disableit) {
+		disableit = $("#method > option:selected").val() === "";
+	}
 
 	if (!disableit) {
 		$(".course").each(function() {
@@ -112,6 +144,8 @@ function update_submit() {
 }
 $(function() {
 	$("#seriesid").change(onchange_seriesid);
+	$("#method").change(onchange_method);
 	$("table#race").on("change", "tbody tr td select.course", onchange_course);
+	oldseriesid = $("#seriesid > option:selected").val();
 	$("#seriesid").trigger('change');
 });
