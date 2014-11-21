@@ -26,6 +26,12 @@ function onchange_seriesid() {
 		return;
 	}
 	var props = html.split("$$");
+
+	var obj = $("#method > option[value='"+props[2]+"']");
+	obj.prop('selected', true);
+	$("#param1").val(props[3]);
+	$("#param2").val(props[4]);
+
 	var seriestypeid = props[0];
 	var url = "json/divisions.php?seriestypeid="+seriestypeid;
 	if ($("#raceid").length === 1) {

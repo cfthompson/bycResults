@@ -29,6 +29,9 @@ $msg = array(
 	'preparer'=>'',
 	'rcskipper'=>'',
 	'rcboat'=>'',
+	'method'=>'',
+	'param1'=>'',
+	'param2'=>'',
 );
 
 function parseRaceForm() {
@@ -53,6 +56,20 @@ function parseRaceForm() {
 	}
 	// Ensure racedate is in expected format
 	$post['racedate'] = $matches[1].'/'.$matches[2].'/'.$matches[3];
+
+	if (empty($post['method'])) {
+		$msg['method'] = 'Please enter a calculation method';
+		return;
+	}
+	if ($post['method'] === 'TOT') {
+		if (empty($post['param1'])) {
+			$msg['param1'] = 'Please enter parameters for time-on-time calculation';
+		}
+		if (empty($post['param2'])) {
+			$msg['param2'] = 'Please enter parameters for time-on-time calculation';
+		}
+		if ($msg['param1'] || $msg['param2']) return;
+	}
 
 	$race = new Race($post);
 	if (!$race->seriesid) {
@@ -90,9 +107,25 @@ function parseRaceForm() {
 	}
 	$race->divisions = $divisions;
 
+	if ($id) {
+		$oldRace = new Race($id);
+	}
+
 	if (!$race->save()) {
 		$msg['top'] = 'Failed to save your changes - please check values';
 		return;
+	}
+
+	if ($id) {
+		// Update corrected times for all entries if the calculation method has changed
+		if ($oldRace->method != $race->method
+			|| $oldRace->param1 != $race->param1
+			|| $oldRace->param2 != $race->param2) {
+			foreach ($race->entries as $e) {
+				$e->race = $race;
+				$e->save(true);
+			}
+		}
 	}
 
 	echo '<script type="text/javascript">window.location.replace("entries.php?raceid='.$race->id.'&edit=true");</script>';
@@ -133,13 +166,25 @@ $title = $id ?
 <?php $series = new Series();
 $allseries = $series->findAll();
 foreach ($allseries as $s) {
-	echo '<span style="display:none" id="series_'.$s->id.'">'.$s->typeid.'$$'.$s->name.'</span>';
+	$str = implode('$$', array(
+		$s->typeid,
+		$s->name,
+		$s->defaultMethod,
+		$s->defaultParam1,
+		$s->defaultParam2,
+	));
+	echo '<span style="display:none" id="series_'.$s->id.'">'.$str.'</span>';
 } 
 $course = new Course();
 $allcourses = $course->findAll();
 foreach ($allcourses as $c) {
-	echo '<span style="display:none" class="courseid" id="course_'.$c->id.'">'.$c->number.'$$'.$c->distance.'</span>';
+	$str = implode('$$', array(
+		$c->number,
+		$c->distance,
+	));
+	echo '<span style="display:none" class="courseid" id="course_'.$c->id.'">'.$str.'</span>';
 }
+
 ?>
 <form id="raceform" method="post">
 	<?php if ($id) {
@@ -177,31 +222,32 @@ foreach ($allcourses as $c) {
 			<td><input type="text" name="race[rcboat]" id="rcboat" value="<?php echo $race->rcboat; ?>"></td>
 			<td class="errormsg"><?php echo $msg['rcboat']; ?></td>
 		</tr>
+		<tr>
+			<th>Method:</th>
+			<td><select name="race[method]" id="method">
+				<option></option>
+				<?php $seriestype = new SeriesType();
+				foreach ($seriestype->findAll() as $st) {
+					$sel = $race->method == $st->defaultMethod ? 'selected' : '';
+					echo '<option value="'.$st->defaultMethod.'" '.$sel.'>'.$st->defaultMethod.'</option>';
+				} ?>
+				</select>
+			</td>
+			<td class="errormsg"><?php echo $msg['method']; ?></td>
+		</tr>
+		<tr>
+			<th>Parameter 1:</th>
+			<td><input type="number" name="race[param1]" id="param1" value="<?php echo $race->param1; ?>"></td>
+			<td class="errormsg"><?php echo $msg['param1']; ?></td>
+		</tr>
+		<tr>
+			<th>Parameter 2:</th>
+			<td><input type="number" name="race[param2]" id="param2" value="<?php echo $race->param2; ?>"></td>
+			<td class="errormsg"><?php echo $msg['param2']; ?></td>
+		</tr>
 		<tr id="divisionheader">
 			<th colspan="3">Divisions</th>
 		</tr>
-		<?php /* foreach ($divs as $d) {
-			$hm = substr($d->starttime, 0, 2).substr($d->starttime, 3, 2);
-			echo '<tr class="divisionrow"><th colspan="3">'.$d->name.' Division:</th></tr>'
-					. '<tr class="divisionrow"><th>Start Time:</th>'
-					. '<td>'
-					. '<input type="number" name="division['.$d->id.'][starthourminute]" value="'.$hm.'">'
-					. ' (HH:MM)<td class="errormsg">'.$msg['div'][$d->id]['starttime'].'</td>'
-					. '</tr>'
-					. '<tr class="divisionrow"><th>Course:</th>'
-					. '<td><select class="course" name="division['.$d->id.'][course]"><option></option>';
-			foreach ($allcourses as $c) {
-				$sel = ($c->id === $d->course) ? 'selected ' : '';
-				echo '<option value="'.$c->id.'" '.$sel.'>'.$c->number.'</option>';
-			}
-			echo '</select></td>'
-					. '<td class="errormsg">'.$msg['div'][$d->id]['course'].'</td>'
-					. '</tr>'
-					. '<tr class="divisionrow"><th>Distance:</th>'
-					. '<td><input readonly name="division['.$d->id.'][distance]" class="distance" value="'.$d->distance.'"></td>'
-					. '<td class="errormsg">'.$msg['div'][$d->id]['distance'].'</td>'
-					. '</tr>';
-		}*/ ?>
 		<tr>
 			<th></th>
 			<td><input type="submit" name="submit" id="submit" value="Next->" <?php echo ($id ? '' : 'disabled'); ?>></td>

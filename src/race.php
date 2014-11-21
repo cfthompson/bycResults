@@ -95,6 +95,17 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 				<th># Boats:</th>
 				<td><?php echo count($race->entries); ?></td>
 			</tr>
+			<tr>
+				<th>Method:</th>
+				<td><?php echo $race->method; ?></td>
+				<th>Formula:</th>
+				<td><?php if ($race->method == 'TOT') {
+					echo 'Elapsed * ('.$race->param1.'/('.$race->param2.' + PHRF))';
+				} else {
+					echo 'Elapsed - (Distance * PHRF/60)';
+				} ?></td>
+			</tr>
+
 			<?php foreach ($race->divisions as $d) { ?>
 			<tr>
 				<th colspan="4"><?php echo $d->name; ?> Division:</th>

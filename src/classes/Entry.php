@@ -103,10 +103,10 @@ class Entry extends Model {
 		return parent::__get($name);
 	}
 
-	protected function calcTCF() {
+	protected function calcTCF($force=false) {
 		if ($this->status)
 			return;
-		if (!array_key_exists('tcf', $this->data)) {
+		if ($force || !array_key_exists('tcf', $this->data)) {
 			$tcf = 800/(550+$this->phrf);
 			$spincredit = $this->spinnaker ? 0 : 0.04*$tcf;
 			$rfcredit = $this->rollerFurling ? 0.02*$tcf : 0;
@@ -122,11 +122,11 @@ class Entry extends Model {
 		return $seconds;
 	}
 
-	protected function calcCorrected() {
+	protected function calcCorrected($force=false) {
 		if ($this->status)
 			return;
-		if (!array_key_exists('corrected', $this->data)) {
-			$this->calcTCF();
+		if ($force || !array_key_exists('corrected', $this->data)) {
+			$this->calcTCF($force);
 			$starttime = $this->timeToSeconds($this->division->starttime);
 			$finishtime = $this->timeToSeconds($this->finish);
 			$elapsed = $finishtime - $starttime;
@@ -140,7 +140,7 @@ class Entry extends Model {
 		}
 	}
 
-	public function save() {
+	public function save($forceRecalc = false) {
 		if (!array_key_exists('raceid', $this->data)
 			|| !array_key_exists('boatid', $this->data)
 			|| !array_key_exists('divisionid', $this->data)
@@ -148,7 +148,7 @@ class Entry extends Model {
 			|| !array_key_exists('finish', $this->data)) {
 			return false;
 		}
-		$this->calcCorrected();
+		$this->calcCorrected($forceRecalc);
 		return parent::save();
 	}
 }
