@@ -19,12 +19,10 @@
  */
 require_once('auth.php');
 require_once('classes/User.php');
-if (getAccessLevel() < User::ADMIN_ACCESS) {
-	header('Location: index.php');
-	exit();
-}
-
 require_once('classes/Boat.php');
+
+$showSkipperInfo = getAccessLevel() >= User::ADMIN_ACCESS;
+
 ?>
 <html>
     <head>
@@ -47,23 +45,29 @@ require_once('classes/Boat.php');
 				<th>PHRF</th>
 				<th>Length</th>
 				<th>Roller Furling?</th>
+				<?php if ($showSkipperInfo) { ?>
 				<th>Skipper</th>
 				<th>Email</th>
 				<th>Phone</th>
+				<?php } ?>
 			</tr>
 			<?php $boat = new Boat();
 			foreach($boat->findAll() as $b) {
+				$boaturl = $b->name;
+				if ($showSkipperInfo) $boaturl = '<a href="boat.php?id='.$b->id.'">'.$b->name.'</a>';
 				echo '<tr>
 				<td class="val">'.$b->sail.'</td>
-				<td class="link"><a href="boat.php?id='.$b->id.'">'.$b->name.'</a></td>
+				<td class="link">'.$boaturl.'</td>
 				<td class="val">'.$b->model.'</td>
 				<td class="val">'.$b->phrf.'</td>
 				<td class="val">'.$b->length.'</td>
-				<td class="val">'.$b->rollerFurling.'</td>
-				<td class="val">'.$b->skipper.'</td>
-				<td class="val">'.$b->email.'</td>
-				<td class="val">'.$b->phone.'</td>
-				</tr>';
+				<td class="val">'.($b->rollerFurling ? 'Y' : 'N').'</td>';
+				if ($showSkipperInfo) {
+					echo '<td class="val">'.$b->skipper.'</td>
+					<td class="val">'.$b->email.'</td>
+					<td class="val">'.$b->phone.'</td>';
+				}
+				echo '</tr>';
 			} ?>
 		</table>
 	</body>
