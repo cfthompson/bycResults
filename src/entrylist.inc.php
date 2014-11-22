@@ -62,7 +62,9 @@ $allentries = $race->entries;
 		<th>Roll Furl?</th>
 		<th>Finish</th>
 		<th>Elapsed</th>
+		<?php if ($race->method === 'TOT') { ?>
 		<th>TCF</th>
+		<?php } ?>
 		<th>Corrected</th>
 		<th>Ahead of Next</th>
 	</tr>
@@ -104,8 +106,11 @@ $allentries = $race->entries;
 					<td>'.($e->spinnaker ? 'Y' : 'N').'</td>
 					<td>'.($e->rollerFurling ? 'Y' : 'N').'</td>
 					<td>'.$e->status.'</td>
-					<td></td>
-					<td></td>
+					<td></td>';
+				if ($race->method === 'TOT') {
+					echo '<td></td>';
+				}
+				echo '<td></td>
 					<td></td>
 					<td></td>
 				</tr>';
@@ -131,9 +136,11 @@ $allentries = $race->entries;
 				<td>'.($e->spinnaker ? 'Y' : 'N').'</td>
 				<td>'.($e->rollerFurling ? 'Y' : 'N').'</td>
 				<td>'.$e->finish.'</td>
-				<td>'.$elapsed.'</td>
-				<td>'.sprintf('%.02f', $e->tcf).'</td>
-				<td>'.$e->corrected.'</td>
+				<td>'.$elapsed.'</td>';
+			if ($race->method === 'TOT') {
+				echo '<td>'.sprintf('%.02f', $e->tcf).'</td>';
+			}
+			echo '<td>'.$e->corrected.'</td>
 				<td>'.$gap.'</td>
 			</tr>';
 			++$i;

@@ -17,6 +17,8 @@
  * MA 02110-1301  USA
  */
 
+var oldseriesid;
+
 function onchange_seriesid() {
 	var seriesid = $("#seriesid option:selected").val();
 	var html = $("#series_"+seriesid).html();
@@ -27,10 +29,13 @@ function onchange_seriesid() {
 	}
 	var props = html.split("$$");
 
-	var obj = $("#method > option[value='"+props[2]+"']");
-	obj.prop('selected', true);
-	$("#param1").val(props[3]);
-	$("#param2").val(props[4]);
+	if (oldseriesid !== seriesid) {
+		var obj = $("#method > option[value='"+props[2]+"']");
+		obj.prop('selected', true);
+		$("#param1").val(props[3]);
+		$("#param2").val(props[4]);
+		oldseriesid = seriesid;
+	}
 
 	var seriestypeid = props[0];
 	var url = "json/divisions.php?seriestypeid="+seriestypeid;
@@ -113,5 +118,6 @@ function update_submit() {
 $(function() {
 	$("#seriesid").change(onchange_seriesid);
 	$("table#race").on("change", "tbody tr td select.course", onchange_course);
+	oldseriesid = $("#seriesid option:selected").val();
 	$("#seriesid").trigger('change');
 });

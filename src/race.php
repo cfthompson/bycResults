@@ -114,7 +114,7 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 				<th>Start:</th>
 				<td><?php echo $d->starttime; ?></td>
 				<th>Course/Distance:</th>
-				<td><?php echo $d->course.' / '.$d->distance; ?></td>
+				<td><?php echo $d->coursenumber.' / '.$d->distance; ?></td>
 			</tr>
 			<?php if ($d->description) { ?>
 			<tr>

@@ -74,17 +74,31 @@ else if (array_key_exists('entry_delete', $_POST)) {
 <th>Roller Furling?</th>
 <th>Finish Time</th>
 <th>Elapsed</th>
-<th>TCF</th>
+<th>TCF</th>		<- Only for TOT
 <th>Corrected</th>
 <th>Ahead of Next</th>
  */
 ?>
 <tr>
+
+<span style="display:none" id="method"><?php echo $race->method; ?></span>
+<span style="display:none" id="param1"><?php echo $race->param1; ?></span>
+<span style="display:none" id="param2"><?php echo $race->param2; ?></span>
+
 <?php foreach ($allboats as $b) {
 	echo '<span style="display:none" id="boat_'.$b->id.'">'.$b->name.'$$'.$b->sail.'$$'.$b->model.'$$'.$b->phrf.'$$'.$b->length.'$$'.$b->rollerFurling.'</span>';
 } 
 foreach ($race->divisions as $d) {
-	echo '<span style="display:none" class="division" id="division_'.$d->id.'">'.$d->name.'$$'.$d->starttime.'$$'.$d->minphrf.'$$'.$d->maxphrf.'$$'.$d->minlength.'$$'.$d->maxlength.'</span>';
+	$str = implode('$$', array(
+		$d->name,
+		$d->starttime,
+		$d->distance,
+		$d->minphrf,
+		$d->maxphrf,
+		$d->minlength,
+		$d->maxlength,
+	));
+	echo '<span style="display:none" class="division" id="division_'.$d->id.'">'.$str.'</span>';
 } ?>
 <form id="entry_form" method="post">
 	<input type="hidden" name="entry[raceid]" value="<?php echo $raceid; ?>">
@@ -125,7 +139,9 @@ foreach ($race->divisions as $d) {
 	<td><input type="checkbox" class="calcinput" name="entry[rollerFurling]" id="rollerFurling" <?php echo $entry->rollerFurling ? 'checked' : ''; ?>></td>
 	<td><input type="text" class="calcinput" name="entry[finish]" id="finish" value="<?php echo $entry->status ? $entry->status : $entry->finish; ?>"></td>
 	<td><div id="elapsed"></div></td>
+	<?php if ($race->method === 'TOT') { ?>
 	<td><div id="tcf"></div></td>
+	<?php } ?>
 	<td><div id="corrected"></div></td>
 	<td><div id="gap"></div></td>
 </form>
