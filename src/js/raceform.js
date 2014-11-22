@@ -17,8 +17,6 @@
  * MA 02110-1301  USA
  */
 
-var oldseriesid;
-
 function onchange_seriesid() {
 	var seriesid = $("#seriesid option:selected").val();
 	var html = $("#series_"+seriesid).html();
@@ -28,13 +26,17 @@ function onchange_seriesid() {
 		return;
 	}
 	var props = html.split("$$");
+	// props:
+	// 0 = typeid
+	// 1 = name
+	// 2 = defaultMethod
+	// 3 = defaultParam1
+	// 4 = defaultParam2
 
-	if (oldseriesid !== seriesid) {
-		var obj = $("#method > option[value='"+props[2]+"']");
+	var obj = $("#method > option[value='"+props[2]+"']");
+	if (!obj.prop('selected')) {
 		obj.prop('selected', true);
-		$("#param1").val(props[3]);
-		$("#param2").val(props[4]);
-		oldseriesid = seriesid;
+		$("#method").trigger('change');
 	}
 
 	var seriestypeid = props[0];
@@ -79,6 +81,30 @@ function onchange_seriesid() {
 	});
 }
 
+function onchange_method() {
+	var method = $("#method > option:selected").val();
+	if (method !== 'TOT') {
+		$("#param1").val("");
+		$("#param2").val("");
+		return;
+	}
+	// For TOT, fill in default parameters
+	var seriesid = $("#seriesid option:selected").val();
+	var html = $("#series_"+seriesid).html();
+	if (html === null) {
+		return;
+	}
+	var props = html.split("$$");
+	// props:
+	// 0 = typeid
+	// 1 = name
+	// 2 = defaultMethod
+	// 3 = defaultParam1
+	// 4 = defaultParam2
+	$("#param1").val(props[3]);
+	$("#param2").val(props[4]);
+}
+
 function onchange_course() {
 	var courseid = $("option:selected", this).val();
 	var mydistance = $(this).parent().parent().next().find('.distance');
@@ -117,7 +143,7 @@ function update_submit() {
 }
 $(function() {
 	$("#seriesid").change(onchange_seriesid);
+	$("#method").change(onchange_method);
 	$("table#race").on("change", "tbody tr td select.course", onchange_course);
-	oldseriesid = $("#seriesid option:selected").val();
 	$("#seriesid").trigger('change');
 });
