@@ -72,7 +72,7 @@ function boat_onChange() {
 	}
 	$("#division").html(divname);
 	$("#divisionid").val(divid);
-	$("#finish").val("").focus();
+	$("#finish").focus();
 }
 
 function timeToSeconds(time) {
