@@ -105,11 +105,12 @@ foreach ($race->divisions as $d) {
 	<?php if ($entry->id) { ?>
 		<input type="hidden" name="entry[id]" value="<?php echo $entry->id; ?>">
 	<?php } ?>
-	<td><input type="submit" name="entry_submit" id="entry_submit" value="<?php echo ($entry->id) ? 'Submit' : 'Add'; ?>"></td>
-	<td>
+	<td><input type="submit" name="entry_submit" id="entry_submit" value="<?php echo ($entry->id) ? 'Submit' : 'Add'; ?>">
 		<?php if ($entry->id) { ?>
 		<input type="submit" name="entry_delete" value="Delete">
 		<?php } ?>
+	</td>
+	<td>
 		<span id="division"></span><input type="hidden" name="entry[divisionid]" id="divisionid" value="<?php echo $entry->divisionid; ?>">
 	</td>
 	<td><select id="entrysail" name="entry[boatid]">

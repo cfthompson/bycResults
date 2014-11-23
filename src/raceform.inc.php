@@ -245,8 +245,8 @@ foreach ($allcourses as $c) {
 			<td><input type="number" name="race[param2]" id="param2" value="<?php echo $race->param2; ?>"></td>
 			<td class="errormsg"><?php echo $msg['param2']; ?></td>
 		</tr>
-		<tr id="divisionheader">
-			<th colspan="3">Divisions</th>
+		<tr id="divisiontop">
+			<th colspan="3" class="divisionheader">Divisions</th>
 		</tr>
 		<tr>
 			<th></th>

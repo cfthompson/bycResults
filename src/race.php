@@ -108,7 +108,7 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS && !$edit) {
 
 			<?php foreach ($race->divisions as $d) { ?>
 			<tr>
-				<th colspan="4"><?php echo $d->name; ?> Division:</th>
+				<th colspan="4" class="divisionheader"><?php echo $d->name; ?> Division:</th>
 			</tr>
 			<tr>
 				<th>Start:</th>

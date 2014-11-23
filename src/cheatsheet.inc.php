@@ -47,7 +47,7 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS) {
 <?php } else { ?>
 <h3><?php echo count($race->entries); ?> Boats:</h3>
 <?php } ?>
-<table id="entries">
+<table id="entries-cheatsheet">
 	<tr>
 		<th>Division</th>
 		<th>Place</th>

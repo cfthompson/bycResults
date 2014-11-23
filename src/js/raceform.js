@@ -50,8 +50,8 @@ function onchange_seriesid() {
 		$.each(data, function(divid, div) {
 			var starttime = div.starttime;
 			var hm = starttime.substr(0, 2)+":"+starttime.substr(3, 2);
-			html += '<tr class="divisionrow">'+
-				'<th colspan="3">'+div.name+' Division:</th></tr>'+
+			html += '<tr>'+
+				'<th colspan="3" class="divisionheader">'+div.name+' Division:</th></tr>'+
 				'<tr class="divisionrow"><th>Start Time:</th>'+
 				'<td>'+
 				'<input type="hidden" name="division['+divid+'][typeid]" value="'+div.typeid+'">'+
@@ -76,7 +76,7 @@ function onchange_seriesid() {
 				'<td class="errormsg"></td>'+
 				'</tr>';
 		});
-		$("#divisionheader").after(html);
+		$("#divisiontop").after(html);
 		update_submit();
 	});
 }
