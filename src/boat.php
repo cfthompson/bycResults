@@ -53,7 +53,7 @@ if (array_key_exists('submit', $_POST)) {
     </head>
     <body>
 		<div id="header">
-		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+			<a href="http://www.berkeleyyc.org"><img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home"></a>
 		<h1>Race Results</h1>
 		</div>
 		<?php require_once('nav.inc.php'); ?>
