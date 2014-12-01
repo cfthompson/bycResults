@@ -30,6 +30,8 @@ function is_inrange(val, minval, maxval) {
 	return true;
 }
 
+var boatid = 0;
+
 function boat_onChange() {
 	var id = $(this).val();
 	$("#entryboat").val(id);
@@ -45,10 +47,13 @@ function boat_onChange() {
 	var model = boatprops[2];            // 2 = model
 	var phrf = parseInt(boatprops[3]);   // 3 = phrf
 	var length = parseInt(boatprops[4]); // 4 = length
-	var rollFurl = boatprops[5];         // 5 = rollerFurling
 	$("#entrytype").html(model);
 	$("#phrf").val(phrf);
-	$("#rollerFurling").prop("checked", rollFurl == "1");
+	if (boatid !== id) {
+		var rollFurl = boatprops[5];         // 5 = rollerFurling
+		$("#rollerFurling").prop("checked", rollFurl == "1");
+		boatid = id;
+	}
 	var divid = "";
 	var divname = "";
 	$(".division").each(function() {
@@ -126,7 +131,14 @@ function entry_recalc() {
 		entry_clearcalc(false);
 		return true;
 	}
-	if (!/^\d{6}$/.test(finish) && !/^\d{2}:\d{2}:\d{2}$/.test(finish)) {
+	if (/^\d{6}$/.test(finish)) {
+		str = finish.substr(0, 2) + ":"
+			+ finish.substr(2, 2) + ":"
+			+ finish.substr(4, 2);
+		finish = str;
+		$("#finish").val(finish);
+	}
+	if (!/^\d{2}:\d{2}:\d{2}$/.test(finish)) {
 		entry_clearcalc(true);
 		return false;
 	}
@@ -207,6 +219,7 @@ $(function() {
 	var objs = $(".calcinput");
 	objs.change(entry_recalc);
 	$("#entry_submit").click(onEntrySubmit);
+	boatid = $("#entrysail").val();
 	$("#entrysail").trigger("change");
 	entry_recalc();
 });

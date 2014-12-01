@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<!--
+/*
 Copyright (C) 2014 rfgunion.
 
 This library is free software; you can redistribute it and/or
@@ -16,13 +15,31 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA 02110-1301  USA
--->
-<html>
-	<head>
-		<title>Berkeley YC Results</title>
-		<meta http-equiv="refresh" content="0;URL=index.php">
-	</head>
-	<body>
-		<div>The page you requested is at index.php.</div>
-	</body>
-</html>
+*/
+/* 
+    Created on : Nov 29, 2014, 6:02:32 PM
+    Author     : rfgunion
+*/
+
+a:link:after, a:visited:after {content:"";font-size:100%;}
+
+.hide-on-print {
+	display: none;
+}
+
+ul.tabs {
+	display:none;
+}
+
+#header, #page {
+	border: none;
+}
+
+#content {
+	padding: 0;
+}
+
+div.view {
+	border: none;
+	padding: 0;
+}
