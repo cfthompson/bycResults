@@ -9,7 +9,7 @@ $this->breadcrumbs=array(
 );
 
 ?>
-<h1 class="hide-on-print">Race <?php echo $race->id.': '.$race->racedate; ?></h1>
+<h3><?php echo $race->series->name; ?> -- Date: <?php echo $race->racedate; ?></h3>
 
 <?php $this->widget('CTabView', array(
 	'tabs'=>array(
