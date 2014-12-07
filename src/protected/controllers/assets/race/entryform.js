@@ -221,5 +221,5 @@ $(function() {
 	$("#entry_submit").click(onEntrySubmit);
 	boatid = $("#entrysail").val();
 	$("#entrysail").trigger("change");
-	entry_recalc();
+	objs.trigger('change');
 });

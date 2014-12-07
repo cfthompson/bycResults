@@ -247,3 +247,7 @@ tr:nth-child(even) {
 tr:nth-child(odd) {
 	background: #eef;
 }
+
+td.link-column a {
+	display: block;
+}

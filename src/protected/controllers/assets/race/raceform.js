@@ -17,70 +17,6 @@
  * MA 02110-1301  USA
  */
 
-function onchange_seriesid() {
-	var seriesid = $("#seriesid option:selected").val();
-	var html = $("#series_"+seriesid).html();
-	$(".divisionrow").remove();
-	if (html === null) {
-		update_submit();
-		return;
-	}
-	var props = html.split("$$");
-	// props:
-	// 0 = typeid
-	// 1 = name
-	// 2 = defaultMethod
-	// 3 = defaultParam1
-	// 4 = defaultParam2
-
-	var obj = $("#method > option[value='"+props[2]+"']");
-	if (!obj.prop('selected')) {
-		obj.prop('selected', true);
-		$("#method").trigger('change');
-	}
-
-	var seriestypeid = props[0];
-	var url = "json/divisions.php?seriestypeid="+seriestypeid;
-	if ($("#raceid").length === 1) {
-		var raceid = $("#raceid").val();
-		url += "&raceid="+raceid;
-	}
-	$.getJSON(url, function(data) {
-		var html = "";
-		$.each(data, function(divid, div) {
-			var starttime = div.starttime;
-			var hm = starttime.substr(0, 2)+":"+starttime.substr(3, 2);
-			html += '<tr>'+
-				'<th colspan="3" class="divisionheader">'+div.name+' Division:</th></tr>'+
-				'<tr class="divisionrow"><th>Start Time:</th>'+
-				'<td>'+
-				'<input type="hidden" name="division['+divid+'][typeid]" value="'+div.typeid+'">'+
-				'<input type="text" name="division['+divid+'][starthourminute]" value="'+hm+'">'+
-				' (HH:MM)<td class="errormsg"></td>'+
-				'</tr>'+
-				'<tr class="divisionrow"><th>Course:</th>'+
-				'<td><select class="course" name="division['+divid+'][course]"><option></option>';
-			$("span.courseid").each(function() {
-				var course_id = $(this).attr('id').split("_");
-				var courseid = course_id[1];
-				var content = $(this).html().split("$$");
-				var coursenumber = content[0];
-				var sel = (courseid === div.course) ? "selected " : "";
-				html += '<option '+sel+'value="'+courseid+'">'+coursenumber+'</option>';
-			});
-			html += '</select></td>'+
-				'<td class="errormsg"></td>'+
-				'</tr>'+
-				'<tr class="divisionrow"><th>Distance:</th>'+
-				'<td><input readonly name="division['+divid+'][distance]" class="distance" value="'+div.distance+'"></td>'+
-				'<td class="errormsg"></td>'+
-				'</tr>';
-		});
-		$("#divisiontop").after(html);
-		update_submit();
-	});
-}
-
 function onchange_method() {
 	var method = $("#method > option:selected").val();
 	if (method !== 'TOT') {
@@ -107,7 +43,7 @@ function onchange_method() {
 
 function onchange_course() {
 	var courseid = $("option:selected", this).val();
-	var mydistance = $(this).parent().parent().next().find('.distance');
+	var mydistance = $(this).parent().parent().find('input.distance');
 	if (courseid == "") {
 		mydistance.val("");
 		mydistance.prop("readonly", true);
@@ -126,14 +62,14 @@ function update_submit() {
 	var disableit = $("#seriesid option:selected").val() === "";
 
 	if (!disableit) {
-		$(".course").each(function() {
+		$("select.course").each(function() {
 			if ($(this).val() === "") {
 				disableit = true;
 			}
 		});
 	}
 	if (!disableit) {
-		$(".distance").each(function() {
+		$("input.distance").each(function() {
 			if (parseFloat($(this).val()) === 0) {
 				disableit=true;
 			}
@@ -142,8 +78,6 @@ function update_submit() {
 	$("#submit").prop("disabled", disableit);
 }
 $(function() {
-	$("#seriesid").change(onchange_seriesid);
-	$("#method").change(onchange_method);
-	$("table#race").on("change", "tbody tr td select.course", onchange_course);
-	$("#seriesid").trigger('change');
+	$("#Races_method").change(onchange_method);
+	$("div.form").on("change", "select.course", onchange_course);
 });

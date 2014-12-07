@@ -7,21 +7,87 @@ class RaceController extends Controller
 		$this->render('delete');
 	}
 
-	public function actionEdit($id)
+	public function actionCreate($seriesid)
 	{
-		$race = $this->getRace($id);
-		if (!$race) {
-			throw new CHttpException(404, 'No race with id '.$id.' was found.');
-		}
-		$form = new CForm('application.views.race.raceForm', $race);
-		if ($form->submitted() && $form->validate()) {
-			$this->redirect(array('race/entries', 'id'=>$race->id));
+		$series = Series::model()->findByPk($seriesid);
+		if (!$series) {
+			$this->redirect(array('site/index'));
 			Yii::app()->end();
 		}
 
+    	$model=new Races;
+
+    	// uncomment the following code to enable ajax-based validation
+    	if(isset($_POST['ajax']) && $_POST['ajax']==='races-create-form')
+    	{
+        	echo CActiveForm::validate($model);
+        	Yii::app()->end();
+    	}
+
+    	if(isset($_POST['Races']))
+    	{
+        	$model->attributes=$_POST['Races'];
+        	if($model->save())
+        	{
+				$this->redirect(array('race/entries', 'id'=>$model->id));
+				Yii::app()->end();
+        	}
+    	} else {
+			$model->racedate = date('Y-m-d');
+			$model->seriesid = $seriesid;
+			$model->method = $series->defaultMethod;
+			$model->param1 = $series->defaultParam1;
+			$model->param2 = $series->defaultParam2;
+		}
+		$this->registerClientScripts();
+    	$this->render('create',array('model'=>$model));
+	}
+
+	public function actionEdit($id)
+	{
+		$model = $this->getRace($id);
+		if (!$model) {
+			throw new CHttpException(404, 'No race with id '.$id.' was found.');
+		}
+
+   		// uncomment the following code to enable ajax-based validation
+    	if(isset($_POST['ajax']) && $_POST['ajax']==='races-create-form')
+    	{
+        	echo CActiveForm::validate($model);
+        	Yii::app()->end();
+    	}
+
+    	if(isset($_POST['Races']))
+    	{
+        	$model->attributes=$_POST['Races'];
+        	if($model->save())
+        	{
+				foreach ($_POST['Races']['divisions'] as $divid=>$d) {
+					if ($divid > 0) {
+						$division = Divisions::model()->findByPk($divid);
+					} else {
+						$division = new Divisions;
+					}
+					$division->attributes = $d;
+					$division->raceid = $model->id;
+					$division->save();
+			}
+				$this->redirect(array('race/entries', 'id'=>$model->id));
+				Yii::app()->end();
+        	}
+		}
+		/*
+		$form = new CForm('application.views.race.raceForm', $race);
+		if ($form->submitted() && $form->validate()) {
+			$race->save();
+			$this->redirect(array('race/entries', 'id'=>$race->id));
+			Yii::app()->end();
+		}
+		*/
+
+		$this->registerClientScripts();
 		$this->render('edit', array(
-			'form'=>$form,
-			'race'=>$race,
+			'model'=>$model,
 		));
 	}
 
@@ -79,6 +145,39 @@ class RaceController extends Controller
 			}
 		}
 
+		$this->registerClientScripts();
+
+		$this->render('entries', array(
+			'race'=>$race,
+			'entry'=>$entry,
+		));
+	}
+
+	public function actionDivisions($id) {
+		$race = $this->getRace($id);
+		if (!$race) {
+			throw new CHttpException(404, 'No race with id '.$id.' was found.');
+		}
+
+		$items = array();
+		foreach ($race->divisions as $d) {
+			$items[$d->id] = array(
+				'name'=>$d->name,
+				'typeid'=>$d->typeid,
+				'starttime'=>$d->starttime,
+				'minphrf'=>$d->minphrf,
+				'maxphrf'=>$d->maxphrf,
+				'minlength'=>$d->minlength,
+				'maxlength'=>$d->maxlength,
+				'course'=>$d->course,
+				'distance'=>$d->distance,
+			);
+		}
+		echo json_encode($items);
+		Yii::app()->end();
+	}
+
+	protected function registerClientScripts() {
 		$cs = Yii::app()->clientScript;
 		$cs->addPackage('race', array(
 			'basePath'=>'application.controllers.assets.race',
@@ -86,11 +185,6 @@ class RaceController extends Controller
 			'depends'=>array('jquery'),
 		));
 		$cs->registerPackage('race');
-
-		$this->render('entries', array(
-			'race'=>$race,
-			'entry'=>$entry,
-		));
 	}
 
 	protected function getRace($id) {

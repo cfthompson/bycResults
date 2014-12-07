@@ -81,6 +81,20 @@ class Races extends CActiveRecord
 	}
 
 	/**
+	 * Override of CActiveRecord::save
+	 */
+	public function save($performValidation=true, $attributes=NULL) {
+		$isNew = $this->isNewRecord;
+		if (!parent::save($performValidation, $attributes)) {
+			return false;
+		}
+		if ($isNew) {
+			
+		}
+		return true;
+	}
+
+	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *
 	 * Typical usecase:

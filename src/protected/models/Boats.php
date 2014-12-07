@@ -38,7 +38,7 @@ class Boats extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('timestamp, phrf', 'required'),
+			array('sail, name, phrf, length', 'required'),
 			array('phrf, FridayNightClass, rollerFurling, length', 'numerical', 'integerOnly'=>true),
 			array('sail', 'length', 'max'=>40),
 			array('name, model, skipper, email, phone', 'length', 'max'=>50),
@@ -68,12 +68,12 @@ class Boats extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'timestamp' => 'Timestamp',
-			'sail' => 'Sail',
+			'sail' => 'Sail #',
 			'name' => 'Name',
-			'model' => 'Model',
-			'phrf' => 'Phrf',
+			'model' => 'Type',
+			'phrf' => 'PHRF',
 			'FridayNightClass' => 'Friday Night Class',
-			'rollerFurling' => 'Roller Furling',
+			'rollerFurling' => 'Roller Furling?',
 			'skipper' => 'Skipper',
 			'email' => 'Email',
 			'phone' => 'Phone',
@@ -114,6 +114,10 @@ class Boats extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>false,
+			'sort'=>array(
+				'defaultOrder'=>'name',
+			),
 		));
 	}
 

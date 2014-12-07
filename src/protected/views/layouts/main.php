@@ -36,7 +36,8 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>'http://www.berkeleyyc.org'),
-				array('label'=>'All Series', 'url'=>array('/site/index')),
+				array('label'=>'Races', 'url'=>array('/site/index')),
+				array('label'=>'Roster', 'url'=>array('/boat/index')),
 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
 				array('label'=>'Contact', 'url'=>array('/site/contact')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
