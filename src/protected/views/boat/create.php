@@ -3,7 +3,7 @@
 /* @var $model Boats */
 
 $this->breadcrumbs=array(
-	'Boats'=>array('index'),
+	'Roster'=>array('index'),
 	'Add',
 );
 

@@ -43,7 +43,9 @@ function onchange_method() {
 
 function onchange_course() {
 	var courseid = $("option:selected", this).val();
-	var mydistance = $(this).parent().parent().find('input.distance');
+	var id = $(this).attr('id');
+	var idx = id.lastIndexOf('_courseid');
+	var mydistance = $(this).parent().parent().find('input#'+id.substr(0, idx)+'_distance');
 	if (courseid == "") {
 		mydistance.val("");
 		mydistance.prop("readonly", true);

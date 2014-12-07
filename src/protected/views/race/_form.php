@@ -142,7 +142,7 @@ foreach ($courses as $c) {
 				echo '</div>';
 				echo '<div class="row">';
 				echo '<label for="Races_divisions_'.$i.'_course">Course</label>';
-				echo '<select class="course" name="Races[divisions]['.$i.'][courseid]" id="Races_divisions_'.$d->id.'_courseid"><option></option>';
+				echo '<select class="course" name="Races[divisions]['.$i.'][courseid]" id="Races_divisions_'.$i.'_courseid"><option></option>';
 				foreach ($courses as $c) {
 					echo '<option value="'.$c->id.'">'.$c->number.'</option>';
 				}

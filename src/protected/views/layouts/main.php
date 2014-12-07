@@ -48,6 +48,7 @@
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
 			'links'=>$this->breadcrumbs,
+			'homeLink'=>false,
 			'htmlOptions'=>array(
 				'class'=>'breadcrumbs hide-on-print',
 			),
