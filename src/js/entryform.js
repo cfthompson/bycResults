@@ -35,6 +35,10 @@ function boat_onChange() {
 	$("#entryboat").val(id);
 	$("#entrysail").val(id);
 	var boatspan = $("#boat_"+id);
+	if (boatspan.length == 0) {
+		entry_clearcalc();
+		return;
+	}
 	var boatprops = boatspan.html().split("$$");
 	var boatname = boatprops[0];         // 0 = name
 	var sail = boatprops[1];             // 1 = sail
@@ -68,7 +72,7 @@ function boat_onChange() {
 	}
 	$("#division").html(divname);
 	$("#divisionid").val(divid);
-	$("#finish").val("").focus();
+	$("#finish").focus();
 }
 
 function timeToSeconds(time) {
@@ -88,6 +92,24 @@ function timeToSeconds(time) {
 	}
 	var result = (h * 3600) + (m * 60) + s;
 	return result;
+}
+
+function secondsToTime(seconds) {
+	var h = parseInt(seconds/3600);
+	seconds -= h*3600;
+	var m = parseInt(seconds/60);
+	seconds -= m*60;
+	var s = seconds.toFixed(0);
+
+	var str = "";
+	if (h < 10) str += "0";
+	str += h+":";
+	if (m < 10) str += "0";
+	str += m+":";
+	if (s < 10) str += "0";
+	str += s;
+
+	return str;
 }
 
 function entry_recalc() {
@@ -111,7 +133,9 @@ function entry_recalc() {
 
 	divisionid = parseInt(divisionid);
 	phrf = parseInt(phrf);
+	var divname = "";
 	var starttime = "";
+	var distance = 0.0;
 	$(".division").each(function() {
 		var tmpdivid = parseInt($(this).prop("id").split("_")[1]);
 		if (tmpdivid !== divisionid) return;
@@ -119,12 +143,16 @@ function entry_recalc() {
 		// divprops:
 		// 0 = name
 		// 1 = starttime
-		// 2 = minphrf
-		// 3 = maxphrf
-		// 4 = minlength
-		// 5 = maxlength
+		// 2 = distance
+		// 3 = minphrf
+		// 4 = maxphrf
+		// 5 = minlength
+		// 6 = maxlength
+		divname = divprops[0];
 		starttime = divprops[1];
+		distance = parseFloat(divprops[2]);
 	});
+	
 	var tstart = timeToSeconds(starttime);
 	var tfinish = timeToSeconds(finish);
 	if (tstart < 0 || tfinish < 0) {
@@ -132,35 +160,28 @@ function entry_recalc() {
 		return false;
 	}
 	var elapsed = tfinish - tstart;
-	var t = elapsed;
-	var h = parseInt(t/3600);
-	t -= h*3600;
-	var m = parseInt(t/60);
-	t -= m*60;
-	var s = t;
-
-	var elapsedstr = ""+h+":";
-	if (m < 10) elapsedstr += "0";
-	elapsedstr += m+":";
-	if (s < 10) elapsedstr += "0";
-	elapsedstr += s;
-
+	var elapsedstr = secondsToTime(elapsed);
 	$("#elapsed").html(elapsedstr);
-	var tcf = 800.0/(550.0 + phrf);
-	var tcfspin = spin ? 0.0 : 0.04*tcf;
-	var tcffurl = furl ? 0.02*tcf : 0.0; 
-	tcf -= tcfspin + tcffurl;
-	$("#tcf").html(tcf.toFixed(2));
-	var corrected = elapsed * tcf;
-	var r = corrected % 3600;
-	h = (corrected - r)/3600;
-	corrected = r;
-	r = corrected % 60;
-	m = ((corrected - r)/60).toFixed(0);
-	if (m < 10) m = "0"+m;
-	s = r.toFixed(2);
-	if (s < 10) s = "0"+s;
-	$("#corrected").html(""+h+":"+m+":"+s);
+
+	var method = $("#method").html();
+	var param1 = $("#param1").html();
+	var param2 = $("#param2").html();
+	var corrected;
+	if (method === 'TOT') {
+		var tcf = parseFloat(param1)/(parseFloat(param2) + phrf);
+		var tcfspin = spin ? 0.0 : 0.04*tcf;
+		var tcffurl = furl ? 0.02*tcf : 0.0; 
+		tcf -= tcfspin + tcffurl;
+		$("#tcf").html(tcf.toFixed(2));
+		corrected = elapsed * tcf;
+	} else {
+		$("#division").html(divname);
+		if (!spin) phrf += 18;
+		if (furl) phrf += 12;
+		corrected = elapsed - (distance * phrf);
+	}
+	var correctedstr = secondsToTime(corrected);
+	$("#corrected").html(correctedstr);
 	$("#entry_submit").prop("disabled", false);
 	return true;
 }

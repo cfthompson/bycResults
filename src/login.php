@@ -30,11 +30,11 @@ function parseLoginForm() {
 	}
 
 	$login = $_POST['login'];
-	if (!array_key_exists('uid', $login)) {
+	if (!array_key_exists('uid', $login) || empty($login['uid'])) {
 		$msg_uid = 'Username cannot be blank';
 		return;
 	}
-	if (!array_key_exists('pw', $login)) {
+	if (!array_key_exists('pw', $login) || empty($login['pw'])) {
 		$msg_uid = 'Password cannot be blank';
 		return;
 	}
@@ -69,7 +69,7 @@ if (array_key_exists('submit', $_POST)) {
     </head>
     <body>
 		<div id="header">
-		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+			<a href="http://www.berkeleyyc.org"><img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home"></a>
 		<h1>Berkeley Yacht Club Race Results: Login</h1>
 		</div>
 		<?php require_once('nav.inc.php'); ?>
@@ -89,6 +89,7 @@ if (array_key_exists('submit', $_POST)) {
 			<tr>
 				<th></th>
 				<td><input type="submit" name="submit" id="submit" value="Login"></td>
+				<td></td>
 			</tr>
 		</table>
 		</form>

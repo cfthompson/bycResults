@@ -99,15 +99,29 @@ class Entry extends Model {
 			$this->calcCorrected();
 			return $this->data['corrected'];
 		}
+		if ($name == 'phrfAsSailed') {
+			if ($this->race->method !== 'TOD')
+				return $this->phrf;
+			if ($this->status)
+				return $this->phrf;
+			$phrf = $this->phrf;
+			if (!$this->spinnaker) $phrf += 18;
+			if ($this->rollerFurling) $phrf += 12;
+			return $phrf;
+		}
 
 		return parent::__get($name);
 	}
 
 	protected function calcTCF($force=false) {
 		if ($this->status)
-			return;
+			return; // DNF or DSQ: no tcf
+		if (!$this->race)
+			return; // can't calculate without a race
+		if ($this->race->method !== 'TOT')
+			return; // no tcf for time-on-time
 		if ($force || !array_key_exists('tcf', $this->data)) {
-			$tcf = 800/(550+$this->phrf);
+			$tcf = $this->race->param1/($this->race->param2+$this->phrf);
 			$spincredit = $this->spinnaker ? 0 : 0.04*$tcf;
 			$rfcredit = $this->rollerFurling ? 0.02*$tcf : 0;
 			$this->data['tcf'] = $tcf - $spincredit - $rfcredit;
@@ -125,12 +139,18 @@ class Entry extends Model {
 	protected function calcCorrected($force=false) {
 		if ($this->status)
 			return;
+		if (!$this->race)
+			return;
 		if ($force || !array_key_exists('corrected', $this->data)) {
 			$this->calcTCF($force);
 			$starttime = $this->timeToSeconds($this->division->starttime);
 			$finishtime = $this->timeToSeconds($this->finish);
 			$elapsed = $finishtime - $starttime;
-			$corrected = $elapsed * $this->data['tcf'];
+			if ($this->race->method === 'TOT')
+				$corrected = $elapsed * $this->data['tcf'];
+			else {
+				$corrected = $elapsed - ($this->division->distance * $this->phrfAsSailed);
+			}
 			$h = intval($corrected/3600);
 			$corrected -= $h*3600;
 			$m = intval($corrected/60);

@@ -19,6 +19,7 @@
  * MA 02110-1301  USA
  */
 require_once('Model.php');
+require_once('Course.php');
 
 /**
  * Description of Division
@@ -98,6 +99,15 @@ class Division extends Model {
 				$this->data['description'] = $desc;
 			}
 			return $this->data['description'];
+		}
+		if ($name == 'coursenumber') {
+			if (!$this->course)
+				return false;
+			if (!array_key_exists('coursenumber', $this->data)) {
+				$course = new Course($this->course);
+				$this->data['coursenumber'] = $course->number;
+			}
+			return $this->data['coursenumber'];
 		}
 		return parent::__get($name);
 	}

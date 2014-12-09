@@ -20,8 +20,8 @@
 require_once("auth.php");
 ?>
 <div id="nav">
-<a href="index.php" class="nav">Home</a>
-<a href="roster.php" class="nav">Roster</a>
+<a href="http://www.berkeleyyc.org">Home</a>
+<a href="index.php" class="nav">All Results</a>
 <?php $level = getAccessLevel();
 if ($level >= User::ADMIN_ACCESS) { ?>
 <a href="series.php" class="nav">New Series</a>

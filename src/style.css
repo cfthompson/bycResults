@@ -23,11 +23,18 @@ MA 02110-1301  USA
 body {
 	font-family: sans-serif;
 	margin: 1em;
+	padding: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 80%;
 }
 
 table {
 	border-collapse: collapse;
 	margin: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	width: 90%;
 }
 
 table td, table th {
@@ -63,4 +70,45 @@ div#nav a {
 
 .selected {
 	font-weight: bold;
+}
+
+#raceview {
+	margin-top: 1em;
+	font-size: .8em;
+	font-style: italic;
+}
+
+table#login {
+	width: auto;
+}
+
+table#race {
+	font-size: 11pt;
+}
+
+table#race tr th {
+	text-align: right;
+}
+
+table#race tr th.divisionheader {
+	text-align: center;
+}
+
+table#entries {
+	width: 100%;
+	text-align: center;
+	font-size: 11pt;
+}
+
+table#entries-cheatsheet {
+	font-size: 16pt;
+}
+
+@media print {
+	div#nav {
+		display:none;
+	}
+	#raceview {
+		display:none;
+	}
 }

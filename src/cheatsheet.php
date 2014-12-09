@@ -52,66 +52,13 @@ if ($id && getAccessLevel() >= User::ADMIN_ACCESS) {
     </head>
     <body>
 		<div id="header">
-		<img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home">
+			<a href="http://www.berkeleyyc.org"><img src="http://www.berkeleyyc.org/sites/default/files/byc_site_logo.jpg" alt="Home"></a>
 		<h1>Race Results</h1>
 		</div>
 		<?php require_once('nav.inc.php'); ?>
 		<div id="raceview">Select View:
 			<a href="race.php?id=<?php echo $id; ?>">Normal</a> or <span class="selected">Cheat Sheet</span>
 		</div>
-		<?php if ($showlinks) { ?>
-		<h3><a href="race.php?edit=true&id=<?php echo $race->id; ?>">Race Info:</a></h3>
-		<?php } else { ?>
-		<h3>Race Info:</h3>
-		<?php } ?>
-		<table id="race">
-			<tr>
-				<th>Date:</th>
-				<td><?php echo $race->racedate; ?></td>
-				<th>Series:</th>
-				<td><?php echo $race->series->name; ?></td>
-			</tr>
-			<tr>
-				<th>RC Boat:</th>
-				<td><?php echo $race->rcboat; ?></td>
-				<th>RC Skipper:</th>
-				<td><?php echo $race->rcskipper; ?></td>
-			</tr>
-			<tr>
-				<th>Prepared By:</th>
-				<td><?php echo $race->preparer; ?></td>
-				<th># Boats:</th>
-				<td><?php echo count($race->entries); ?></td>
-			</tr>
-			<tr>
-				<th>Method:</th>
-				<td><?php echo $race->method; ?></td>
-				<th>Formula:</th>
-				<td><?php if ($race->method == 'TOT') {
-					echo 'Elapsed * ('.$race->param1.'/('.$race->param2.' + PHRF))';
-				} else {
-					echo 'Elapsed - (Distance * PHRF/60)';
-				} ?></td>
-			</tr>
-
-			<?php foreach ($race->divisions as $d) { ?>
-			<tr>
-				<th colspan="4"><?php echo $d->name; ?> Division:</th>
-			</tr>
-			<tr>
-				<th>Start:</th>
-				<td><?php echo $d->starttime; ?></td>
-				<th>Course/Distance:</th>
-				<td><?php echo $d->course.' / '.$d->distance; ?></td>
-			</tr>
-			<?php if ($d->description) { ?>
-			<tr>
-				<th>Description:</th>
-				<td colspan="3"><?php echo $d->description; ?></td>
-			</tr>
-			<?php } ?>
-			<?php } ?>
-		</table>
 		<?php $entry = new Entry();
 		require_once('cheatsheet.inc.php'); ?>
 	</body>

@@ -35,14 +35,19 @@ function onchange_seriesid() {
 		update_submit();
 		return;
 	}
+	var props = html.split("$$");
+	// props:
+	// 0 = typeid
+	// 1 = name
+	// 2 = defaultMethod
+	// 3 = defaultParam1
+	// 4 = defaultParam2
 
-	if (seriesid !== oldseriesid) {
-		var obj = $("#method > option[value='"+props[2]+"']");
+	var obj = $("#method > option[value='"+props[2]+"']");
+	if (!obj.prop('selected')) {
 		obj.prop('selected', true);
-		$("#param1").val(props[3]);
-		$("#param2").val(props[4]);
+		$("#method").trigger('change');
 	}
-	oldseriesid = seriesid;
 
 	var seriestypeid = props[0];
 	var url = "json/divisions.php?seriestypeid="+seriestypeid;
@@ -55,8 +60,8 @@ function onchange_seriesid() {
 		$.each(data, function(divid, div) {
 			var starttime = div.starttime;
 			var hm = starttime.substr(0, 2)+":"+starttime.substr(3, 2);
-			html += '<tr class="divisionrow">'+
-				'<th colspan="3">'+div.name+' Division:</th></tr>'+
+			html += '<tr>'+
+				'<th colspan="3" class="divisionheader">'+div.name+' Division:</th></tr>'+
 				'<tr class="divisionrow"><th>Start Time:</th>'+
 				'<td>'+
 				'<input type="hidden" name="division['+divid+'][typeid]" value="'+div.typeid+'">'+
@@ -81,9 +86,33 @@ function onchange_seriesid() {
 				'<td class="errormsg"></td>'+
 				'</tr>';
 		});
-		$("#divisionheader").after(html);
+		$("#divisiontop").after(html);
 		update_submit();
 	});
+}
+
+function onchange_method() {
+	var method = $("#method > option:selected").val();
+	if (method !== 'TOT') {
+		$("#param1").val("");
+		$("#param2").val("");
+		return;
+	}
+	// For TOT, fill in default parameters
+	var seriesid = $("#seriesid option:selected").val();
+	var html = $("#series_"+seriesid).html();
+	if (html === null) {
+		return;
+	}
+	var props = html.split("$$");
+	// props:
+	// 0 = typeid
+	// 1 = name
+	// 2 = defaultMethod
+	// 3 = defaultParam1
+	// 4 = defaultParam2
+	$("#param1").val(props[3]);
+	$("#param2").val(props[4]);
 }
 
 function onchange_method() {

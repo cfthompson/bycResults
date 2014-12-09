@@ -47,7 +47,7 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS) {
 <?php } else { ?>
 <h3><?php echo count($race->entries); ?> Boats:</h3>
 <?php } ?>
-<table id="entries">
+<table id="entries-cheatsheet">
 	<tr>
 		<th>Division</th>
 		<th>Place</th>
@@ -56,14 +56,29 @@ if ($race->id && getAccessLevel() >= User::ADMIN_ACCESS) {
 	</tr>
 	<?php $i = 1;
 	foreach ($race->divisions as $division) {
-		$entries = $entry->findAll('raceid='.$race->id.' AND divisionid='.$division->id, 'corrected');
+		$entries = $division->entries;
 		$tstart = strtotime($race->racedate.' '.$division->starttime);
+		// Find # boats that actually finished
+		$finishers = 0;
 		foreach ($entries as $e) {
+			if ($e->status) break;
+			++$finishers;
+		}
+		foreach ($entries as $e) {
+			if ($e->status) {
+				echo '<tr>
+					<td>'.$division->name.'</td>
+					<td>'.$e->status.'</td>
+					<td>'.$e->name.'</td>
+					<td></td>
+				</tr>';
+				continue;
+			}
 			$tend = strtotime($race->racedate.' '.$e->finish);
 			$telapsed = $tend - $tstart;
 			$elapsed = strtohms($telapsed);
 			$gap = 'n/a';
-			if (count($entries) > $i) {
+			if ($finishers > $i) {
 				$tcorrected = strtotime($race->racedate.' '.$e->corrected);
 				$tothercorr = strtotime($race->racedate.' '.$entries[$i]->corrected);
 				$secs = $tothercorr - $tcorrected;
