@@ -93,7 +93,7 @@ class Divisions extends CActiveRecord
 			'race' => array(self::BELONGS_TO, 'Races', 'raceid'),
 			'type' => array(self::BELONGS_TO, 'Divisiontypes', 'typeid'),
 			'course' => array(self::BELONGS_TO, 'Courses', 'courseid'),
-			'entries' => array(self::HAS_MANY, 'Entries', 'divisionid', 'order'=>'entries.corrected'),
+			'entries' => array(self::HAS_MANY, 'Entries', 'divisionid', 'order'=>'entries.status, entries.corrected'),
 		);
 	}
 
