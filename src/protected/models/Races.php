@@ -89,7 +89,11 @@ class Races extends CActiveRecord
 			return false;
 		}
 		if ($isNew) {
-			
+			foreach ($this->divisions as $d) {
+				if (!$d->save($performValidation, NULL)) {
+					throw new CHttpException(500, 'Cannot save division: '.print_r($d->errors, TRUE));
+				}
+			}
 		}
 		return true;
 	}
