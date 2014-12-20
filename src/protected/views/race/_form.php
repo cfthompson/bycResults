@@ -73,7 +73,7 @@ foreach ($courses as $c) {
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'method'); ?>
-		<?php echo $form->dropDownList($model,'method', array('TOT'=>'TOT', 'TOD'=>'TOD')); ?>
+		<?php echo $form->dropDownList($model,'method', array('TOT'=>'Time on Time', 'TOD'=>'Time on Distance')); ?>
 		<?php echo $form->error($model,'method'); ?>
 	</div>
 
@@ -108,7 +108,7 @@ foreach ($courses as $c) {
 				' (HH:MM)<div class="errorMessage" id="Races_divisions_'.$d->id.'_em_" style="display:none"></div>'.
 				'</div>'.
 				'<div class="row divisionrow"><label for="Races_divisions_'.$d->id.'_course">Course:</label>'.
-				'<select class="course" name="Races[divisions]['.$d->id.'][course]" id="Races_divisions_'.$d->id.'_course"><option></option>';
+				'<select class="course" name="Races[divisions]['.$d->id.'][course]" id="Races_divisions_'.$d->id.'_courseid"><option></option>';
 				foreach ($courses as $c) {
 					$sel = $d->courseid === $c->id ? 'selected' : '';
 					echo '<option '.$sel.' value="'.$c->id.'">'.$c->number.'</option>';
