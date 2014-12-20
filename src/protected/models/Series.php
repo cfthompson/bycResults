@@ -52,7 +52,7 @@ class Series extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'races' => array(self::HAS_MANY, 'Races', 'seriesid'),
+			'races' => array(self::HAS_MANY, 'Races', 'seriesid', 'order'=>'racedate DESC'),
 			'type' => array(self::BELONGS_TO, 'Seriestypes', 'typeid'),
 		);
 	}
