@@ -18,14 +18,14 @@
  */
 
 function onchange_method() {
-	var method = $("#method > option:selected").val();
+	var method = $("#Races_method > option:selected").val();
 	if (method !== 'TOT') {
-		$("#param1").val("");
-		$("#param2").val("");
+		$("#Races_param1").val("");
+		$("#Races_param2").val("");
 		return;
 	}
 	// For TOT, fill in default parameters
-	var seriesid = $("#seriesid option:selected").val();
+	var seriesid = $("#Races_seriesid option:selected").val();
 	var html = $("#series_"+seriesid).html();
 	if (html === null) {
 		return;
@@ -37,8 +37,8 @@ function onchange_method() {
 	// 2 = defaultMethod
 	// 3 = defaultParam1
 	// 4 = defaultParam2
-	$("#param1").val(props[3]);
-	$("#param2").val(props[4]);
+	$("#Races_param1").val(props[3]);
+	$("#Races_param2").val(props[4]);
 }
 
 function onchange_course() {
