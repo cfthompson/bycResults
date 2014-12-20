@@ -82,4 +82,5 @@ function update_submit() {
 $(function() {
 	$("#Races_method").change(onchange_method);
 	$("div.form").on("change", "select.course", onchange_course);
+	update_submit();
 });
