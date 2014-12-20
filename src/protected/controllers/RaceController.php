@@ -11,8 +11,7 @@ class RaceController extends Controller
 	{
 		$series = Series::model()->findByPk($seriesid);
 		if (!$series) {
-			$this->redirect(array('site/index'));
-			Yii::app()->end();
+			throw new CHttpException(404, 'No series with id '.$seriesid.' was found.');
 		}
 
     	$model=new Races;
@@ -29,9 +28,20 @@ class RaceController extends Controller
         	$model->attributes=$_POST['Races'];
         	if($model->save())
         	{
+				foreach ($_POST['Races']['divisions'] as $divid=>$attrs) {
+					if ($divid < 0) {
+						$d = new Divisions();
+						$d->attributes = $attrs;
+						$d->raceid = $model->id;
+						if (!$d->save()) {
+							throw new CHttpException(500, 'Cannot save a division: '.print_r($d->errors, TRUE));
+						}
+					}
+				}
 				$this->redirect(array('race/entries', 'id'=>$model->id));
 				Yii::app()->end();
         	}
+			throw new CHttpException(500, 'Cannot save race: '.print_r($model->errors, TRUE));
     	} else {
 			$model->racedate = date('Y-m-d');
 			$model->seriesid = $seriesid;
