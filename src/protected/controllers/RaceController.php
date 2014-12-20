@@ -139,6 +139,9 @@ class RaceController extends Controller
 			} else if (!array_key_exists('rollerFurling', $_POST['entry'])) {
 				$entry->rollerFurling = 0;
 			}
+			if (strtoupper($entry->finish) === 'DNF' || strtoupper($entry->finish) === 'DSQ') {
+				$entry->status = strtoupper($entry->finish);
+			}
 			if ($entry->save(true)) {
 				$this->redirect(array('race/entries', 'id'=>$race->id));
 				Yii::app()->end();
