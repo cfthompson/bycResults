@@ -32,6 +32,7 @@ foreach ($courses as $c) {
 )); ?>
 
 	<?php echo $form->hiddenField($model,'id'); ?>
+	<?php echo $form->hiddenField($model,'seriesid'); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
