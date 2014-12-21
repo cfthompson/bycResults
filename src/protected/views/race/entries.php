@@ -24,6 +24,8 @@
 /* @var $entry Entries instance to be edited or created */
 
 ?>
+
+<p class="note">You may enter "dnf" or "dsq" instead of finish time</p>
 <table id="entries">
 	<tr>
 		<th>Place</th>
