@@ -48,7 +48,11 @@
 	</tr>
 	<tr>
 		<th>Method:</th>
-		<td><?php echo $race->method; ?></td>
+		<td><?php switch ($race->method) {
+			case 'TOT': echo 'Time on Time'; break;
+			case 'TOD': echo 'Time on Distance'; break;
+			default: echo $race->method;
+		} ?></td>
 		<th>Formula:</th>
 		<td><?php if ($race->method == 'TOT') {
 			echo 'Elapsed * ('.$race->param1.'/('.$race->param2.' + PHRF))';
@@ -65,7 +69,7 @@
 		<th>Start:</th>
 		<td><?php echo $d->starttime; ?></td>
 		<th>Course/Distance:</th>
-		<td><?php echo $d->course->number.' / '.$d->distance; ?></td>
+		<td>#<?php echo $d->course->number.' / '.$d->distance; ?> nm</td>
 	</tr>
 	<?php if ($d->description) { ?>
 	<tr>
