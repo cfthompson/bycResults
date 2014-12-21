@@ -51,7 +51,6 @@ if ($e->status) {
 	}
 	echo '<td></td>
 		<td></td>
-		<td></td>
 	</tr>';
 	return;
 }
