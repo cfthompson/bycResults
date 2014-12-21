@@ -9,9 +9,12 @@ $this->pageTitle=Yii::app()->name;
 
 <ul id="series">
 <?php foreach ($series as $s) {
-	echo '<li>'.$s->name.' <a href="'.CHtml::normalizeUrl(array('race/create', 'seriesid'=>$s->id)).'">Add a Race</a>'
-			. '<table class="races">'
-			. '<tr><th>Date</th><th># Boats</th>';
+	echo '<li>'.$s->name;
+	if (!Yii::app()->user->isGuest) {
+		echo ' <a href="'.CHtml::normalizeUrl(array('race/create', 'seriesid'=>$s->id)).'">Add a Race</a>';
+	}
+	echo '<table class="races">'
+		. '<tr><th>Date</th><th># Boats</th>';
 	if (!Yii::app()->user->isGuest) {
 		echo '<th></th>';
 	}
