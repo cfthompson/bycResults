@@ -5,7 +5,7 @@ class DivisionTypeController extends Controller
 
 	public function actionDivisions($typeid) {
 
-		$divs = DivisionTypes::model()->findAllByAttributes(array('seriestypeid'=>$typeid));
+		$divs = Divisiontypes::model()->findAllByAttributes(array('seriestypeid'=>$typeid));
 		if (!$divs) {
 			echo json_encode(array());
 			Yii::app()->end();
