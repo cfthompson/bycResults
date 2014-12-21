@@ -124,7 +124,7 @@ foreach ($courses as $c) {
 		} else {
 
 			$i = -1;
-			foreach (DivisionTypes::model()->findAllByAttributes(array('seriestypeid'=>$model->series->typeid)) as $d) {
+			foreach (Divisiontypes::model()->findAllByAttributes(array('seriestypeid'=>$model->series->typeid)) as $d) {
 				echo '<div class="row">';
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][name]" value="'.$d->name.'">';
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][typeid]" value="'.$d->id.'">';
