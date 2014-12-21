@@ -108,8 +108,8 @@ foreach ($courses as $c) {
 				'<input type="text" name="Races[divisions]['.$d->id.'][starthourminute]" id="Races_divisions_'.$d->id.'_starthourminute" value="'.$d->starttime.'">'.
 				' (HH:MM)<div class="errorMessage" id="Races_divisions_'.$d->id.'_em_" style="display:none"></div>'.
 				'</div>'.
-				'<div class="row divisionrow"><label for="Races_divisions_'.$d->id.'_course">Course:</label>'.
-				'<select class="course" name="Races[divisions]['.$d->id.'][course]" id="Races_divisions_'.$d->id.'_courseid"><option></option>';
+				'<div class="row divisionrow"><label for="Races_divisions_'.$d->id.'_courseid">Course:</label>'.
+				'<select class="course" name="Races[divisions]['.$d->id.'][courseid]" id="Races_divisions_'.$d->id.'_courseid"><option></option>';
 				foreach ($courses as $c) {
 					$sel = $d->courseid === $c->id ? 'selected' : '';
 					echo '<option '.$sel.' value="'.$c->id.'">'.$c->number.'</option>';
@@ -142,7 +142,7 @@ foreach ($courses as $c) {
 				));
 				echo '</div>';
 				echo '<div class="row">';
-				echo '<label for="Races_divisions_'.$i.'_course">Course</label>';
+				echo '<label for="Races_divisions_'.$i.'_courseid">Course</label>';
 				echo '<select class="course" name="Races[divisions]['.$i.'][courseid]" id="Races_divisions_'.$i.'_courseid"><option></option>';
 				foreach ($courses as $c) {
 					echo '<option value="'.$c->id.'">'.$c->number.'</option>';
