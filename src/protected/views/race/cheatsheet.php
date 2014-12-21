@@ -52,7 +52,7 @@
 			$tend = strtotime($race->racedate.' '.$e->finish);
 			$telapsed = $tend - $tstart;
 			$elapsed = $this->strtohms($telapsed);
-			$gap = 'n/a';
+			$gap = '';
 			if ($finishers > $i) {
 				$tcorrected = strtotime($race->racedate.' '.$e->corrected);
 				$tothercorr = strtotime($race->racedate.' '.$entries[$i]->corrected);
