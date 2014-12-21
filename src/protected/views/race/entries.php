@@ -25,7 +25,16 @@
 
 ?>
 
-<p class="note">You may enter "dnf" or "dsq" instead of finish time</p>
+<h5>TIPS:</h5>
+<ul>
+	<li>Enter Finish Time as HHMMSS, or HH:MM:SS.  Colons are optional, but hours, minutes and seconds must all be provided.</li>
+	<li>You may enter "dnf" or "dsq" instead of finish time.</li>
+	<li>After entering finish time, click anywhere outside the text box to see the elapsed time etc.  Then click "Add" on the left to submit the entry.</li>
+	<li>After entering all boats, click "Finished: View this Race" to see the final results.  Print that page.</li>
+</ul>
+
+<a href="<?php echo $this->createUrl('race/view', array('id'=>$race->id)); ?>">Finished: View this Race</a>
+
 <table id="entries">
 	<tr>
 		<th>Place</th>
