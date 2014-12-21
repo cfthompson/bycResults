@@ -60,6 +60,10 @@ function onchange_course() {
 	update_submit();
 }
 
+function onchange_distance() {
+	update_submit();
+}
+
 function update_submit() {
 	var disableit = $("#seriesid option:selected").val() === "";
 
@@ -72,7 +76,7 @@ function update_submit() {
 	}
 	if (!disableit) {
 		$("input.distance").each(function() {
-			if (parseFloat($(this).val()) === 0) {
+			if (parseFloat($(this).val()) <= 0) {
 				disableit=true;
 			}
 		});
@@ -82,5 +86,6 @@ function update_submit() {
 $(function() {
 	$("#Races_method").change(onchange_method);
 	$("div.form").on("change", "select.course", onchange_course);
+	$("div.form").on("change", "input.distance", onchange_distance);
 	update_submit();
 });
