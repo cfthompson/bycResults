@@ -33,7 +33,7 @@ class Series extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('typeid', 'required'),
+			array('name, typeid, defaultMethod', 'required'),
 			array('defaultParam1, defaultParam2', 'numerical'),
 			array('typeid', 'length', 'max'=>10),
 			array('name', 'length', 'max'=>40),
@@ -64,7 +64,7 @@ class Series extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'typeid' => 'Typeid',
+			'typeid' => 'Type',
 			'name' => 'Name',
 			'defaultMethod' => 'Default Method',
 			'defaultParam1' => 'Default Param1',

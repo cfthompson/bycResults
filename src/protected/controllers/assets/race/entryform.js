@@ -62,10 +62,11 @@ function boat_onChange() {
 		var divprops = $(this).html().split("$$");
 		var tmpdivname = divprops[0];    // 0 = name
 		var starttime = divprops[1];     // 1 = starttime
-		var minphrf = divprops[2];       // 2 = minphrf
-		var maxphrf = divprops[3];       // 3 = maxphrf
-		var minlength = divprops[4];     // 4 = minlength
-		var maxlength = divprops[5];     // 5 = maxlength
+		var distance = divprops[2];		 // 2 = distance
+		var minphrf = divprops[3];       // 3 = minphrf
+		var maxphrf = divprops[4];       // 4 = maxphrf
+		var minlength = divprops[5];     // 5 = minlength
+		var maxlength = divprops[6];     // 6 = maxlength
 		if (is_inrange(phrf, minphrf, maxphrf) && is_inrange(length, minlength, maxlength)) {
 			divid = tmpdivid;
 			divname = tmpdivname;
