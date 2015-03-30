@@ -21,6 +21,8 @@
 
 /* @var $this RaceController */
 /* @var $race Races */
+/* @var $division the current division */
+/* @var $division_counter the counter for the division, used in css styling */
 /* @var $entries array of all Entries in current division */
 /* @var $e current Entries instance */
 /* @var $edit true if in edit mode, false otherwise */
@@ -35,9 +37,8 @@ if ($edit) {
 	$lend = '</a>';
 }
 if ($e->status) {
-	echo '<tr>
+	echo '<tr class="divisioncounter_'.$division_counter.'">
 		<td></td>
-		<td>'.$division->name.'</td>
 		<td>'.$link.$e->boat->sail.$lend.'</td>
 		<td>'.$link.$e->boat->name.$lend.'</td>
 		<td>'.$e->boat->model.'</td>
@@ -64,9 +65,8 @@ if ($finishers > $i) {
 	$secs = $tothercorr - $tcorrected;
 	$gap = $this->strtohms($secs);
 }
-echo '<tr>
+echo '<tr class="divisioncounter_'.$division_counter.'">
 	<td>'.$link.$i.$lend.'</td>
-	<td>'.$division->name.'</td>
 	<td>'.$link.$e->boat->sail.$lend.'</td>
 	<td>'.$link.$e->boat->name.$lend.'</td>
 	<td>'.$e->boat->model.'</td>

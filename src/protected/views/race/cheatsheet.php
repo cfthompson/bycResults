@@ -22,12 +22,15 @@
 ?>
 <table id="entries-cheatsheet">
 	<tr>
-		<th>Division</th>
 		<th>Place</th>
 		<th>Boat</th>
 		<th>Ahead of Next</th>
 	</tr>
 	<?php
+	$division_counter = 0;
+	if (count($race->divisions) > 1) {
+		$division_counter = 1;
+	}
 	foreach ($race->divisions as $division) {
 		$entries = $division->entries;
 		$tstart = strtotime($race->racedate.' '.$division->starttime);
@@ -37,11 +40,19 @@
 			if ($e->status) break;
 			++$finishers;
 		}
+
+		if (count($race->divisions) > 1) {
+			if (!empty($division->name)) {
+				echo '<tr class="division_header divisioncounter_'.$division_counter.'"><td colspan="3">"'.$division->name.'" Division:</td></tr>';
+			} else {
+				echo '<tr class="division_header divisioncounter_'.$division_counter.'"><td colspan="3">Division '.$division_counter.':</td></tr>';
+			}
+		}
+		
 		$i = 1;
 		foreach ($entries as $e) {
 			if ($e->status) {
-				echo '<tr>
-					<td>'.$division->name.'</td>
+				echo '<tr class="divisioncounter_'.$division_counter.'">
 					<td>'.$e->status.'</td>
 					<td>'.$e->boat->name.'</td>
 					<td></td>
@@ -59,13 +70,13 @@
 				$secs = $tothercorr - $tcorrected;
 				$gap = $this->strtohms($secs);
 			}
-			echo '<tr>
-				<td>'.$division->name.'</td>
+			echo '<tr class="divisioncounter_'.$division_counter.'">
 				<td>'.$i.'</td>
 				<td>'.$e->boat->name.'</td>
 				<td>'.$gap.'</td>
 			</tr>';
 			++$i;
 		}
+		++$division_counter;
 	}?>
 </table>

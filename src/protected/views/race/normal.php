@@ -89,7 +89,6 @@
 <table id="entries">
 	<tr>
 		<th>Place</th>
-		<th>Division</th>
 		<th>Sail #</th>
 		<th>Boat</th>
 		<th>Type</th>
@@ -106,6 +105,10 @@
 	</tr>
 
 	<?php 
+	$division_counter = 0;
+	if (count($race->divisions) > 1) {
+		$division_counter = 1;
+	}
 	foreach ($race->divisions as $division) {
 		$entries = $division->entries;
 		$tstart = strtotime($race->racedate.' '.$division->starttime);
@@ -115,11 +118,21 @@
 			if ($e->status) break;
 			++$finishers;
 		}
+
+		if (count($race->divisions) > 1) {
+			if (!empty($division->name)) {
+				echo '<tr class="division_header divisioncounter_'.$division_counter.'"><td colspan="11">"'.$division->name.'" Division:</td></tr>';
+			} else {
+				echo '<tr class="division_header divisioncounter_'.$division_counter.'"><td colspan="11">Division '.$division_counter.':</td></tr>';
+			}
+		}
+
 		$i = 1;
 		foreach ($entries as $e) {
 			$this->renderPartial('entry', array(
 				'race'=>$race,
 				'division'=>$division,
+				'division_counter'=>$division_counter,
 				'entries'=>$entries,
 				'e'=>$e,
 				'edit'=>false,
@@ -129,5 +142,6 @@
 			));
 			++$i;
 		}
+		++$division_counter;
 	} ?>
 </table>

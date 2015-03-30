@@ -240,12 +240,32 @@ table#entries-cheatsheet tbody tr th {
 	background: #eee;
 }
 
-tr:nth-child(even) {
+tr.division_header td {
+	font-weight: bold;
+	text-align: center;
+	padding-top: 8px;
+}
+
+/* divisioncounter_0: only one division in the race */
+tr.divisioncounter_0:nth-child(even) {
 	background: #fff;
 }
 
-tr:nth-child(odd) {
+tr.divisioncounter_0:nth-child(odd) {
 	background: #eef;
+}
+
+/* divisioncounter_1 and up indicate multiple divisions in the race */
+tr.divisioncounter_1 {
+	background: lightgreen;
+}
+
+tr.divisioncounter_2 {
+	background: lightblue;
+}
+
+tr.divisioncounter_3 {
+	background: yellow;
 }
 
 td.link-column a {
