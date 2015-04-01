@@ -77,6 +77,9 @@ class SeriesController extends Controller
 	public function accessRules()
 	{
 		return array(
+			array('allow',
+				'actions'=>array('view'),
+			),
 			array('allow', // allow authenticated user to perform CRUD actions
 				'actions'=>array('create','edit','delete'),
 				'users'=>array('@'),
@@ -90,6 +93,80 @@ class SeriesController extends Controller
 	public function actionDelete()
 	{
 		$this->render('delete');
+	}
+
+	protected function isInRange($val, $minval, $maxval) {
+		if (!is_null($minval)) {
+			if ($val < $minval)
+				return false;
+			if (!is_null($maxval) && $val > $maxval)
+				return false;
+		} else if (!is_null($maxval)) {
+			if ($val > $maxval)
+				return false;
+		}
+		return true;
+	}
+
+	public function actionView($id) {
+		$model = Series::model()->findByPk($id);
+		if (!$model) {
+			throw new CHttpException(404, 'No series with id '.$id.' was found.');
+		}
+
+		// Note, it's too complicated to allow changing of divisions
+		// after a series has started, so we use the most recent race to
+		// determine all boats' divisions.
+		// Collect all boats that participated in the series
+		$allboats = Boat::model()->findAllBySql('SELECT * FROM boats WHERE id IN (SELECT boatid FROM entries join races ON races.seriesid='.$id);
+		$boatsbydiv = array();
+		foreach ($model->races[0]->divisions as $d) {
+			$boatsbydiv[$d->id] = array();
+		}
+
+		$boatids = array();
+		foreach ($allboats as $b) {
+			$boatids[] = $b->id;
+			foreach ($model->races[0]->divisions as $d) {
+				if ($this->isInRange($b->phrf, $d->minphrf, $d->maxphrf) && 
+					$this->isInRange($b->length, $d->minlength, $d->maxlength)) {
+					$boatsbydiv[$d->id][] = $b->id;
+				}
+			}
+		}
+
+		// Collect boats that competed in each race
+		$data = array();
+		foreach ($model->races as $r) {
+			$data[$r->id] = array(
+				'date'=>$r->racedate,
+			);
+
+			$divs = array();
+			foreach ($r->divisions as $d) {
+				$entries = array();
+				$i = 0;
+				foreach ($d->entries as $e) {
+					$entries[$e->boatid] = array(
+						'order'=>is_null($e->status) ? $i : count($d->entries)+2,
+					);
+					++$i;
+				}
+				// Add any boats that didn't compete in this race
+				foreach ($boatsbydiv as $divid=>$boatid) {
+					if (!array_key_exists($boatid, $entries)) {
+						$entries[$boatid] = array('order'=>count($d->entries)+2);
+					}
+				}
+				$divs[] = $entries;
+			}
+			$data[$r->id]['divisions'] = $divs;
+		}
+
+		// TODO: Add up all boat scores in array $boatscores
+		$boatscores = array();
+
+		$this->render('view', array('model'=>$model));
 	}
 
 	public function actionCreate()

@@ -38,7 +38,7 @@ class SiteController extends Controller
 		$expanded = true; //expand the most recent series only
 		foreach ($series as $s) {
 			$seriesdata = array(
-				'text'=>'<span class="folder">'.$s->name.'</span>',
+				'text'=>'<span class="folder"><a href="'.CHtml::normalizeUrl(array('series/view', 'id'=>$s->id)).'">'.$s->name.'</a></span>',
 				'expanded'=>$expanded,
 				'hasChildren'=>true,
 				'id'=>'series_'.$s->id,
