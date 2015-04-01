@@ -13,27 +13,54 @@ $this->breadcrumbs=array(
 	series, please visit <a href='http://www.berkeleyyc.org/racing'>our race page</a>.</p>
 
 <h2>Using the site</h2>
-<p>Everything should be pretty easy to find (if not, please <a href='<?php echo $this->createUrl('site/contact'); ?>'>let us know!</a>).  The first page is a list of all series we have in
+<p>Everything should be pretty easy to find (if not, please 
+	<a href="http://www.berkeleyyc.org/contact-us">let us know!</a>).  
+	The first page is a list of all series we have in
 	the system.  Each Chowder or Friday Night series is listed, with the most
-	recent at the top.  Under each series, the race dates are listed.  You may
+	recent at the top.  Under each series, the race dates are listed (you may have
+	to click on the series name to expand the list of races).  You may
 	select a race date to view details about the race, including basic details
 	like start time(s) and the full list of boats that competed.</p>
 
 <h2>Entering new results</h2>
-<p>If you would like to enter new race results, please <a href='<?php echo $this->createUrl('site/contact'); ?>'>contact us</a> for login credentials.  Once you are able to <a href='<?php echo $this->createUrl('site/login'); ?>'>log in</a>, return to this page and you will see further instructions below this paragraph.</p>
+<p>If you would like to enter new race results, please <a href="http://www.berkeleyyc.org/contact-us">contact us</a> for login credentials.  Once you are able to <a href='<?php echo $this->createUrl('site/login'); ?>'>log in</a>, return to this page and you will see further instructions below this paragraph.</p>
 
 <?php if (!Yii::app()->user->isGuest) { ?>
 <h3>Instructions for Entering Races</h3>
 <p>OK, you've logged into the site.  Now what?  Well, if you go back to the <a href='<?php echo $this->createUrl('site/index'); ?>'>list of series</a>, you will see some new links:</p>
 <ul>
-	<li>Next to each series, there's an "Add a Race" link.  Select that to begin entering a new race
+	<li>Above the list of series, there's an "Add a New Series" link.  Select it to
+		enter a new series.  This should only be done twice per year - at the beginning
+		of the Friday night series, and the Sunday Chowder series.</li>
+	<li>Under each series, there's an "Add a Race" link.  Select that to begin entering a new race
 		for that series.</li>
 	<li>There is also an "Edit" link for each race.  Select it to correct mistakes,
 		add boats, etc. for the race.</li>
 </ul>
 
+<h4>Series Info</h4>
+<p>When adding a new series, you are asked for a few bits of information:</p>
+<dl>
+	<dt>Type</dt>
+	<dd>Either Friday Nights or Sunday Chowders</dd>
+	<dt>Name</dt>
+	<dd>The name of the series.  This will be filled in automatically when you select
+		the type, but you may edit it if you want (<em>not recommended!</em>)</dd>
+	<dt>Default Method</dt>
+	<dd>Select either "Time on Time", or "Time on Distance".
+		As of this writing, Sunday Chowder are TOT and Friday Nights are TOD.
+		For more details, see <a href="#calcs">TOT and TOD Calculations</a></dd>
+	<dt>Default Param1 and Default Param2</dt>
+	<dd>For TOT (Chowder) races, these are the numbers used in the TOT calculation (more <a href="#calcs">below</a>).
+		Usually they are 800 and 550.  They aren't needed for TOD (Friday) races.</dd>
+</dl>
+<p>When these items are entered, select the Submit button.  You will be taken directly
+	to the "Add a Race" page so you can, you know, add a race.  If you don't want to
+	do that right away you can just return to the main page; the series you just entered
+	is already saved.</p>
+
 <h4>Basic Race Info</h4>
-<p>Once you've selected one of those links, you're taken to the basic info page
+<p>Once you've selected the "Add a Race" or "Edit Race" links, you're taken to the basic info page
 	for the race.  Things you can change are:</p>
 <dl>
 	<dt>Series</dt>
