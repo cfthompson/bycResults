@@ -29,11 +29,7 @@ class SiteController extends Controller
 	{
 		$this->registerClientScripts();
 
-		$series = array(
-			Series::model()->findByPk(2),
-			Series::model()->findByPk(1),
-		);
-		//$series = Series::model()->findAllBySql('SELECT * FROM series ORDER BY id DESC');
+		$series = Series::model()->findAllBySql('SELECT * FROM series ORDER BY id DESC');
 		$data = array();
 		$expanded = true; //expand the most recent series only
 		foreach ($series as $s) {

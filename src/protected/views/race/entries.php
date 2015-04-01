@@ -38,7 +38,6 @@
 <table id="entries">
 	<tr>
 		<th>Place</th>
-		<th>Division</th>
 		<th>Sail #</th>
 		<th>Boat</th>
 		<th>Type</th>
@@ -61,6 +60,7 @@
 		));
 	}
 
+	$division_counter = (count($race->divisions) > 1) ? 1 : 0;
 	foreach ($race->divisions as $d) {
 		$entries = $d->entries;
 		$finishers = 0;
@@ -82,6 +82,7 @@
 			$this->renderPartial('entry', array(
 				'race'=>$race,
 				'division'=>$d,
+				'division_counter'=>$division_counter,
 				'entries'=>$entries,
 				'e'=>$e,
 				'edit'=>true,
@@ -91,6 +92,7 @@
 			));
 			++$i;
 		}
+		++$division_counter;
 	}
 ?>
 </table>
