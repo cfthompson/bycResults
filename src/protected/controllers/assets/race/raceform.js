@@ -19,26 +19,36 @@
 
 function onchange_method() {
 	var method = $("#Races_method > option:selected").val();
-	if (method !== 'TOT') {
+	var disableParams = (method === 'TOD');
+	$("#Races_param1").prop("disabled", disableParams);
+	$("#Races_param2").prop("disabled", disableParams);
+	if (disableParams) {
 		$("#Races_param1").val("");
 		$("#Races_param2").val("");
 		return;
 	}
 	// For TOT, fill in default parameters
-	var seriesid = $("#Races_seriesid option:selected").val();
-	var html = $("#series_"+seriesid).html();
-	if (html === null) {
-		return;
-	}
-	var props = html.split("$$");
-	// props:
-	// 0 = typeid
-	// 1 = name
-	// 2 = defaultMethod
-	// 3 = defaultParam1
-	// 4 = defaultParam2
-	$("#Races_param1").val(props[3]);
-	$("#Races_param2").val(props[4]);
+	var param1 = "";
+	var param2 = "";
+	var foundit = false;
+	$(".seriestype").each(function() {
+		if (foundit) return;
+		var html = $(this).html();
+		var props = html.split("$$");
+		// props:
+		// 0 = typeid
+		// 1 = name
+		// 2 = defaultMethod
+		// 3 = defaultParam1
+		// 4 = defaultParam2
+		if (props[2] == method) {
+			param1 = props[3];
+			param2 = props[4];
+			foundit = true;
+		}
+	});
+	$("#Races_param1").val(param1);
+	$("#Races_param2").val(param2);
 }
 
 function onchange_course() {
@@ -87,5 +97,6 @@ $(function() {
 	$("#Races_method").change(onchange_method);
 	$("div.form").on("change", "select.course", onchange_course);
 	$("div.form").on("change", "input.distance", onchange_distance);
+	onchange_method();
 	update_submit();
 });

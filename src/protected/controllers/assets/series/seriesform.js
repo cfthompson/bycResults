@@ -42,32 +42,30 @@ function onchange_typeid() {
 
 function onchange_method() {
 	var method = $("#Series_defaultMethod > option:selected").val();
-	var seriestypeid = 1;
-	var html = $("#seriestype_"+seriestypeid).html();
-	while (html === null && seriestypeid < 999) {
-		seriestypeid++;
-		html = $("#seriestype_"+seriestypeid).html();
-	}
-	if (html === null) {
-		return;
-	}
-	var props = html.split("$$");
-	// props:
-	// 0 = typeid
-	// 1 = name
-	// 2 = defaultMethod
-	// 3 = defaultParam1
-	// 4 = defaultParam2
-	while (method !== props[2] && seriestypeid < 999) {
-		seriestypeid++;
-		html = $("#seriestype_"+seriestypeid).html();
-		if (html) props = html.split("$$");
-	}
-	if (method !== props[2]) {
-		return;
-	}
-	$("#Series_defaultParam1").val(props[3]);
-	$("#Series_defaultParam2").val(props[4]);
+	var param1 = "";
+	var param2 = "";
+	var foundit = false;
+	$(".seriestype").each(function() {
+		if (foundit) return;
+		var html = $(this).html();
+		var props = html.split("$$");
+		// props:
+		// 0 = typeid
+		// 1 = name
+		// 2 = defaultMethod
+		// 3 = defaultParam1
+		// 4 = defaultParam2
+		if (method === props[2]) {
+			param1 = props[3];
+			param2 = props[4];
+			foundit = true;
+		}
+	});
+	var disableParams = (method === 'TOD' && param1 == "" && param2 == "");
+	$("#Series_defaultParam1").prop("disabled", disableParams);
+	$("#Series_defaultParam2").prop("disabled", disableParams);
+	$("#Series_defaultParam1").val(param1);
+	$("#Series_defaultParam2").val(param2);
 }
 
 $(function() {

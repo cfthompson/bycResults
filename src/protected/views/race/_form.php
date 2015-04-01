@@ -2,15 +2,15 @@
 /* @var $this RacesController */
 /* @var $model Races */
 
-foreach (Series::model()->findAll() as $s) {
+foreach (SeriesTypes::model()->findAll() as $s) {
 	$str = implode('$$', array(
-		$s->typeid,
+		$s->id,
 		$s->name,
 		$s->defaultMethod,
 		$s->defaultParam1,
 		$s->defaultParam2,
 	));
-	echo '<span style="display:none" class="series" id="series_'.$s->id.'">'.$str.'</span>';
+	echo '<span style="display:none" class="seriestype" id="seriestype_'.$s->id.'">'.$str.'</span>';
 }
 
 $courses = Courses::model()->findAll();
@@ -32,7 +32,6 @@ foreach ($courses as $c) {
 )); ?>
 
 	<?php echo $form->hiddenField($model,'id'); ?>
-	<?php echo $form->hiddenField($model,'seriesid'); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
