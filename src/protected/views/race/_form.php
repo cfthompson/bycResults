@@ -91,7 +91,7 @@ foreach ($courses as $c) {
 	</div>
 
 	<div id="divisiontop">
-		<?php if ($model->divisions) {
+		<?php if ($model->divisions) { // existing race already has divisions
 
 			foreach ($model->divisions as $d) {
 				echo '<div class="row">'.
@@ -121,11 +121,12 @@ foreach ($courses as $c) {
 				'<input readonly name="Races[divisions]['.$d->id.'][distance]" id="Races_divisions_'.$d->id.'_distance" class="distance" value="'.$d->distance.'">'.
 				'<div class="errorMessage" style="display:none"></div>';
 			}
-		} else {
+		} else { // new race: use divisionTypes
 
 			$i = -1;
 			foreach (Divisiontypes::model()->findAllByAttributes(array('seriestypeid'=>$model->series->typeid)) as $d) {
 				echo '<div class="row">';
+				echo '<div class="row divisionheader">'.$d->name.' Division:</div>';
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][name]" value="'.$d->name.'">';
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][typeid]" value="'.$d->id.'">';
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][minphrf]" value="'.$d->minphrf.'">';
