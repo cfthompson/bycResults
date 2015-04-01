@@ -118,7 +118,7 @@ class SeriesController extends Controller
 		// after a series has started, so we use the most recent race to
 		// determine all boats' divisions.
 		// Collect all boats that participated in the series
-		$allboats = Boat::model()->findAllBySql('SELECT * FROM boats WHERE id IN (SELECT boatid FROM entries join races ON races.seriesid='.$id);
+		$allboats = Boats::model()->findAllBySql('SELECT * FROM boats WHERE id IN (SELECT boatid FROM entries join races ON races.seriesid='.$id.')');
 		$boatsbydiv = array();
 		foreach ($model->races[0]->divisions as $d) {
 			$boatsbydiv[$d->id] = array();
