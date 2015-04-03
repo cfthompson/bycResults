@@ -2,7 +2,7 @@
 /* @var $this RacesController */
 /* @var $model Races */
 
-foreach (SeriesTypes::model()->findAll() as $s) {
+foreach (Seriestypes::model()->findAll() as $s) {
 	$str = implode('$$', array(
 		$s->id,
 		$s->name,
