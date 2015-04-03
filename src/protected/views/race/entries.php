@@ -23,6 +23,11 @@
 /* @var $race Races */
 /* @var $entry Entries instance to be edited or created */
 
+$this->breadcrumbs=array(
+	'Race'=>array('/race/view', 'id'=>$race->id),
+	'Entries',
+	$race->id,
+);
 ?>
 
 <h5>TIPS:</h5>

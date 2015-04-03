@@ -54,6 +54,7 @@ foreach ($race->divisions as $d) {
 		$d->maxphrf,
 		$d->minlength,
 		$d->maxlength,
+		$d->operator,
 	));
 	echo '<span style="display:none" class="division" id="division_'.$d->id.'">'.$str.'</span>';
 } ?>

@@ -54,10 +54,9 @@ function boat_onChange() {
 		$("#rollerFurling").prop("checked", rollFurl == "1");
 		boatid = id;
 	}
-	var divid = "";
-	var divname = "";
+	var matched_divprops = [];
+	var matched_divids = [];
 	$(".division").each(function() {
-		if (divid !== "") return;
 		var tmpdivid = $(this).prop("id").split("_")[1];
 		var divprops = $(this).html().split("$$");
 		var tmpdivname = divprops[0];    // 0 = name
@@ -67,17 +66,33 @@ function boat_onChange() {
 		var maxphrf = divprops[4];       // 4 = maxphrf
 		var minlength = divprops[5];     // 5 = minlength
 		var maxlength = divprops[6];     // 6 = maxlength
-		if (is_inrange(phrf, minphrf, maxphrf) && is_inrange(length, minlength, maxlength)) {
-			divid = tmpdivid;
-			divname = tmpdivname;
+		var operator = divprops[7];		 // 7 = operator
+		var phrf_inrange = is_inrange(phrf, minphrf, maxphrf);
+		var length_inrange = is_inrange(length, minlength, maxlength);
+		if ((operator === 'and') &&
+			(phrf_inrange && length_inrange)) {
+			matched_divprops.push(divprops);
+			matched_divids.push(tmpdivid);
+		} else if ((operator === 'or') &&
+				(phrf_inrange || length_inrange)) {
+			matched_divprops.push(divprops);
+			matched_divids.push(tmpdivid);
 		}
 	});
-	if (divid == "") {
+	var index = 0;
+	if (matched_divids.length < 1) {
 		entry_clearcalc();
 		return;
+	} else if (matched_divids.length > 1) {
+		for (index = 0; index < matched_divids.length; ++index) {
+			// select the first division with an "and" operator
+			if (matched_divprops[index][7] === 'and') {
+				break;
+			}
+		}
 	}
-	$("#division").html(divname);
-	$("#divisionid").val(divid);
+	$("#division").html(matched_divprops[index][0]);
+	$("#divisionid").val(matched_divids[index]);
 	$("#finish").focus();
 }
 

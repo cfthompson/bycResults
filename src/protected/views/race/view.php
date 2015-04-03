@@ -4,7 +4,6 @@
 
 $this->breadcrumbs=array(
 	'Race',
-	'View',
 	$race->id,
 );
 

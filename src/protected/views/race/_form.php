@@ -101,6 +101,7 @@ foreach ($courses as $c) {
 				'<input type="hidden" name="Races[divisions]['.$d->id.'][maxphrf]" value="'.$d->maxphrf.'">'.
 				'<input type="hidden" name="Races[divisions]['.$d->id.'][minlength]" value="'.$d->minlength.'">'.
 				'<input type="hidden" name="Races[divisions]['.$d->id.'][maxlength]" value="'.$d->maxlength.'">'.
+				'<input type="hidden" name="Races[divisions]['.$d->id.'][operator]" value="'.$d->operator.'">'.
 				'<div class="row divisionrow">'.
 				'<label for="Races_divisions_'.$d->id.'_starthourminute">Start Time:</label>'.
 				'<input type="hidden" name="Races[divisions]['.$d->id.'][typeid]" value="'.$d->typeid.'">'.
@@ -132,6 +133,7 @@ foreach ($courses as $c) {
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][maxphrf]" value="'.$d->maxphrf.'">';
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][minlength]" value="'.$d->minlength.'">';
 				echo '<input type="hidden" name="Races[divisions]['.$i.'][maxlength]" value="'.$d->maxlength.'">';
+				echo '<input type="hidden" name="Races[divisions]['.$i.'][operator]" value="'.$d->operator.'">';
 				echo '<label for="Races_divisions_'.$i.'_starttime">Start Time</label>';
 				echo $form->textField($d, 'defaultstarttime', array(
 					'id'=>'Races_divisions_'.$i.'_starttime',

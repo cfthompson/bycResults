@@ -12,6 +12,7 @@
  * @property integer $maxphrf
  * @property integer $minlength
  * @property integer $maxlength
+ * @property enum $operator
  *
  * The followings are the available model relations:
  * @property Divisions[] $divisions
@@ -39,9 +40,10 @@ class Divisiontypes extends CActiveRecord
 			array('minphrf, maxphrf, minlength, maxlength', 'numerical', 'integerOnly'=>true),
 			array('seriestypeid', 'length', 'max'=>11),
 			array('name', 'length', 'max'=>20),
+			array('operator', 'in', 'range'=>array('and', 'or')),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, seriestypeid, defaultstarttime, name, minphrf, maxphrf, minlength, maxlength', 'safe', 'on'=>'search'),
+			array('id, seriestypeid, defaultstarttime, name, minphrf, maxphrf, minlength, maxlength, operator', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,6 +74,7 @@ class Divisiontypes extends CActiveRecord
 			'maxphrf' => 'Maxphrf',
 			'minlength' => 'Minlength',
 			'maxlength' => 'Maxlength',
+			'operator' => 'Operator',
 		);
 	}
 
@@ -101,6 +104,7 @@ class Divisiontypes extends CActiveRecord
 		$criteria->compare('maxphrf',$this->maxphrf);
 		$criteria->compare('minlength',$this->minlength);
 		$criteria->compare('maxlength',$this->maxlength);
+		$criteria->compare('operator', $this->operator);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

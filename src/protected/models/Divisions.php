@@ -14,6 +14,7 @@
  * @property integer $maxphrf
  * @property integer $minlength
  * @property integer $maxlength
+ * @property string $operator
  * @property string $name
  *
  * The followings are the available model relations:
@@ -76,6 +77,7 @@ class Divisions extends CActiveRecord
 			array('raceid, courseid', 'length', 'max'=>11),
 			array('typeid', 'length', 'max'=>10),
 			array('name', 'length', 'max'=>30),
+			array('operator', 'in', 'range'=>array('and', 'or')),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, raceid, typeid, starttime, courseid, distance, minphrf, maxphrf, minlength, maxlength, name', 'safe', 'on'=>'search'),
@@ -113,6 +115,7 @@ class Divisions extends CActiveRecord
 			'maxphrf' => 'Maxphrf',
 			'minlength' => 'Minlength',
 			'maxlength' => 'Maxlength',
+			'operator' => 'Operator',
 			'name' => 'Name',
 		);
 	}
@@ -146,6 +149,7 @@ class Divisions extends CActiveRecord
 		$criteria->compare('minlength',$this->minlength);
 		$criteria->compare('maxlength',$this->maxlength);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('operator', $this->operator);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

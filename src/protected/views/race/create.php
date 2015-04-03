@@ -23,7 +23,7 @@
 /* @var $model Races */
 
 $this->breadcrumbs=array(
-	'Races'=>array('/race/index'),
+	'Races'=>array('/site/index'),
 	'Create',
 );
 ?>

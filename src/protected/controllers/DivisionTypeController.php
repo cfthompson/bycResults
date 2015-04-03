@@ -22,6 +22,7 @@ class DivisionTypeController extends Controller
 				'maxphrf'=>$d->maxphrf,
 				'minlength'=>$d->minlength,
 				'maxlength'=>$d->maxlength,
+				'operator'=>$d->operator,
 				'course'=>0,
 				'distance'=>0,
 			);
