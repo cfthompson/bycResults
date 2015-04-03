@@ -39,6 +39,7 @@ class SiteController extends Controller
 				'hasChildren'=>true,
 				'id'=>'series_'.$s->id,
 				'children'=>array(
+					array('text'=>''),
 				),
 			);
 
