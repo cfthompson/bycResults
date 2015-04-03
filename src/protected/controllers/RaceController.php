@@ -59,6 +59,9 @@ class RaceController extends Controller
     	if(isset($_POST['Races']))
     	{
         	$model->attributes=$_POST['Races'];
+			if (!is_numeric($model->seriesid))
+				$model->seriesid = $seriesid;
+
         	if($model->save())
         	{
 				foreach ($_POST['Races']['divisions'] as $divid=>$attrs) {
