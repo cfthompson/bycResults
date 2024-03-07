@@ -5,7 +5,7 @@ Resources:
     ImageId: ami-0b9f27b05e1de14e9
     InstanceType: t3.micro
     IamInstanceProfile: bycresults
-    KeyName: colin
+    KeyName: colin2024
     UserData: 
       Fn::Base64: !Sub |
           #!/bin/bash
