@@ -25,7 +25,8 @@ class UserIdentity extends CUserIdentity
 			$this->errorCode=self::ERROR_PASSWORD_INVALID;
 		} else {
 			$this->errorCode=self::ERROR_NONE;
-			$model->tstamp = strftime('%F %T');
+			/* $model->tstamp = strftime('%F %T'); */
+                        $model->tstamp = date('Y-m-d H:i:s');
 			$model->save();
 		}
 		return !$this->errorCode;

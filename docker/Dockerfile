@@ -1,7 +1,6 @@
 FROM php:8.1-apache
 #FROM php:7.4-apache
 
-#COPY src/results.sql /root/results.sql
 COPY src/minimal_bycresults.sql /tmp/results.sql
 COPY src/bootstrap.sh /
 COPY src/dbsetup.sh /root/
@@ -37,9 +36,19 @@ RUN rsync -av /root/bycResults/src/* /var/www/html/
 RUN ln -s /var/www/html/yii-1.1.29.f89b76/framework/ /var/www/html/protected/framework
 RUN ln -s /var/www/html/yii-1.1.29.f89b76/requirements/ /var/www/html/protected/requirements
 
+#hack to replace deprectated strftime function
+RUN sed -i "s/strftime('%F %T'/date('Y-m-d H:i:s'/" /var/www/html/protected/components/UserIdentity.php
+RUN sed -i "s/strftime('%B %e, %Y'/date('F j, Y'/" /var/www/html/protected/controllers/SiteController.php
+
+#localhost doesn't match when mysql connection is made, gotta use 127.0.0.1
 RUN sed -i 's/localhost/127.0.0.1/' /var/www/html/protected/config/main.php
+
+#should probably just fix this in the code someday, but for now...
 RUN sed -i 's/sailresults/berkele6_results/' /var/www/html/protected/config/main.php
+
+#make sure we're not using sqllite
 RUN rm -f /var/www/html/protected/config/database.php
+
 RUN chown -R www-data:www-data /var/www/html/
 RUN a2enmod rewrite
 #RUN sed -i 's/AllowOverride\ None/AllowOverride\ All/' /etc/apache2/apache2.conf

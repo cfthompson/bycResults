@@ -85,7 +85,8 @@ class SiteController extends Controller
 		}
 		foreach ($series->races as $r) {
 			$tstamp = strtotime($r->racedate);
-			$racedate = strftime('%B %e, %Y', $tstamp);
+			/* $racedate = strftime('%B %e, %Y', $tstamp); */
+                        $racedate = date('F j, Y', $tstamp);
 			$text = '<a href="'.CHtml::normalizeUrl(array('race/view', 'id'=>$r->id)).'">'.$racedate.'</a> ('.count($r->entries).' boats)';
 			if (!Yii::app()->user->isGuest) {
 				$text .= ' &mdash; <a href="'.CHtml::normalizeUrl(array('race/edit', 'id'=>$r->id)).'">Edit</a>';
