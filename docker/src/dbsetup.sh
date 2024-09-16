@@ -1,17 +1,22 @@
 #!/bin/bash
 
-echo "Pretty please, with sugar on it, change this username and password for the database connection.  Don't use these values, which are published on github for everyone to see."
+#don't use a $ sign in the password.  Hard to escape those.
+#You probably also want to change this from the default values, both in the PHP code and the DB.
 
-MYUSER="byc"
-MYPW="byc@1939"
+mysql -e "use berkele6_results;"
+if [ "$?" != "0" ]; then
 
-#ONLY RUN THIS STUFF IF YOU NEED TO RESTORE THE DATABASE
-mysql -e "create database \`berkele6_results\`;"
-mysql -D berkele6_results < /tmp/results.sql
-mysql -e "create user '${MYUSER}'@'127.0.0.1';"
-#need to escape this $ sign somehow...
-mysql -e "set password for '${MYUSER}'@'127.0.0.1' = PASSWORD('${MYPW}');"
-mysql -e "grant all on berkele6_results.* to '${MYUSER}'@'127.0.0.1';"
-mysql -e "flush privileges;"
+  MYUSER="byc"
+  MYPW="byc@1939"
 
-echo "Now go change the 'db'=>array() block in /var/www/html/protected/config/main.php to reflect this uername and password.
+  mysql -e "create database \`berkele6_results\`;"
+  mysql -D berkele6_results < /tmp/results.sql
+  mysql -e "create user '${MYUSER}'@'127.0.0.1';"
+  #don't use a $ sign in the password.  Hard to escape those.
+  mysql -e "set password for '${MYUSER}'@'127.0.0.1' = PASSWORD('${MYPW}');"
+  mysql -e "set password for '${MYUSER}'@'localhost' = PASSWORD('${MYPW}');"
+  mysql -e "grant all on berkele6_results.* to '${MYUSER}'@'127.0.0.1';"
+  mysql -e "grant all on berkele6_results.* to '${MYUSER}'@'localhost';"
+  mysql -e "flush privileges;"
+fi
+echo "Now go change the 'db'=>array() block in /var/www/html/protected/config/main.php to reflect this uername and password."

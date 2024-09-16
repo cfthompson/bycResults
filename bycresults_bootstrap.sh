@@ -3,7 +3,8 @@
 # Replace the commands in these variables with commands to fetch the DB dump, yii framework, and code 
 # from an appropriate location (these are private buckets)
 FETCH_DB="aws s3 cp s3://bycresults/sailresults.sql ."
-FETCH_YII="aws s3 cp s3://bycresults/yii-1.1.25.43e386.tar.gz ."
+#FETCH_YII="aws s3 cp s3://bycresults/yii-1.1.25.43e386.tar.gz ."
+FETCH_YII="wget https://github.com/yiisoft/yii/releases/download/1.1.29/yii-1.1.29.f89b76.tar.gz"
 
 # This repo may change while we attempt an upgrade to PHP 8 and YII 2.0.  Ideally we'll fork the repo,
 # do the work, and submit a pull request to the upstream repo, but we'll see.

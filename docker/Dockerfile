@@ -3,7 +3,7 @@ FROM php:8.1-apache
 
 COPY src/minimal_bycresults.sql /tmp/results.sql
 COPY src/bootstrap.sh /
-COPY src/dbsetup.sh /root/
+COPY src/dbsetup.sh /
 #COPY src/yii-1.1.25.43e386.tar.gz /var/www/html
 COPY src/yii-1.1.29.f89b76.tar.gz /var/www/html
 COPY src/50-server.cnf /root/50-server.cnf
@@ -14,8 +14,10 @@ RUN curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash
 RUN apt-get -y install mariadb-server mariadb-client mariadb-backup wget git
 RUN wget -qO- https://repos-droplet.digitalocean.com/install.sh | bash
 
-RUN chmod 700 /bootstrap.sh /root/dbsetup.sh
+RUN chmod 700 /bootstrap.sh
 RUN cat /root/50-server.cnf > /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN chown mysql:mysql /dbsetup.sh
+RUN chmod 700 /dbsetup.sh
 
 WORKDIR /var/www/html
 #RUN tar -xzvf yii-1.1.25.43e386.tar.gz

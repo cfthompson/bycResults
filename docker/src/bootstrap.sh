@@ -1,9 +1,6 @@
 #!/bin/bash
 
 service mariadb start
-mysql -e "use berkele6_results;"
-if [ "$?" != "0" ]; then
-  /root/dbsetup.sh
-fi
-
+sed -i 's/MariaDB.*\/false/MariaDB:\/nonexistent:\/bin\/bash/' /etc/passwd
+su -c/dbsetup.sh mysql
 apache2-foreground
