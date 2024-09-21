@@ -8,6 +8,8 @@ COPY src/dbsetup.sh /
 COPY src/yii-1.1.29.f89b76.tar.gz /var/www/html
 COPY src/50-server.cnf /root/50-server.cnf
 COPY src/.htaccess /var/www/html/.htaccess
+COPY src/backupDB.sh /root/backupDB.sh
+COPY src/backupDB.cron /etc/cron.d/backupDB.cron
 
 RUN apt-get -y update && apt-get -y upgrade
 RUN curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash
@@ -18,6 +20,8 @@ RUN chmod 700 /bootstrap.sh
 RUN cat /root/50-server.cnf > /etc/mysql/mariadb.conf.d/50-server.cnf
 RUN chown mysql:mysql /dbsetup.sh
 RUN chmod 700 /dbsetup.sh
+RUN chmod 700 /root/backupDB.sh
+RUN chmod 644 /etc/cron.d/backupDB.cron
 
 WORKDIR /var/www/html
 #RUN tar -xzvf yii-1.1.25.43e386.tar.gz
@@ -58,8 +62,11 @@ RUN ln -s /var/www/html/php.ini /usr/local/etc/php/php.ini
 RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
 RUN docker-php-ext-install pdo pdo_mysql
 
+COPY src/gitconfig /root/.gitconfig
+COPY src/gitcreds /root/.git-credentials
+RUN chmod 640 /root/.git-credentials /root/.gitconfig
+
 EXPOSE 80
-#EXPOSE 443
 
 WORKDIR /var/www/html
 CMD [ "/bootstrap.sh" ]

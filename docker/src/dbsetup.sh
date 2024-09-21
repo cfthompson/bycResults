@@ -10,7 +10,7 @@ if [ "$?" != "0" ]; then
   MYPW="byc@1939"
 
   mysql -e "create database \`berkele6_results\`;"
-  mysql -D berkele6_results < /tmp/results.sql
+  mysql -D berkele6_results < /tmp/mysqlrepo/berkele6_results.sql
   mysql -e "create user '${MYUSER}'@'127.0.0.1';"
   #don't use a $ sign in the password.  Hard to escape those.
   mysql -e "set password for '${MYUSER}'@'127.0.0.1' = PASSWORD('${MYPW}');"

@@ -1,0 +1,1 @@
+01 23 * * * root /root/backupDB.sh > /dev/null 2>&1

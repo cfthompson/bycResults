@@ -1,0 +1,7 @@
+[user]
+	email = colin.forrest.thompson@gmail.com
+	name = Colin Thompson
+[init]
+	defaultBranch = main
+[credential]
+	helper = store --file /root/.git-credentials
