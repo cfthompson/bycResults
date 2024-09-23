@@ -9,19 +9,22 @@ COPY src/yii-1.1.29.f89b76.tar.gz /var/www/html
 COPY src/50-server.cnf /root/50-server.cnf
 COPY src/.htaccess /var/www/html/.htaccess
 COPY src/backupDB.sh /root/backupDB.sh
-COPY src/backupDB.cron /etc/cron.d/backupDB.cron
+COPY src/backupDB.cron /root/backupDB.cron
 
 RUN apt-get -y update && apt-get -y upgrade
 RUN curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash
-RUN apt-get -y install mariadb-server mariadb-client mariadb-backup wget git
+RUN apt-get -y install mariadb-server mariadb-client mariadb-backup wget git cron
 RUN wget -qO- https://repos-droplet.digitalocean.com/install.sh | bash
+RUN rm -f /etc/localtime
+RUN ln -s /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 
 RUN chmod 700 /bootstrap.sh
 RUN cat /root/50-server.cnf > /etc/mysql/mariadb.conf.d/50-server.cnf
 RUN chown mysql:mysql /dbsetup.sh
 RUN chmod 700 /dbsetup.sh
 RUN chmod 700 /root/backupDB.sh
-RUN chmod 644 /etc/cron.d/backupDB.cron
+#RUN chmod 644 /etc/cron.d/backupDB.cron
+RUN crontab -u root /root/backupDB.cron 
 
 WORKDIR /var/www/html
 #RUN tar -xzvf yii-1.1.25.43e386.tar.gz
