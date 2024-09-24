@@ -1,10 +1,10 @@
 FROM php:8.1-apache
 #FROM php:7.4-apache
+#COPY src/yii-1.1.25.43e386.tar.gz /var/www/html
 
 COPY src/minimal_bycresults.sql /tmp/results.sql
 COPY src/bootstrap.sh /
 COPY src/dbsetup.sh /
-#COPY src/yii-1.1.25.43e386.tar.gz /var/www/html
 COPY src/yii-1.1.29.f89b76.tar.gz /var/www/html
 COPY src/50-server.cnf /root/50-server.cnf
 COPY src/.htaccess /var/www/html/.htaccess

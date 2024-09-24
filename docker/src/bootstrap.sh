@@ -12,4 +12,18 @@ service mariadb start
 sed -i 's/MariaDB.*\/false/MariaDB:\/nonexistent:\/bin\/bash/' /etc/passwd
 su -c/dbsetup.sh mysql
 sed -i 's/MariaDB.*\/bash/MariaDB:\/nonexistent:\/bin\/false/' /etc/passwd
+
+mv /tmp/.my.cnf /root/.my.cnf
+chown root:root /root/.my.cnf
+chmod 600 /root/.my.cnf
+
+source /root/.my.cnf 2>/dev/null
+
+MYUSER=$user
+MYPW=$password
+
+sed -i "s/'password' => 'byc@1939',/'password' => '${MYPW}',/" /var/www/html/protected/config/main.php
+sed -i "s/'username' => 'byc',/'username' => '${MYUSER}',/" /var/www/html/protected/config/main.php
+
+
 apache2-foreground
