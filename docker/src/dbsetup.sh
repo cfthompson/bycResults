@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #don't use a $ sign in the password.  Hard to escape those.
-#You probably also want to change this from the default values, both in the PHP code and the DB.
+#You probably want to change these default values, but when you do, I would suggest you do not check this file back into git.  Otherwise your database creds could get exposed if and when you push it back to github.  Unfortunately, there is no secrets management service in Digital Ocean to leverage for this.
 
 MYUSER="results"
 MYPW="letMe1nDamnit"
