@@ -61,7 +61,7 @@ RUN rm -f /var/www/html/protected/config/database.php
 RUN chown -R www-data:www-data /var/www/html/
 RUN a2enmod rewrite
 #RUN sed -i 's/AllowOverride\ None/AllowOverride\ All/' /etc/apache2/apache2.conf
-RUN ln -s /var/www/html/php.ini /usr/local/etc/php/php.ini
+#RUN ln -s /var/www/html/php.ini /usr/local/etc/php/php.ini
 RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
 RUN docker-php-ext-install pdo pdo_mysql
 
