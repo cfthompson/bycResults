@@ -22,8 +22,11 @@ source /root/.my.cnf 2>/dev/null
 MYUSER=$user
 MYPW=$password
 
-sed -i "s/'password' => 'byc@1939',/'password' => '${MYPW}',/" /var/www/html/protected/config/main.php
-sed -i "s/'username' => 'byc',/'username' => '${MYUSER}',/" /var/www/html/protected/config/main.php
+sed -i "s/'password' =>.*/'password' => '$MYPW',/" /var/www/html/protected/config/main.php
+sed -i "s/'username' =>.*/'username' => '$MYUSER',/" /var/www/html/protected/config/main.php
+
+#sed -i "s/'password' => 'byc@1939',/'password' => '${MYPW}',/" /var/www/html/protected/config/main.php
+#sed -i "s/'username' => 'byc',/'username' => '${MYUSER}',/" /var/www/html/protected/config/main.php
 
 
 apache2-foreground
