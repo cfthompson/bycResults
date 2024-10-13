@@ -76,10 +76,11 @@ RUN rm -f /var/www/html/protected/config/database.php
 
 #try to fix the broken logo link
 WORKDIR /var/www/html/protected/views
-#RUN sed -i 's/http:\/\/www.berkeleyyc.org\/sites\/default\/files\///' *.php
-#RUN sed -i 's/http:\/\/www.berkeleyyc.org\/sites\/default\/files\///' layouts/main.php
+RUN sed -i 's/http:\/\/www.berkeleyyc.org\/sites\/default\/files\//\//' layouts/main.php
 RUN mv /root/byc_site_logo.jpg .
 RUN ln -s /var/www/html/protected/views/byc_site_logo.jpg /var/www/html/byc_site_logo.jpg
+WORKDIR /var/www/html
+RUN sed -i 's/http:\/\/www.berkeleyyc.org\/sites\/default\/files\//\//' register.php
 
 RUN chown -R www-data:www-data /var/www/html/
 RUN a2enmod rewrite
