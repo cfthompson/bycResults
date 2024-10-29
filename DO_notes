@@ -1,0 +1,36 @@
+Digital Ocean Droplet Agent:
+- pretty simple, no iam policies or anything like that.  You just run the following command:
+wget -qO- https://repos-droplet.digitalocean.com/install.sh | bash
+- clipboard doesn't seem to work in browser console.  The browser seems to think the shell is an image.
+
+Digital Ocean Container Registry:
+- images are compressed.  A 1 GB image on my laptop ends up being about 350 MB in the registry.
+- Need to clean up previous images though because they count against your bill.  You need to not only delete them, but also empty the trash.
+- You can't push a new image while you're emptying the trash
+
+Digital Ocean App Platform:
+- Resources are ephemeral, just like ECS
+- The backend is apparently K8S, but you don't need to know anything about K8S to use it.
+- You get assigned a pseudo random DNS name for your app.  Seems to begin with a sea-creature, e.g. urchin-app-123456.ondigitalocean.app
+- Not sure if there's any firewalling or bot defense.  Also not sure about data egress charges.
+- By default, it wants to deploy 2 contianers with 1GB RAM and 1 CPU, which is not the cheapest.  You have to pay attention and change that if you want to use the smallest/cheapest instance type.
+- By default, it wants to deploy in NY.  You have to change it if you want to use SF.  Costs are the same in all regions.
+
+Secrets:
+- there is no secret service available from Digital Ocean.  There's an object storage service similar to S3, but it's not designed with secret protection/rotations in mind.
+
+MariaDB:
+- When you install mariadb in a docker container on your laptop and don't go through the secure installation setup afterward, you can log into the mysql database as root with no password.  I think the way this works is by using a unix socket that bypasses the mysql network stack's auth methods.
+- This doesn't seem to work in DIgital Ocean, probably due to permissions on the Unix socket.  Most of the recommendations around the web don't work either.  What does seem to work is:
+1) change the shell of the mysql user in /etc/passwd from /bin/false to /bin/bash
+2) make an executable bash script that runs the mysql command with sql queries to set up databases and users and whatnot (don't forget "flush privileges;")
+3) run that script as the mysql user
+4) change the mysql user's shell back to /bin/false and start using your new user/password
+5) Since the database is ephemeral, you'll want to schedule backups often and publish them somewhere where the bootstrap script can fetch the and read them back in.  For any serious app, you're probably better off just using a database service instead of running the database locally.
+
+Cheapest Available Pricing:
+Droplet (i.e. a VM): $4/month
+App Platform (i.e. a docker container): $5/month
+Container Registry (i.e. private "Dockerhub" like service, which you need for App Platform): $5/month
+Database Service for MySQL: $10/month
+Data Egress: $?
