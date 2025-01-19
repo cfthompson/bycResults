@@ -6,9 +6,9 @@ https://username:<token>@github.com
 
 For example:
 
-https://cfthompson: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@github.com
+https://cfthompson:github_pat_123456789ABCDFHG@github.com
 
-where "cfthompson" is the username and "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" is the token.
+where "cfthompson" is the username and "github_pat_123456789ABCDFHG" is the token.
 
 A few notes on github tokens:
 - tokens (more specifically "Personal Access Tokens" are created by the github user on the github website.  Go to your profile in the upper right and choose Settings, then scroll all the way down to "Developer Settings" on the left and click on it to be taken to the tokens page.
