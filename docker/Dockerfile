@@ -9,13 +9,13 @@ COPY src/backupDB.sh /root/backupDB.sh
 COPY src/backupDB.cron /root/backupDB.cron
 COPY src/byc_site_logo.jpg /root/byc_site_logo.jpg
 
-#Original bluehost dump
+#Original bluehost dump, use this only if the dudosnky github repo becomes unavailable (see git clone command below)
 COPY src/results.tar /var/www/html/results.tar
 WORKDIR /var/www/html
 #RUN tar -xvf ./results.tar
 RUN rm -f results.tar
 
-#Colin's hacky attempts to upgrade yii to 1.1.29, CTreeView widget breaks after 1.1.23
+#Colin's attempts to upgrade yii to 1.1.29, unfortunately CTreeView widget breaks after 1.1.23
 #COPY src/yii-1.1.29.f89b76.tar.gz /var/www/html
 #COPY src/yii-1.1.25.43e386.tar.gz /var/www/html
 COPY src/yii-1.1.23.445827.tar.gz /var/www/html
@@ -34,7 +34,7 @@ RUN cat /root/50-server.cnf > /etc/mysql/mariadb.conf.d/50-server.cnf
 RUN chown mysql:mysql /dbsetup.sh
 RUN chmod 700 /dbsetup.sh
 RUN chmod 700 /root/backupDB.sh
-#RUN crontab -u root /root/backupDB.cron 
+RUN crontab -u root /root/backupDB.cron 
 
 #yiic webapp setup
 WORKDIR /var/www/html
@@ -70,6 +70,10 @@ RUN sed -i 's/localhost/127.0.0.1/' /var/www/html/protected/config/main.php
 
 #should probably just fix this in the code someday, but for now...
 RUN sed -i 's/sailresults/berkele6_results/' /var/www/html/protected/config/main.php
+
+#change spin credit from 0.04 to 0.03 (need to do this in both PHP and javascript)
+RUN sed -i 's/\.04/\.03/g' /var/www/html/protected/models/Entries.php
+RUN sed -i 's/\.04/\.03/g' /var/www/html/protected/controllers/assets/race/entryform.js
 
 #make sure we're not using sqllite
 RUN rm -f /var/www/html/protected/config/database.php
